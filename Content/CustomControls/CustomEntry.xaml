@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Grid xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+      x:Class="wwrc_maui.Content.CustomControls.CustomEntry"
+      xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls.Base"
+      HorizontalOptions="Fill" RowDefinitions="Auto">
+    <!--base-->
+    <Border x:Name="border_">
+        <!--content-->
+        <HorizontalStackLayout Spacing="0" HorizontalOptions="Fill">
+            <!--img left-side-->
+            <StackLayout x:Name="stack_left" HorizontalOptions="Start" VerticalOptions="Center"
+                         Padding="15,5,10,5" IsVisible="False" Spacing="0">
+                <Image x:Name="img_left" WidthRequest="30" HeightRequest="30" Aspect="AspectFit"/>
+                <StackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnImgLeft_Tapped" NumberOfTapsRequired="1"/>
+                </StackLayout.GestureRecognizers>
+            </StackLayout>
+            <!--entry-->
+            <controls:BorderlessEntry x:Name="entry_" VerticalOptions="Center"
+                                      TextChanged="OnEntry_TextChanged"/>
+            <!--img right-side-->
+            <StackLayout x:Name="stack_right" HorizontalOptions="End" VerticalOptions="Center"
+                         Padding="10,5,15,5" IsVisible="False" Spacing="0">
+                <Image Source="ic_pwd_hide.png" WidthRequest="30" HeightRequest="30" Aspect="AspectFit"
+                       x:Name="img_right"/>
+                <StackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnImgRight_Tapped" NumberOfTapsRequired="1"/>
+                </StackLayout.GestureRecognizers>
+            </StackLayout>
+        </HorizontalStackLayout>
+    </Border>
+</Grid>

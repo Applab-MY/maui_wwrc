@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Grid xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+      x:Class="wwrc_maui.Content.CustomControls.CustomLoading"
+      HorizontalOptions="Fill" VerticalOptions="Fill"
+      RowDefinitions="Auto,*,Auto" ColumnDefinitions="Auto,*,Auto"
+      RowSpacing="0" ColumnSpacing="0">
+    <!--bg overlay-->
+    <StackLayout x:Name="stack_bg" HorizontalOptions="Fill" VerticalOptions="Fill"
+             BackgroundColor="Black" Opacity="0.5" Grid.Row="0" Grid.Column="0"
+             Grid.RowSpan="3" Grid.ColumnSpan="3">
+        <!--<StackLayout.Background>
+        <RadialGradientBrush>
+            <GradientStop Color="Black" Offset="0.5" />
+            <GradientStop Color="Transparent" Offset="1.0" />
+        </RadialGradientBrush>
+    </StackLayout.Background>-->
+    </StackLayout>
+    <Grid.GestureRecognizers>
+        <TapGestureRecognizer Tapped="OnBg_Tapped" NumberOfTapsRequired="1"/>
+    </Grid.GestureRecognizers>
+</Grid>

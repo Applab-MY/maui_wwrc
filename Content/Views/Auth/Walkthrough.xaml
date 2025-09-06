@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="wwrc_maui.Content.Views.Auth.Walkthrough"
+             xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
+             xmlns:vm="clr-namespace:wwrc_maui.Content.Viewmodels.Auth"
+             xmlns:model="clr-namespace:wwrc_maui.Content.Model.Auth"
+             NavigationPage.HasNavigationBar="False">
+
+    <AbsoluteLayout HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
+        <Grid HorizontalOptions="Fill" VerticalOptions="Fill" AbsoluteLayout.LayoutFlags="All"
+              AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="*,Auto,Auto,Auto,*" ColumnDefinitions="*"
+              x:DataType="vm:WalkthroughVm" RowSpacing="0">
+            <!--carousel view-->
+            <CarouselView x:Name="carouselView" HorizontalOptions="Fill" VerticalOptions="Center"
+                          ItemsSource="{Binding ItemsSource}" IndicatorView="indicatorView"
+                          HorizontalScrollBarVisibility="Never" Grid.Row="1" Margin="20">
+                <CarouselView.ItemTemplate>
+                    <DataTemplate>
+                        <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="Fill"
+                                             x:DataType="model:WalkthroughModel">
+                            <Image Source="{Binding Image}" Aspect="AspectFit" HorizontalOptions="Center"
+                                   VerticalOptions="Center" HeightRequest="{Binding ImgHeight}"/>
+                            <Label Text="{Binding Title}" FontSize="25" TextColor="Green"
+                                   HorizontalOptions="Center" FontAttributes="Bold"
+                                   VerticalOptions="Center"/>
+                            <Label Text="{Binding Description1}" FontSize="15" HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
+                            <Label Text="{Binding Description2}" FontSize="15" HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
+                            <Label Text="{Binding Description3}" FontSize="15" HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </DataTemplate>
+                </CarouselView.ItemTemplate>
+            </CarouselView>
+            <!--carousel indicator-->
+            <IndicatorView x:Name="indicatorView" HorizontalOptions="Center" VerticalOptions="Center"
+                           Margin="0,20,0,40" IndicatorColor="LightGray" Grid.Row="2"
+                           SelectedIndicatorColor="Black" IndicatorsShape="Square"/>
+            <!--btn : skip, next-->
+            <Grid HorizontalOptions="Fill" VerticalOptions="End" ColumnDefinitions="Auto,*,Auto"
+                  RowDefinitions="Auto" Grid.Row="3" Margin="20,0">
+                <Label Text="SKIP" HorizontalOptions="Start" Padding="30,10" Grid.Column="0">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnSkip_Tapped" NumberOfTapsRequired="1"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Text="NEXT" HorizontalOptions="End" Padding="20,10" Grid.Column="2">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnNext_Tapped" NumberOfTapsRequired="1"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </Grid>
+            <!--loading overlay-->
+            <controls:CustomLoading AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1"
+                        x:Name="UiLoad" IsVisible="{Binding IsBusy}" IsAnimate="{Binding IsBusy}"
+                        Grid.Row="0" Grid.RowSpan="5"/>
+        </Grid>
+    </AbsoluteLayout>
+    
+</ContentPage>

@@ -12,6 +12,10 @@ namespace wwrc_maui
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             Popup.Init();
+            string fileName = "db_wwrc.sqlite";
+            string fileLocation = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            string DB_fullpath = Path.Combine(fileLocation, fileName);
+            App.DatabasePath = DB_fullpath;
             return base.FinishedLaunching(app, options);
         }
     }

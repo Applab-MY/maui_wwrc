@@ -15,8 +15,12 @@ namespace wwrc_maui
     {
         protected override void OnCreate(Bundle? bundle)
         {
-            base.OnCreate(bundle);
             Popup.Init(this);
+            string fileName = "db_wwrc.sqlite";
+            string fileLocation = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
+            string DB_fullpath = Path.Combine(fileLocation, fileName);
+            App.DatabasePath = DB_fullpath;
+            base.OnCreate(bundle);
         }
 
         public override void OnBackPressed()

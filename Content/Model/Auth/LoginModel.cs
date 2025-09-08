@@ -136,15 +136,6 @@ namespace wwrc_maui.Content.Model.Auth
 
         public class TargetModel { }
 
-        public class APILoginModel
-        {
-            public string dBase { get; set; } = "";
-            public string Email { get; set; } = "";
-            public string Password { get; set; } = "";
-            public string Version { get; set; } = "";
-            public string Platform { get; set; } = "";
-        }
-
         public class Branch
         {
             public string branch { get; set; } = "";
@@ -158,6 +149,24 @@ namespace wwrc_maui.Content.Model.Auth
         public class ItemGroup
         {
             public string item { get; set; } = "";
+        }
+
+        public class API_LoginModel
+        {
+            public string dBase { get; set; } = "";
+            public string Email { get; set; } = "";
+            public string Password { get; set; } = "";
+            public string Version { get; set; } = "";
+            public string Platform { get; set; } = "";
+        }
+
+        public class API_MicrosoftLoginModel
+        {
+            public string dBase { get; set; } = "";
+            public string Email { get; set; } = "";
+            public string MicrosoftId { get; set; } = "";
+            public string Version { get; set; } = "";
+            public string Platform { get; set; } = "";
         }
     }
 }

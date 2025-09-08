@@ -8,6 +8,7 @@ using static wwrc_maui.Content.Model.CustomerAgingModel;
 using static wwrc_maui.Content.Model.CustomerVisitModel;
 using static wwrc_maui.Content.Model.DashboardModel;
 using static wwrc_maui.Content.Model.EmpHandbookModel;
+using static wwrc_maui.Content.Model.FcmTokenModel;
 using static wwrc_maui.Content.Model.MediaModel;
 using static wwrc_maui.Content.Model.NewsModel;
 using static wwrc_maui.Content.Model.PasswordModel;
@@ -22,8 +23,8 @@ namespace wwrc_maui.Content.RestApi
 {
     public interface IRestService
     {
-        Task<RequestResult<ObservableCollection<LoginModel>>> Login(API_LoginModel model);
-        Task<RequestResult<ObservableCollection<LoginModel>>> MicrosoftLogin(API_MicrosoftLoginModel model);
+        Task<RequestResult<ObservableCollection<LoginMainModel>>> Login(API_LoginModel model);
+        Task<RequestResult<ObservableCollection<LoginMainModel>>> MicrosoftLogin(API_MicrosoftLoginModel model);
         Task<RequestResult<ObservableCollection<StaffMainModel>>> Staff(API_StaffModel model);
         Task<RequestResult<ObservableCollection<MediaMainModel>>> GetPhoto();
         Task<RequestResult<ObservableCollection<NewsMainModel>>> GetNews();
@@ -46,7 +47,7 @@ namespace wwrc_maui.Content.RestApi
         Task<RequestResult<ObservableCollection<AgingDetailMainModel>>> GetCustomerAgingDetail(API_CustomerAging model);
         Task<bool> ProfileUpdate(MultipartFormDataContent content);
         Task<bool> UpdateNews(MultipartFormDataContent content);
-        Task<bool> UpdateFCMToken(string platform, string imei, string token, string userId);
+        Task<bool> UpdateFCMToken(API_FcmTokenModel model);
         Task<bool> ForgotPassword(MultipartFormDataContent content);
         Task<bool> ReadPhoto(MultipartFormDataContent content);
         Task<bool> ReadVideo(MultipartFormDataContent content);

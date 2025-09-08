@@ -8,6 +8,7 @@ using static wwrc_maui.Content.Model.CustomerAgingModel;
 using static wwrc_maui.Content.Model.CustomerVisitModel;
 using static wwrc_maui.Content.Model.DashboardModel;
 using static wwrc_maui.Content.Model.EmpHandbookModel;
+using static wwrc_maui.Content.Model.FcmTokenModel;
 using static wwrc_maui.Content.Model.PasswordModel;
 using static wwrc_maui.Content.Model.POModel;
 using static wwrc_maui.Content.Model.ProductModel;
@@ -109,17 +110,17 @@ namespace wwrc_maui.Content.RestApi
             throw new NotImplementedException();
         }
 
-        Task<RequestResult<ObservableCollection<LoginModel>>> IRestService.Login(API_LoginModel model)
+        Task<RequestResult<ObservableCollection<LoginMainModel>>> IRestService.Login(API_LoginModel model)
         {
             throw new NotImplementedException();
         }
 
-        Task<RequestResult<ObservableCollection<LoginModel>>> IRestService.MicrosoftLogin(API_MicrosoftLoginModel model)
+        Task<RequestResult<ObservableCollection<LoginMainModel>>> IRestService.MicrosoftLogin(API_MicrosoftLoginModel model)
         {
             throw new NotImplementedException();
         }
 
-        Task<RequestResult<ObservableCollection<ProductModel.ProductMainModel>>> IRestService.ProductCatalog(API_ProductCatalogModel model)
+        Task<RequestResult<ObservableCollection<ProductMainModel>>> IRestService.ProductCatalog(API_ProductCatalogModel model)
         {
             throw new NotImplementedException();
         }
@@ -159,7 +160,7 @@ namespace wwrc_maui.Content.RestApi
             throw new NotImplementedException();
         }
 
-        Task<bool> IRestService.UpdateFCMToken(string platform, string imei, string token, string userId)
+        Task<bool> IRestService.UpdateFCMToken(API_FcmTokenModel model)
         {
             throw new NotImplementedException();
         }

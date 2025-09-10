@@ -2,7 +2,6 @@
 <pages:PopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                  x:Class="wwrc_maui.Content.CustomControls.ShowAlert"
-                 xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
                  xmlns:helper="clr-namespace:wwrc_maui.Content.Helper"
                  xmlns:pages="clr-namespace:RGPopup.Maui.Pages;assembly=RGPopup.Maui"
                  xmlns:animations="clr-namespace:RGPopup.Maui.Animations;assembly=RGPopup.Maui"
@@ -16,7 +15,6 @@
     </pages:PopupPage.Animation>-->
     <pages:PopupPage.Resources>
         <ResourceDictionary>
-            <toolkit:IsStringNullOrEmptyConverter x:Key="IsStringNullConverter" />
             <helper:InverseBoolConverter x:Key="InverseBoolConverter"/>
         </ResourceDictionary>
     </pages:PopupPage.Resources>
@@ -39,7 +37,7 @@
             <Grid x:Name="grid_ok" Grid.Row="2" Grid.Column="0" IsVisible="False" HorizontalOptions="Fill"
                   RowDefinitions="Auto" ColumnDefinitions="*">
                 <Label x:Name="lbl_ok" Text="Okay" HeightRequest="50" VerticalOptions="Center"
-                       VerticalTextAlignment="Center" Style="{StaticResource PopupPrompt}"
+                       VerticalTextAlignment="Center" Style="{StaticResource PopupPromptButton}"
                        HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnOkay_Tapped" NumberOfTapsRequired="1"/>
@@ -49,7 +47,7 @@
             <Grid x:Name="grid_cancel" Grid.Row="2" Grid.Column="1" IsVisible="False"
                   HorizontalOptions="Fill" RowDefinitions="Auto" ColumnDefinitions="*">
                 <Label x:Name="lbl_cancel" Text="Cancel" HeightRequest="50" VerticalOptions="Center"
-                       VerticalTextAlignment="Center" Style="{StaticResource PopupPrompt}"
+                       VerticalTextAlignment="Center" Style="{StaticResource PopupPromptButton}"
                        HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnCancel_Tapped" NumberOfTapsRequired="1"/>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="wwrc_maui.Content.CustomControls.CustomNavigationBar"
+             xmlns:base="clr-namespace:wwrc_maui.Content.CustomControls.Base"
+             HorizontalOptions="Fill">
+    
+    <Grid HorizontalOptions="Fill" ColumnSpacing="0" x:Name="grid_bar" RowDefinitions="45"
+          BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource OffBlack}}"
+          ColumnDefinitions="Auto,*,Auto">
+        <!--col 1 btn: side menu-->
+        <StackLayout x:Name="stack_topleft" Padding="15" HorizontalOptions="Start" IsVisible="False"
+                     VerticalOptions="Center" Grid.Column="0">
+            <Image x:Name="img_left" HeightRequest="30" Aspect="AspectFit"/>
+            <StackLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnSideMenu_Tapped" NumberOfTapsRequired="1"/>
+            </StackLayout.GestureRecognizers>
+        </StackLayout>
+        <!--col 2 lbl : title-->
+        <Label x:Name="lbl_title" VerticalOptions="Center" Style="{StaticResource AlertTitle}"
+               Grid.Column="1" Margin="10,5" VerticalTextAlignment="Center"
+               HorizontalOptions="Center"/>
+        <!--col 2 img : logo-->
+        <Image x:Name="img_center" HorizontalOptions="Center" Aspect="AspectFit" Grid.Column="1"
+               VerticalOptions="Center" MaximumHeightRequest="35"/>
+        <!--col 3 toolbar-->
+        <StackLayout x:Name="stack_topright" Padding="15" HorizontalOptions="Start"
+                     VerticalOptions="Center" Grid.Column="2">
+            <Image x:Name="img_right" HeightRequest="30" Aspect="AspectFit"/>
+            <StackLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnToolbar_Tapped" NumberOfTapsRequired="1"/>
+            </StackLayout.GestureRecognizers>
+        </StackLayout>
+        <!--col 3 badge no-->
+        <Border x:Name="border_badge" Padding="5,3" StrokeShape="RoundRectangle 10"
+                BackgroundColor="Red" Stroke="White" StrokeThickness="2"
+                HorizontalOptions="End" VerticalOptions="Start"
+                Margin="0,10,10,0" Grid.Column="2" IsVisible="False">
+            <Label x:Name="lbl_badgeno" Style="{StaticResource PopupPromptButton}"
+                   FontSize="14" TextColor="White">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnBadgeNo_Tapped" NumberOfTapsRequired="1"/>
+                </Label.GestureRecognizers>
+            </Label>
+        </Border>
+    </Grid>
+    
+</ContentView>

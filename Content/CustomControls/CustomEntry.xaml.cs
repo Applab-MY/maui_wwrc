@@ -29,7 +29,8 @@ public partial class CustomEntry : Grid
             propertyChanged: (bindable, oldVal, newVal) => { ((CustomEntry)bindable).UpdateEntryIcon((string)newVal); });
     public static BindableProperty IsPasswordProperty =
         BindableProperty.Create(nameof(Ispassword), typeof(bool), typeof(CustomEntry), defaultValue: false,
-            propertyChanged: (bindable, oldVal, newVal) => { ((CustomEntry)bindable).UpdateIspassword((bool)newVal); });
+            BindingMode.TwoWay, propertyChanged: (bindable, oldVal, newVal) =>
+            { ((CustomEntry)bindable).UpdateIspassword((bool)newVal); });
     public static BindableProperty IsFocusProperty =
         BindableProperty.Create(nameof(Isfocus), typeof(bool), typeof(CustomEntry), defaultValue: false,
             propertyChanged: (bindable, oldVal, newVal) => { ((CustomEntry)bindable).UpdateIsfocus((bool)newVal); });
@@ -108,11 +109,7 @@ public partial class CustomEntry : Grid
 
     bool _isPwdTapped = true;
 
-    public CustomEntry()
-	{
-		InitializeComponent();
-        Ispassword = false;
-    }
+    public CustomEntry() { InitializeComponent(); }
 
     private async void OnImgLeft_Tapped(object? sender, EventArgs e)
     {

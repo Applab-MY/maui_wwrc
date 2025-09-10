@@ -7,10 +7,11 @@
              xmlns:model="clr-namespace:wwrc_maui.Content.Model.Auth"
              NavigationPage.HasNavigationBar="False">
 
-    <AbsoluteLayout HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
+    <AbsoluteLayout HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent"
+                    x:DataType="vm:WalkthroughVm">
         <Grid HorizontalOptions="Fill" VerticalOptions="Fill" AbsoluteLayout.LayoutFlags="All"
-              AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="*,Auto,Auto,Auto,*" ColumnDefinitions="*"
-              x:DataType="vm:WalkthroughVm" RowSpacing="0">
+              AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="*,Auto,Auto,Auto,*"
+              ColumnDefinitions="*" RowSpacing="0">
             <!--carousel view-->
             <CarouselView x:Name="carouselView" HorizontalOptions="Fill" VerticalOptions="Center"
                           ItemsSource="{Binding ItemsSource}" IndicatorView="indicatorView"
@@ -41,22 +42,23 @@
             <!--btn : skip, next-->
             <Grid HorizontalOptions="Fill" VerticalOptions="End" ColumnDefinitions="Auto,*,Auto"
                   RowDefinitions="Auto" Grid.Row="3" Margin="20,0">
-                <Label Text="SKIP" HorizontalOptions="Start" Padding="30,10" Grid.Column="0">
+                <Label Text="Skip" HorizontalOptions="Start" Padding="30,10" Grid.Column="0"
+                       Style="{StaticResource PopupPromptButton}">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnSkip_Tapped" NumberOfTapsRequired="1"/>
                     </Label.GestureRecognizers>
                 </Label>
-                <Label Text="NEXT" HorizontalOptions="End" Padding="20,10" Grid.Column="2">
+                <Label Text="Next" HorizontalOptions="End" Padding="20,10" Grid.Column="2"
+                       Style="{StaticResource PopupPromptButton}">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnNext_Tapped" NumberOfTapsRequired="1"/>
                     </Label.GestureRecognizers>
                 </Label>
             </Grid>
-            <!--loading overlay-->
-            <controls:CustomLoading AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1"
-                        x:Name="UiLoad" IsVisible="{Binding IsBusy}" IsAnimate="{Binding IsBusy}"
-                        Grid.Row="0" Grid.RowSpan="5"/>
         </Grid>
+        <!--loading overlay-->
+        <controls:CustomLoading AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1"
+            x:Name="UiLoad" IsVisible="{Binding IsBusy}" IsAnimate="{Binding IsBusy}"/>
     </AbsoluteLayout>
     
 </ContentPage>

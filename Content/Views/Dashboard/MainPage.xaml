@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="wwrc_maui.Content.Views.Dashboard.MainPage"
+             xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
+             xmlns:progressBar="clr-namespace:MPowerKit.ProgressRing;assembly=MPowerKit.ProgressRing"
+             xmlns:tabcell="clr-namespace:wwrc_maui.Content.Views.Dashboard"
+             xmlns:vm="clr-namespace:wwrc_maui.Content.Viewmodels.Dashboard"
+             NavigationPage.HasNavigationBar="False">
+
+    <AbsoluteLayout HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
+        <Grid HorizontalOptions="Fill" VerticalOptions="Fill" AbsoluteLayout.LayoutFlags="All"
+              AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*,Auto" ColumnDefinitions="*"
+              RowSpacing="0" x:DataType="vm:MainPageVm">
+            <!--nav bar-->
+            <controls:CustomNavigationBar IconLeft="ic_filter" IconRight="ic_logout.png" BarImage="logo_db" 
+                    BarBackgroundColorHex="#ffffff" x:Name="navbar" TitleTextColor="#000000"/>
+            <!--content-->
+            <RefreshView HorizontalOptions="Fill" VerticalOptions="Fill" IsRefreshing="{Binding IsBusy}"
+                         Command="{Binding RefreshCommand}" Grid.Row="1">
+                <ScrollView HorizontalOptions="Fill" VerticalOptions="Fill">
+                    <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="Fill" Spacing="0">
+                        <Label Text="{Binding Version}" FontSize="12" HorizontalOptions="Center" Margin="20,0"/>
+                        <!--app version-->
+                        <BoxView HeightRequest="1" HorizontalOptions="Fill" Margin="0,10,0,5"/>
+                        <!--subsidiary-->
+                        <Label Text="{Binding Subsidiary}" HorizontalOptions="Center" LineBreakMode="TailTruncation"
+                               MaxLines="1" Style="{StaticResource AlertTitle}" Grid.Row="0" Grid.Column="0"
+                               Grid.ColumnSpan="3" Padding="8" IsVisible="{Binding IsSubsidiaryVisible}"/>
+                        <!--date & currency-->
+                        <Grid HorizontalOptions="Fill" ColumnSpacing="15" Margin="20,0,15,0" RowDefinitions="Auto"
+                              ColumnDefinitions="0.7*,0.3*,30">
+                            <!--exchange data-->
+                            <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Grid.Row="0"
+                                                 Spacing="0" Grid.Column="0">
+                                <Label Style="{StaticResource AlertTitle}" FontSize="12" HorizontalOptions="Start"
+                                       Text="Exchange Date" LineBreakMode="WordWrap"/>
+                                <Label Style="{StaticResource PopupPromptButton}" HorizontalOptions="Start"
+                                       Text="{Binding ExchangeDate, StringFormat='\{0:dd MMMM, yyyy}'}"
+                                       LineBreakMode="WordWrap" HorizontalTextAlignment="Start"/>
+                            </VerticalStackLayout>
+                            <!--currency-->
+                            <HorizontalStackLayout HorizontalOptions="Fill" Spacing="8" Grid.Row="0" Grid.Column="1">
+                                <Image Source="{Binding FlagIcon}" Aspect="AspectFit" HorizontalOptions="Start"
+                                       VerticalOptions="Center"/>
+                                <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="0" >
+                                    <Label Style="{StaticResource AlertTitle}" FontSize="12" HorizontalOptions="Start"
+                                           Text="Currency" LineBreakMode="WordWrap"/>
+                                    <Label Style="{StaticResource PopupPromptButton}" HorizontalOptions="Start"
+                                           Text="{Binding UsdRate, StringFormat='\USD {0}'}" LineBreakMode="WordWrap"/>
+                                </VerticalStackLayout>
+                            </HorizontalStackLayout>
+                            <!--img : arrow-->
+                            <Image Source="{AppThemeBinding Light=ic_more, Dark=ic_more_light}" VerticalOptions="Center" 
+                                   HorizontalOptions="End" Aspect="AspectFit" HeightRequest="30" Grid.Column="2"/>
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnDateCurrency_Tapped" NumberOfTapsRequired="1"/>
+                            </Grid.GestureRecognizers>
+                        </Grid>
+                        <BoxView HeightRequest="1" HorizontalOptions="Fill" Margin="0,5,0,10"/>
+                        <!--graph & percentage-->
+                        <Grid HorizontalOptions="Fill" ColumnSpacing="10" VerticalOptions="Start" Margin="15"
+                              RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,*" RowSpacing="5">
+                            <!--#region sales : ytd-->
+                            <progressBar:ProgressRing Progress="{Binding YtdProgress}" VerticalOptions="Center"
+                                    HorizontalOptions="Center" WidthRequest="100" HeightRequest="100" Smooth="True"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource Gray200}}"
+                                    Color="{StaticResource Secondary}" Thickness="5"/>
+                            <Label Text="{Binding CenterPercentYtd}" Style="{StaticResource PopupPromptButton}"
+                                   HorizontalOptions="Center" VerticalOptions="Center"/>
+                            <VerticalStackLayout HorizontalOptions="Fill" Grid.Row="1">
+                                <Label Text="YTD Sales" HorizontalOptions="Center" Style="{StaticResource AlertTitle}"/>
+                                <Label Text="0.00" HorizontalOptions="Center" Style="{StaticResource PopupPromptButton}"
+                                       TextColor="Purple"/>
+                            </VerticalStackLayout>
+                            <Border HorizontalOptions="Center" StrokeShape="RoundRectangle 10" Grid.Row="2" Padding="8,5"
+                                    BackgroundColor="#eeeeee" Stroke="#cecece">
+                                <HorizontalStackLayout HorizontalOptions="Fill" Spacing="5">
+                                    <Label Text="YTD GP" HorizontalOptions="Center"/>
+                                    <Label Text="{Binding YtdDetails}" HorizontalOptions="Center" MaxLines="1"
+                                           LineBreakMode="TailTruncation"/>
+                                </HorizontalStackLayout>
+                            </Border>
+                            <!--#endregion-->
+                            <!--#region sales : mtd-->
+                            <progressBar:ProgressRing Progress="{Binding MtdProgress}" VerticalOptions="Center"
+                                    HorizontalOptions="Center" WidthRequest="100" HeightRequest="100" Smooth="True"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource Gray200}}"
+                                    Color="{StaticResource Primary}" Thickness="5" Grid.Column="1"/>
+                            <Label Text="{Binding CenterPercentMtd}" Style="{StaticResource PopupPromptButton}"
+                                   HorizontalOptions="Center" VerticalOptions="Center" Grid.Column="1"/>
+                            <VerticalStackLayout HorizontalOptions="Fill" Grid.Column="1" Grid.Row="1">
+                                <Label Text="MTD Sales" HorizontalOptions="Center" Style="{StaticResource AlertTitle}"/>
+                                <Label Text="0.00" HorizontalOptions="Center" Style="{StaticResource PopupPromptButton}"
+                                       TextColor="Green"/>
+                            </VerticalStackLayout>
+                            <Border HorizontalOptions="Center" StrokeShape="RoundRectangle 10" Grid.Column="1" Grid.Row="2"
+                                    BackgroundColor="#eeeeee" Stroke="#cecece" Padding="8,5">
+                                <HorizontalStackLayout HorizontalOptions="Fill" Spacing="5">
+                                    <Label Text="MTD GP" HorizontalOptions="Center"/>
+                                    <Label Text="{Binding MtdDetails}" HorizontalOptions="Center" MaxLines="1"
+                                           LineBreakMode="TailTruncation"/>
+                                </HorizontalStackLayout>
+                            </Border>
+                            <!--#endregion-->
+                        </Grid>
+                        <!--carousel menus-->
+                        <CarouselView x:Name="carouselView" HorizontalOptions="Fill" VerticalOptions="Center"
+                                      HorizontalScrollBarVisibility="Never" Margin="20,10"
+                                      IndicatorView="indicatorView" ItemsSource="{Binding CarouselItems}"
+                                      ItemTemplate="{Binding TemplateSelector}"/>
+                        <!--carousel indicator-->
+                        <IndicatorView x:Name="indicatorView" HorizontalOptions="Center" VerticalOptions="Center"
+                                IndicatorColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}" 
+                                SelectedIndicatorColor="{StaticResource Primary}" IndicatorsShape="Square" Margin="0,10"/>
+                    </VerticalStackLayout>
+                </ScrollView>
+            </RefreshView>
+            <!--bottom tab bar-->
+            <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="End" Spacing="0" Grid.Row="2">
+                <BoxView HeightRequest="1" HorizontalOptions="Fill" Margin="0,5,0,0"/>
+                <Grid HorizontalOptions="Fill" RowDefinitions="Auto" ColumnDefinitions="*,*,*,*,*"
+                      ColumnSpacing="0" Margin="0,10,0,15">
+                    <tabcell:TabCell TabId="1" ImgDefault="menu_b_home_off" ImgSelected="menu_b_home_on"
+                                     IsSelected="True" SetHeight="40" Title="Home" Grid.Column="0"/>
+                    <tabcell:TabCell TabId="2" ImgDefault="menu_b_staff_off" ImgSelected="menu_b_staff_on"
+                                     IsSelected="False" SetHeight="40" Title="Staff" Grid.Column="1"/>
+                    <tabcell:TabCell TabId="3" ImgDefault="menu_b_sales_off" ImgSelected="menu_b_sales_on"
+                                     IsSelected="False" SetHeight="40" Title="Sales" Grid.Column="2"/>
+                    <tabcell:TabCell TabId="4" ImgDefault="menu_b_media_off" ImgSelected="menu_b_media_on"
+                                     IsSelected="False" SetHeight="40" Title="Media" Grid.Column="3"/>
+                    <tabcell:TabCell TabId="5" ImgDefault="menu_b_profile_off" ImgSelected="menu_b_profile_on"
+                                     IsSelected="False" SetHeight="40" Title="Profile" Grid.Column="4"/>
+                </Grid>
+            </VerticalStackLayout>
+        </Grid>
+        <!--loading overlay-->
+        <controls:CustomLoading AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1"
+                            x:Name="UiLoad" IsVisible="{Binding IsBusy}" IsAnimate="{Binding IsBusy}"/>
+    </AbsoluteLayout>
+
+</ContentPage>

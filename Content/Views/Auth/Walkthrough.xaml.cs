@@ -1,4 +1,7 @@
+using wwrc_maui.Content.Model;
 using wwrc_maui.Content.Viewmodels.Auth;
+using wwrc_maui.Content.Views.Dashboard;
+using static wwrc_maui.Content.Model.Auth.LoginModel;
 
 namespace wwrc_maui.Content.Views.Auth;
 
@@ -10,6 +13,21 @@ public partial class Walkthrough : ContentPage
     {
         InitializeComponent();
         BindingContext = viewmodel;
+    }
+
+    protected override async void OnAppearing()
+    {
+        IsBusy = true;
+        base.OnAppearing();
+        var user = AppDatabase.Instance.SqlConnection.Query<LoginMainModel>
+            ("select * from LoginMainModel").FirstOrDefault();
+        if (user != null)
+        {
+            await Task.Delay(500);
+            Application.Current?.Dispatcher.Dispatch(() =>
+            { Application.Current.Windows[0].Page = new MainPage(); });
+        }
+        IsBusy = false;
     }
 
     private async void OnSkip_Tapped(object sender, TappedEventArgs e)

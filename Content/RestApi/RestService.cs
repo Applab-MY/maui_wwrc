@@ -1,6 +1,11 @@
-﻿using System.Collections.ObjectModel;
+﻿using AndroidX.Browser.Trusted.Sharing;
+using Newtonsoft.Json;
+using SQLite;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Diagnostics.Metrics;
+using System.Text;
 using wwrc_maui.Content.Model;
-using wwrc_maui.Content.Model.Auth;
 using wwrc_maui.Content.Model.Common;
 using static wwrc_maui.Content.Model.Auth.LoginModel;
 using static wwrc_maui.Content.Model.CurrencyModel;
@@ -20,6 +25,13 @@ namespace wwrc_maui.Content.RestApi
 {
     public class RestService : IRestService
     {
+        HttpClient client = new();
+        //string WSurl = "http://211.24.92.46:5040/wwrc2api"; //Dev
+        //string WSurl = "http://app.wwrc.com:5015"; //Staging
+        string WSurl = "http://app.wwrc.com:5018"; //hana
+        string DbaseValue = "db_WWRC";
+        static readonly int NOTIFICATION_ID = 100;
+
         Task<RequestResult<ObservableCollection<ChangePasswordModel>>> IRestService.ChangePassword(API_ChangePasswordModel model)
         {
             throw new NotImplementedException();
@@ -30,9 +42,23 @@ namespace wwrc_maui.Content.RestApi
             throw new NotImplementedException();
         }
 
-        Task<bool> IRestService.ForgotPassword(MultipartFormDataContent content)
+        async Task<bool> IRestService.ForgotPassword(MultipartFormDataContent content)
         {
-            throw new NotImplementedException();
+            var uri = new Uri(string.Format("{0}/api/Login/ForgotPassword", WSurl));
+            StringContent dBase = new(DbaseValue);
+            content.Add(dBase, "dBase");
+            var result = false;
+
+            try
+            {
+                var response = await client.PostAsync(uri, content);
+                if (response.IsSuccessStatusCode) { result = true; }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error", ex.Message, "Login");
+            }
+            return result;
         }
 
         Task<RequestResult<ObservableCollection<CountryModel.CountryMainModel>>> IRestService.GetCountry()
@@ -40,9 +66,36 @@ namespace wwrc_maui.Content.RestApi
             throw new NotImplementedException();
         }
 
-        Task<RequestResult<CurrencyMainModel>> IRestService.GetCurrency(API_Currency model)
+        async Task<RequestResult<CurrencyMainModel>> IRestService.GetCurrency(API_Currency model)
         {
-            throw new NotImplementedException();
+            if (client.DefaultRequestHeaders.Authorization == null)
+            {
+                client.DefaultRequestHeaders.Clear();
+                var token = Preferences.Default.Get("login_token", "");
+                if (!string.IsNullOrEmpty(token))
+                { client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", token); }
+            }
+
+            var uri = new Uri(string.Format("{0}/api/CurrencyExchange/Get", WSurl));
+            model.DBase = DbaseValue;
+            var json = JsonConvert.SerializeObject(model);
+            var contentJson = new StringContent(json, Encoding.UTF8, "application/json");
+            var result = new RequestResult<CurrencyMainModel>();
+
+            try
+            {
+                var response = await client.PostAsync(uri, contentJson);
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    result = JsonConvert.DeserializeObject<RequestResult<CurrencyMainModel>>(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error", ex.Message, "Login");
+            }
+            return result;
         }
 
         Task<RequestResult<ObservableCollection<CustomerAgingMainModel>>> IRestService.GetCustomerAging(API_CustomerAging model)
@@ -60,9 +113,63 @@ namespace wwrc_maui.Content.RestApi
             throw new NotImplementedException();
         }
 
-        Task<RequestResult<ObservableCollection<DashboardMainModel>>> IRestService.GetDashBoard(API_DashBoard model)
+        async Task<RequestResult<ObservableCollection<DashboardMainModel>>> IRestService.GetDashBoard(API_DashBoard model)
         {
-            throw new NotImplementedException();
+            if (client.DefaultRequestHeaders.Authorization == null)
+            {
+                client.DefaultRequestHeaders.Clear();
+                var token = Preferences.Default.Get("login_token", "");
+                if (!string.IsNullOrEmpty(token))
+                { client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", token); }
+            }
+
+            var uri = new Uri(string.Format("{0}/api/Dashboard/Get", WSurl));
+            model.DBase = DbaseValue;
+            var json = JsonConvert.SerializeObject(model);
+            var contentJson = new StringContent(json, Encoding.UTF8, "application/json");
+            var result = new RequestResult<ObservableCollection<DashboardMainModel>>();
+
+            try
+            {
+                var response = await client.PostAsync(uri, contentJson);
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var input = new DashboardDataModel()
+                    {
+                        Key = "DashBoard",
+                        Val = content,
+                        Country = model.Country,
+                        Subsidiary = model.Company,
+                        UserId = model.UserId
+                    };
+                    using (var conn = AppDatabase.Instance.SqlConnection)
+                    {
+                        var _exist = string.Format("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='{0}'",
+                            "DashboardDataModel");
+                        var check = conn.ExecuteScalar<int>(_exist);
+                        if (check == 0) conn.CreateTable<DashboardDataModel>();
+                        else
+                        {
+                            conn.DropTable<DashboardDataModel>();
+                            conn.CreateTable<DashboardDataModel>();
+                        }
+                        var exist = conn.Table<DashboardDataModel>().Where(s => s.Key == input.Key).FirstOrDefault();
+                        if (exist != null)
+                        {
+                            exist = input;
+                            conn.Update(exist);
+                        }
+                        else conn.Insert(input);
+                    }
+                    result = JsonConvert.DeserializeObject<RequestResult<ObservableCollection<DashboardMainModel>>>(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error", ex.Message, "Login");
+            }
+            return result;
         }
 
         Task<RequestResult<ObservableCollection<DashboardMainModel>>> IRestService.GetDashBoardOffLine(API_DashBoard model, bool isrefresh)
@@ -110,9 +217,28 @@ namespace wwrc_maui.Content.RestApi
             throw new NotImplementedException();
         }
 
-        Task<RequestResult<ObservableCollection<LoginMainModel>>> IRestService.Login(API_LoginModel model)
+        async Task<RequestResult<ObservableCollection<LoginMainModel>>> IRestService.Login(API_LoginModel model)
         {
-            throw new NotImplementedException();
+            var uri = new Uri(string.Format("{0}/api/Login/login", WSurl));
+            model.dBase = DbaseValue;
+            var json = JsonConvert.SerializeObject(model);
+            var contentJson = new StringContent(json, Encoding.UTF8, "application/json");
+            var result = new RequestResult<ObservableCollection<LoginMainModel>>();
+
+            try
+            {
+                var response = await client.PostAsync(uri, contentJson);
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    result = JsonConvert.DeserializeObject<RequestResult<ObservableCollection<LoginMainModel>>>(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error", ex.Message, "Login");
+            }
+            return result;
         }
 
         Task<RequestResult<ObservableCollection<LoginMainModel>>> IRestService.MicrosoftLogin(API_MicrosoftLoginModel model)

@@ -62,9 +62,11 @@
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui" Version="12.2.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+		<PackageReference Include="Microsoft.Identity.Client" Version="4.76.0" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.100" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.8" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.100" />
+		<PackageReference Include="MPowerKit.ProgressRing" Version="1.3.0" />
 		<PackageReference Include="Plugin.Maui.Popup" Version="1.0.6" />
 		<PackageReference Include="RGPopup.Maui" Version="1.2.1" />
 		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
@@ -78,13 +80,28 @@
 	  <MauiXaml Update="Content\CustomControls\CustomLoading.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Content\CustomControls\CustomNavigationBar.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Content\CustomControls\ShowAlert.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Auth\ForgotPassword.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Auth\Login.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Auth\Walkthrough.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Dashboard\CarouselCell.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Dashboard\MainPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Dashboard\TabCell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

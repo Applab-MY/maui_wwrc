@@ -4,19 +4,25 @@ using RGPopup.Maui.Extensions;
 using System.Diagnostics;
 using wwrc_maui.Content.CustomControls;
 using wwrc_maui.Content.CustomControls.Base;
+using wwrc_maui.Content.RestApi;
 using wwrc_maui.Content.Views.Auth;
 
 namespace wwrc_maui
 {
     public partial class App : Microsoft.Maui.Controls.Application
     {
+        public static int DatabaseVersion => 7;
+        public static string? DatabasePath;
         public static double ScreenWidth;
         public static double ScreenHeight;
         public static Window? AppPage;
+        public static IRestService? AppClient;
 
         public App()
         {
             InitializeComponent();
+
+            #region custom controls handler
             EntryHandler.Mapper.AppendToMapping(nameof(BorderlessEntry), (handler, view) =>
             {
                 if (view is BorderlessEntry)
@@ -28,18 +34,24 @@ namespace wwrc_maui
                     handler.PlatformView.BorderStyle = UIKit.UITextBorderStyle.None;
 #endif
                 }
+            });
+            DatePickerHandler.Mapper.AppendToMapping(nameof(BorderlessDatePicker), (handler, view) =>
+            {
                 if (view is BorderlessDatePicker)
                 {
 #if __ANDROID__
                     handler.PlatformView.SetBackgroundColor(Android.Graphics.Color.Transparent);
 #elif __IOS__
                     handler.PlatformView.BackgroundColor = UIKit.UIColor.Clear;
-                    handler.PlatformView.BorderStyle = UIKit.UITextBorderStyle.None;
+                    //handler.PlatformView.BorderStyle = UIKit.UITextBorderStyle.None;
 #endif
                 }
             });
+            #endregion
 
             AppPage = CreateWindow(null);
+            AppClient = new RestService();
+
             var width = DeviceDisplay.Current.MainDisplayInfo.Width;
             var height = DeviceDisplay.Current.MainDisplayInfo.Height;
             var dense = DeviceDisplay.Current.MainDisplayInfo.Density;

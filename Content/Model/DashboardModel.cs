@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using SQLite;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -84,13 +85,24 @@ namespace wwrc_maui.Content.Model
             public string UserId { get; set; } = "";
         }
 
-        public class DynamicDashBoardNavigation
+        public class DashboardCarouselTemplate
         {
             public string Image { get; set; } = "";
             public string FirstLabel { get; set; } = "";
             public string SecondLabel { get; set; } = "";
             public string Type { get; set; } = "";
             public string CountType { get; set; } = "";
+        }
+
+        public class DashboardDataModel
+        {
+            [PrimaryKey, AutoIncrement]
+            public int Id { get; set; }
+            public string Key { get; set; } = "";
+            public string Val { get; set; } = "";
+            public string Country { get; set; } = "";
+            public string Subsidiary { get; set; } = "";
+            public string UserId { get; set; } = "";
         }
     }
 }

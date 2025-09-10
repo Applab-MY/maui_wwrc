@@ -6,7 +6,7 @@ namespace wwrc_maui.Content.Model
 {
     public class StaffModel
     {
-        public class SatffModules
+        public class StaffModules
         {
             public string StaffId { get; set; } = "";
             public string SalesTargetChart { get; set; } = "";
@@ -52,7 +52,7 @@ namespace wwrc_maui.Content.Model
             public string DefaultSalesTeamId { get; set; } = "";
             public string DefaultSalesTeamName { get; set; } = "";
             public string IsOfficeCredential { get; set; } = "";
-            public SatffModules Modules { get; set; } = new();
+            public StaffModules Modules { get; set; } = new();
             public List<string> ItemGroup { get; set; } = [];
             public List<string> SalesTarget { get; set; } = [];
             public List<string> Branch { get; set; } = [];

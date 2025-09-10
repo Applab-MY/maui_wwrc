@@ -1,10 +1,22 @@
 ﻿using SQLite;
-using System.Collections.ObjectModel;
 
 namespace wwrc_maui.Content.Model.Auth
 {
     public class LoginModel
     {
+        public class LoginMainModel
+        {
+            [PrimaryKey]
+            public string Token { get; set; } = "";
+
+            [Ignore]
+            public Userinfo? Data { get; set; } = null;
+
+            [Ignore]
+            public Userinfo? UserData
+            { get { return AppDatabase.Instance.SqlConnection.Query<Userinfo>("Select * from Userinfo").FirstOrDefault(); } }
+        }
+
         public class Userinfo
         {
             [PrimaryKey]
@@ -33,45 +45,28 @@ namespace wwrc_maui.Content.Model.Auth
             public bool IsOfficeCredential { get; set; }
 
             [Ignore]
-            public UserModules? Modules { get; set; }
+            public UserModules? Modules { get; set; } = null;
 
-            UserModules modules;
             [Ignore]
-            public UserModules userModules
-            {
-                get
-                {
-                    modules ??= Database.Instance.SqlConnection.Query<UserModules>("Select * from userModules").FirstOrDefault();
-                    return modules;
-                }
-            }
+            public UserModules? UserModules => AppDatabase.Instance.SqlConnection.Query<UserModules>
+                ("Select * from UserModules").FirstOrDefault();
 
             [Ignore]
             public List<string> ItemGroup { get; set; } = [];
 
             [Ignore]
-            public List<string> ItemGroups
-            {
-                get
-                {
-                    return Database.Instance.SqlConnection.Query<ItemGroup>("select * from ItemGroup").Select(x => x.item).ToList();
-                }
-            }
+            public List<string> ItemGroupFromDb => [.. AppDatabase.Instance.SqlConnection.Query<ItemGroup>
+                ("select * from ItemGroup").Select(x => x.item)];
 
             [Ignore]
-            public ObservableCollection<SalesTargetModule> SalesTarget { get; set; } = [];
+            public List<SalesTargetModule> SalesTarget { get; set; } = [];
 
             [Ignore]
             public List<string> Branch { get; set; } = [];
 
             [Ignore]
-            public List<string> Branches
-            {
-                get
-                {
-                    return Database.Instance.SqlConnection.Query<Branch>("select * from Branch").Select(x => x.branch).ToList();
-                }
-            }
+            public List<string> BranchesFromDB => [.. AppDatabase.Instance.SqlConnection.Query<Branch>
+                ("select * from Branch").Select(x => x.branch)];
         }
 
         public class UserModules

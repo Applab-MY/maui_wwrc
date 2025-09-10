@@ -16,8 +16,9 @@ namespace wwrc_maui
         protected override void OnCreate(Bundle? bundle)
         {
             Popup.Init(this);
-            string fileName = "db_wwrc.sqlite";
-            string fileLocation = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
+            string fileName = "db_wwrc.db";
+            string fileLocation = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
+            Directory.CreateDirectory(fileLocation); // Ensure directory exists
             string DB_fullpath = Path.Combine(fileLocation, fileName);
             App.DatabasePath = DB_fullpath;
             base.OnCreate(bundle);

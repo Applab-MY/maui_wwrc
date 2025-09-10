@@ -1,16 +1,7 @@
-﻿using CloudKit;
-using CoreData;
-using Microsoft.Maui.ApplicationModel;
-using Microsoft.Maui.ApplicationModel.Communication;
-using Microsoft.Maui.Controls.Compatibility.Platform.iOS;
-using Microsoft.Maui.Controls.PlatformConfiguration;
-using SQLite;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Threading;
-using wwrc_maui.Content.Model.Common;
+﻿using wwrc_maui.Content.Model;
 using wwrc_maui.Content.Viewmodels.Common;
+using wwrc_maui.Content.Views.Dashboard;
+using static wwrc_maui.Content.Model.Auth.LoginModel;
 
 namespace wwrc_maui.Content.Viewmodels.Auth
 {
@@ -20,6 +11,9 @@ namespace wwrc_maui.Content.Viewmodels.Auth
         #region beans
         private string _email = "";
         private string _password = "";
+        private string _version = "";
+        private string _platform = "";
+        private double _entryWidth = 0.0;
         #endregion
         #region properties
         public string Email
@@ -32,68 +26,76 @@ namespace wwrc_maui.Content.Viewmodels.Auth
             get { return _password; }
             set { SetProperty(ref _password, value); }
         }
+        public string Version
+        {
+            get { return _version; }
+            set { SetProperty(ref _version, value); }
+        }
+        public string Platform
+        {
+            get { return _platform; }
+            set { SetProperty(ref _platform, value); }
+        }
+        public double EntryWidth
+        {
+            get { return _entryWidth; }
+            set { SetProperty(ref _entryWidth, value); }
+        }
         #endregion
         #endregion
 
         public Command? LoginCommand { get; set; } = null;
-        public string Platform { get; set; } = "";
-        public string Version { get; set; } = "Ver.";
+        public Command? Login365Command { get; set; } = null;
 
         public LoginVm()
         {
             IsBusy = false;
             Email = Preferences.Default.Get("email", string.Empty);
             Platform = DeviceInfo.Platform.ToString();
-            Version += AppInfo.VersionString;
+            Version += "Ver." + AppInfo.VersionString;
+            EntryWidth = App.ScreenWidth - 40;
+            LoginCommand = new Command(ExecuteLogin);
         }
 
-        async void ExecuteLogin()
+        public async void ExecuteLogin()
         {
             if (string.IsNullOrEmpty(Email))
                 await App.DisplayAlert("Empty", "Please insert your email", null, "Okay");
-            else if (string.IsNullOrEmpty(Email))
+            else if (string.IsNullOrEmpty(Password))
                 await App.DisplayAlert("Empty", "Please insert your password", null, "Okay");
             else
             {
                 NetworkAccess accessType = Connectivity.Current.NetworkAccess;
-                if (accessType == NetworkAccess.Internet)
+                if (accessType == NetworkAccess.Internet && App.AppClient != null)
                 {
-                    RequestResult<ObservableCollection<LoginModel>> LoginResult = null;
-                    using (await MaterialDialog.Instance.LoadingDialogAsync("Signing you in"))
+                    try
                     {
-                        LoginResult = await App.WSHelper.Login(email, password, version, platform);
-                    }
-
-                    list.Clear();
-                    dash.Clear();
-                    if (LoginResult.SystemCode == 200)
-                    {
-                        if (LoginResult.items.Count > 0)
+                        var model = new API_LoginModel
                         {
-                            Database.Instance.SqlConnection.DeleteAll<LoginModel>();
-                            Database.Instance.SqlConnection.DeleteAll<userinfo>();
-                            Database.Instance.SqlConnection.DeleteAll<userModules>();
-                            Database.Instance.SqlConnection.DeleteAll<ItemGroup>();
-                            Database.Instance.SqlConnection.DeleteAll<SalesTarget>();
-                            Database.Instance.SqlConnection.DeleteAll<Branch>();
-
-                            Database.Instance.SqlConnection.Insert(LoginResult.items[0].Data);
-                            Database.Instance.SqlConnection.Insert(LoginResult.items[0].Data.Modules);
-                            //if (LoginResult.items[0].Data.Branch.Count > 0)
-                            //   {
-                            //   string cty = LoginResult.items[0].Data.Branch[0];
-                            //   Database.Instance.SqlConnection.Insert(new Branch { branch = cty });
-                            //      Barrel.Current.Empty("country");
-                            //      ShareData.selectedCountry = cty;
-                            //      Barrel.Current.Add<string>("country", cty, new TimeSpan(10000, 0, 0, 0));
-                            // }
-
-                            if (LoginResult.items[0].Data.SalesTarget.Count > 0)
+                            dBase = "",
+                            Email = Email,
+                            Password = Password,
+                            Version = Version,
+                            Platform = Platform,
+                        };
+                        var res = await App.AppClient.Login(model);
+                        if (res.SystemCode == 200 && res.items != null)
+                        {
+                            if (res.items.Count > 0)
                             {
-                                LoginResult.items[0].Data.SalesTarget.ForEach(b =>
+                                AppDatabase.Instance.SqlConnection.DeleteAll<LoginMainModel>();
+                                AppDatabase.Instance.SqlConnection.DeleteAll<Userinfo>();
+                                AppDatabase.Instance.SqlConnection.DeleteAll<UserModules>();
+                                AppDatabase.Instance.SqlConnection.DeleteAll<ItemGroup>();
+                                AppDatabase.Instance.SqlConnection.DeleteAll<SalesTarget>();
+                                AppDatabase.Instance.SqlConnection.DeleteAll<Branch>();
+                                if (res.items[0].Data != null)
                                 {
-                                    Database.Instance.SqlConnection.Insert(
-                                        new salesTargetModule
+                                    AppDatabase.Instance.SqlConnection.Insert(res.items[0].Data);
+                                    AppDatabase.Instance.SqlConnection.Insert(res.items[0].Data?.Modules);
+                                    res.items[0].Data?.SalesTarget.ForEach(b =>
+                                    {
+                                        var model = new SalesTargetModule
                                         {
                                             StaffId = b.StaffId,
                                             Subsidiary = b.Subsidiary,
@@ -102,51 +104,79 @@ namespace wwrc_maui.Content.Viewmodels.Auth
                                             MTD = b.MTD,
                                             Default = b.Default,
                                             Country = b.Country,
-                                        });
+                                        };
+                                        AppDatabase.Instance.SqlConnection.Insert(model);
+                                        Preferences.Default.Set("subsidiary", b.Subsidiary);
+                                        Preferences.Default.Set("userId", b.Type);
+                                        Preferences.Default.Set("userTitle", b.Type);
+                                        Preferences.Default.Set("country", b.Country);
+                                    });
+                                    res.items[0].Data?.ItemGroup.ForEach(b =>
+                                    { AppDatabase.Instance.SqlConnection.Insert(new ItemGroup { item = b }); });
 
-                                    ShareData.selectedSubsidiary = b.Subsidiary;
-                                    ShareData.selectedUser = b.Type;
-                                    ShareData.selectedCountry = b.Country;
-                                    ShareData.selectedTitle = b.Type;
+                                    var _is365 = Convert.ToBoolean(res.items[0].Data?.IsOfficeCredential);
+                                    if (!_is365) { Preferences.Default.Set("email", Email); }
+                                }
 
-                                    Barrel.Current.Empty("subsidiary");
-                                    Barrel.Current.Empty("userId");
-                                    Barrel.Current.Empty("userTitle");
-                                    Barrel.Current.Empty("country");
+                                var login = new LoginMainModel { Token = res.items[0].Token };
+                                AppDatabase.Instance.SqlConnection.Insert(login);
+                                Preferences.Default.Set("login_token", res.items[0].Token);
 
-                                    Barrel.Current.Add<string>("subsidiary", b.Subsidiary, new TimeSpan(10000, 0, 0, 0));
-                                    Barrel.Current.Add<string>("userId", b.Type, new TimeSpan(10000, 0, 0, 0));
-                                    Barrel.Current.Add<string>("userTitle", b.Type, new TimeSpan(10000, 0, 0, 0));
-                                    Barrel.Current.Add<string>("country", b.Country, new TimeSpan(10000, 0, 0, 0));
-                                });
+                                //Post Token
+                                //await SendRegistrationToServer(LoginResult.items[0].Data.Id);
+                                //AppTheme appTheme = AppInfo.RequestedTheme;
+
+                                Application.Current?.Dispatcher.Dispatch(() =>
+                                { Application.Current.Windows[0].Page = new MainPage(); });
                             }
-
-                            if (LoginResult.items[0].Data.ItemGroup.Count > 0)
-                            {
-                                LoginResult.items[0].Data.ItemGroup.ForEach(b =>
-                                { Database.Instance.SqlConnection.Insert(new ItemGroup { item = b }); });
-                            }
-
-                            var token = new LoginModel { Token = LoginResult.items[0].Token };
-                            Database.Instance.SqlConnection.Insert(token);
-
-                            if (!LoginResult.items[0].Data.IsOfficeCredential)
-                            { Barrel.Current.Add<string>("email", email, new TimeSpan(10000, 0, 0, 0)); }
-
-                            //Post Token
-                            //await SendRegistrationToServer(LoginResult.items[0].Data.Id);
-                            //AppTheme appTheme = AppInfo.RequestedTheme;
-
-                            Device.BeginInvokeOnMainThread(() => Application.Current.MainPage = new NavigationPage(new BtmNavigationBar()));
                         }
+                        else await App.DisplayAlert("Error", res.SystemMessage, null, "Okay");
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        await DisplayAlert("Error", LoginResult.SystemMessage, "OK");
-                        if (Device.RuntimePlatform == Device.Android) Email_android.Focus();
-                        else if (Device.RuntimePlatform == Device.iOS) Email_ios.Focus();
+                        await App.DisplayAlert("Error", ex.Message, null, "Okay");
                     }
                 }
+            }
+        }
+
+        async void ExecuteLogin365()
+        {
+            //AuthenticationResult authResult = null;
+            try
+            {
+                //IEnumerable<IAccount> accounts = await App.PCA.GetAccountsAsync();
+                //while (accounts.Any())
+                //{
+                //    await App.PCA.RemoveAsync(accounts.FirstOrDefault());
+                //    accounts = await App.PCA.GetAccountsAsync();
+                //}
+
+                //IAccount firstAccount = accounts.FirstOrDefault();
+                //if (firstAccount != null)
+                //{
+                //    authResult = await App.PCA.AcquireTokenSilent(App.Scopes, firstAccount)
+                //    .ExecuteAsync();
+                //}
+                //else
+                //{
+                //    SystemWebViewOptions systemWebViewOptions = new SystemWebViewOptions()
+                //    { iOSHidePrivacyPrompt = true, };
+                //    authResult = await App.PCA.AcquireTokenInteractive(App.Scopes)
+                //        .WithPrompt(Prompt.ForceLogin).WithParentActivityOrWindow(App.ParentWindow)
+                //        .WithSystemWebViewOptions(systemWebViewOptions).ExecuteAsync();
+                //}
+
+                //if (authResult != null)
+                //{
+                //    var content = await GetHttpContentWithTokenAsync(authResult.AccessToken);
+                //    UpdateUserFromMicrosoft(content, authResult.AccessToken);
+                //}
+                //else DummyData(); //mark for testing
+            }
+            catch (Exception ex)
+            {
+                await App.DisplayAlert("Authentication failed: ", ex.Message, null, "Dismiss");
             }
         }
 

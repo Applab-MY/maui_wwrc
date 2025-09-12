@@ -3,10 +3,11 @@ using static wwrc_maui.Content.Model.DashboardModel;
 
 namespace wwrc_maui.Content.Views.Dashboard;
 
-public partial class CarouselCell : ContentView
+public partial class CarouselCell : StackLayout
 {
     public List<string> MenuFilter { get; set; } = [];
     public List<DashboardCarouselTemplate> MenuList { get; set; } = [];
+    public DashboardMainModel? DashboardData { get; set; } = null;
 
     public CarouselCell() { InitializeComponent(); }
 
@@ -21,6 +22,16 @@ public partial class CarouselCell : ContentView
                 var data = MenuList.Where(_item => _item.Type.Equals(item)).FirstOrDefault();
                 if (data != null)
                 {
+                    if (DashboardData != null && !string.IsNullOrEmpty(data.CountType))
+                    {
+                        var prop = DashboardData.GetType().GetProperty(data.CountType);
+                        if (prop != null)
+                        {
+                            var value = prop.GetValue(DashboardData, null);
+                            if (value != null) data.CountType = value.ToString() ?? "0";
+                        }
+                    }
+
                     var content = BuildCellView(data);
                     var countNo = BuildCountView(data);
                     if (col < 4)
@@ -43,6 +54,7 @@ public partial class CarouselCell : ContentView
 
     VerticalStackLayout BuildCellView(DashboardCarouselTemplate data)
     {
+        #region UI elements
         var style = Application.Current?.Resources["PopupPromptButton"] as Style;
         var content = new VerticalStackLayout
         {
@@ -77,6 +89,8 @@ public partial class CarouselCell : ContentView
             MaxLines = 1,
             Style = style
         };
+        #endregion
+
         content.Children.Add(imgIcon);
         content.Children.Add(lblTxt1);
         content.Children.Add(lblTxt2);
@@ -85,6 +99,8 @@ public partial class CarouselCell : ContentView
 
     Border BuildCountView(DashboardCarouselTemplate data)
     {
+        #region UI elements
+        var style = Application.Current?.Resources["PopupPromptButton"] as Style;
         var content = new Border
         {
             BackgroundColor = Colors.Red,
@@ -101,7 +117,10 @@ public partial class CarouselCell : ContentView
             TextColor = Colors.White,
             HorizontalOptions = LayoutOptions.Center,
             VerticalOptions = LayoutOptions.Center,
+            Style = style
         };
+        #endregion
+
         content.Content = lblCount;
         return content;
     }

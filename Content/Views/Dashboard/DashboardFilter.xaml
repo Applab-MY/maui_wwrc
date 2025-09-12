@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="wwrc_maui.Content.Views.Dashboard.DashboardFilter"
+             xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
+             xmlns:vm="clr-namespace:wwrc_maui.Content.Viewmodels.Dashboard"
+             xmlns:helper="clr-namespace:wwrc_maui.Content.Helper"
+             NavigationPage.HasNavigationBar="False">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <helper:InverseBoolConverter x:Key="InverseBool"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <!--content-->
+    <AbsoluteLayout HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
+        <Grid HorizontalOptions="Fill" VerticalOptions="Fill" AbsoluteLayout.LayoutFlags="All"
+              AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*" ColumnDefinitions="*"
+              RowSpacing="0" x:DataType="vm:DashboardFilterVm">
+            <!--nav bar-->
+            <controls:CustomNavigationBar IconLeft="ic_back" x:Name="navbar" Title="Filter Dashboard"/>
+            <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="Fill" Spacing="0"
+                                 Margin="20" Grid.Row="1">
+                <!--country-->
+                <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="Start" Spacing="0">
+                    <Label Text="Country" HorizontalOptions="Start" Style="{StaticResource AlertTitle}"/>
+                    <Grid x:Name="grid_country" HorizontalOptions="Fill" RowDefinitions="Auto"
+                          ColumnDefinitions="*,*,*,*" Margin="0,5,0,0" ColumnSpacing="8"/>
+                </VerticalStackLayout>
+                <BoxView HeightRequest="1" HorizontalOptions="Fill" Margin="0,30,0,5"/>
+                <!--subsidiary-->
+                <VerticalStackLayout x:Name="stack_subs" HorizontalOptions="Fill" VerticalOptions="Start"
+                                     Spacing="0">
+                    <Label Text="Subsidiary" HorizontalOptions="Start" Style="{StaticResource AlertTitle}"/>
+                    <Grid x:Name="grid_subs" HorizontalOptions="Fill" RowDefinitions="Auto" Margin="0,5,0,0"
+                          ColumnDefinitions="*,*" ColumnSpacing="8" IsVisible="{Binding IsSubsVisible}"/>
+                    <Label Text="Please select a country" HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center" LineBreakMode="WordWrap" Padding="15"
+                           IsVisible="{Binding IsSubsVisible, Converter={StaticResource InverseBool}}"/>
+                </VerticalStackLayout>
+                <BoxView HeightRequest="1" HorizontalOptions="Fill" Margin="0,30,0,5"/>
+                <!--sales person-->
+                <Grid HorizontalOptions="Fill" VerticalOptions="Start" ColumnSpacing="10" RowDefinitions="Auto"
+                      ColumnDefinitions="*,Auto">
+                    <VerticalStackLayout HorizontalOptions="Fill" Spacing="0">
+                        <Label Text="Sales Person" HorizontalOptions="Start" Style="{StaticResource AlertTitle}"/>
+                        <!--<Label Text="{Binding SalesPerson}" HorizontalOptions="Start" Style="{StaticResource PopupPromptButton}"
+                               MaxLines="1" LineBreakMode="TailTruncation" IsVisible="{Binding IsSalesVisible}"/>-->
+                        <Label Text="None selected" HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center" LineBreakMode="WordWrap" Padding="15"
+                               IsVisible="{Binding IsSalesVisible, Converter={StaticResource InverseBool}}"/>
+                    </VerticalStackLayout>
+                    <!--img : arrow-->
+                    <Image Source="{AppThemeBinding Light=ic_more, Dark=ic_more_light}" VerticalOptions="Center" 
+                           HorizontalOptions="End" Aspect="AspectFit" HeightRequest="30" Grid.Column="1"/>
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnSalesPerson_Tapped" NumberOfTapsRequired="1"/>
+                    </Grid.GestureRecognizers>
+                </Grid>
+                <Button Text="Refresh Dashboard" BackgroundColor="{StaticResource Key=Primary}"
+                        Command="{Binding RefreshCommand}" VerticalOptions="Center" Margin="0,30,0,0"/>
+                <Button Text="Clear Filter" Command="{Binding ClearFilterCommand}" VerticalOptions="Center"
+                        Style="{StaticResource BtnTertiary}" Margin="0,10,0,0"/>
+            </VerticalStackLayout>
+        </Grid>
+        <!--loading overlay-->
+        <controls:CustomLoading AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                x:Name="UiLoad" IsVisible="{Binding IsBusy}" IsAnimate="{Binding IsBusy}"/>
+    </AbsoluteLayout>
+</ContentPage>

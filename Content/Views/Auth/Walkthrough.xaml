@@ -37,8 +37,9 @@
             </CarouselView>
             <!--carousel indicator-->
             <IndicatorView x:Name="indicatorView" HorizontalOptions="Center" VerticalOptions="Center"
-                           Margin="0,20,0,40" IndicatorColor="LightGray" Grid.Row="2"
-                           SelectedIndicatorColor="Black" IndicatorsShape="Square"/>
+                    IndicatorColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}"
+                    Margin="0,20,0,40" Grid.Row="2" SelectedIndicatorColor="{StaticResource Primary}"
+                    IndicatorsShape="Circle" IndicatorSize="15"/>
             <!--btn : skip, next-->
             <Grid HorizontalOptions="Fill" VerticalOptions="End" ColumnDefinitions="Auto,*,Auto"
                   RowDefinitions="Auto" Grid.Row="3" Margin="20,0">

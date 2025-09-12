@@ -12,16 +12,20 @@ public partial class MainPage : ContentPage
     {
         InitializeComponent();
         BindingContext = viewmodel;
+        navbar.OnLeftIconTapped += OnFilter_Tapped;
         navbar.OnRightIconTapped += OnLogout_Tapped;
         viewmodel.SetupData();
     }
 
+    private async void OnFilter_Tapped()
+    { await Navigation.PushAsync(new DashboardFilter(viewmodel.DashboardData, viewmodel.FilterData)); }
+
     private async void OnLogout_Tapped()
     {
-        IsBusy = true;
-        await Task.Delay(500);
+        viewmodel.IsBusy = true;
         try
         {
+            await Task.Delay(300);
             AppDatabase.Instance.DeleteAllData();
             Preferences.Default.Clear();
             Application.Current?.Dispatcher.Dispatch(() =>
@@ -29,6 +33,7 @@ public partial class MainPage : ContentPage
         }
         catch (Exception ex)
         { await App.DisplayAlert("Error", ex.Message, null, "Okay"); }
+        viewmodel.IsBusy = false;
     }
 
     private async void OnDateCurrency_Tapped(object sender, TappedEventArgs e)

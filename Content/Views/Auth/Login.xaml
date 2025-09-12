@@ -22,10 +22,9 @@
                     <controls:CustomEntry SetText="{Binding Password}" Placeholder="Password" Ispassword="True"
                                           VerticalOptions="Center" Margin="20,10,20,0" EntryIcon="ic_password"
                                           SetWidth="{Binding EntryWidth}"/>
-                    <Button Text="LOGIN" BackgroundColor="{StaticResource Key=Primary}" Command="{Binding LoginCommand}"
-                            VerticalOptions="Center" Margin="20,30,20,0"/>
+                    <Button Text="LOGIN" Command="{Binding LoginCommand}" VerticalOptions="Center" Margin="20,30,20,0"/>
                     <Button Text="LOGIN WITH OFFICE 365" Command="{Binding Login365Command}" VerticalOptions="Center"
-                            BackgroundColor="{StaticResource Key=Secondary}" Margin="20,10,20,0"/>
+                            Style="{StaticResource BtnSecondary}" Margin="20,10,20,0"/>
                     <!--btn : forgot password-->
                     <Label Text="I Forgot My Password" HorizontalOptions="Center" VerticalOptions="Center"
                            Margin="0,20,0,0" Padding="30,10" Style="{StaticResource PopupPromptButton}">

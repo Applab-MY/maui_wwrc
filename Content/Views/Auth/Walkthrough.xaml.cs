@@ -17,7 +17,7 @@ public partial class Walkthrough : ContentPage
 
     protected override async void OnAppearing()
     {
-        IsBusy = true;
+        viewmodel.IsBusy = true;
         base.OnAppearing();
         var user = AppDatabase.Instance.SqlConnection.Query<LoginMainModel>
             ("select * from LoginMainModel").FirstOrDefault();
@@ -25,9 +25,9 @@ public partial class Walkthrough : ContentPage
         {
             await Task.Delay(500);
             Application.Current?.Dispatcher.Dispatch(() =>
-            { Application.Current.Windows[0].Page = new MainPage(); });
+            { Application.Current.Windows[0].Page = new NavigationPage(new MainPage()); });
         }
-        IsBusy = false;
+        viewmodel.IsBusy = false;
     }
 
     private async void OnSkip_Tapped(object sender, TappedEventArgs e)

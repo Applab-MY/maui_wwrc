@@ -45,7 +45,7 @@ public partial class TabCell : ContentView
         {
             img_icon.Source = ImgSelected;
             lbl_title.Style = style;
-            img_icon.Scale = 1.3;
+            img_icon.Scale = 1.4;
         }
     }
     public void UpdateTitle(string data) { lbl_title.Text = data; }

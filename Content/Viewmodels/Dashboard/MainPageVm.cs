@@ -1,4 +1,4 @@
-﻿using AndroidX.Browser.Trusted.Sharing;
+﻿using System.Collections.ObjectModel;
 using wwrc_maui.Content.Model;
 using wwrc_maui.Content.Viewmodels.Common;
 using wwrc_maui.Content.Views.Auth;
@@ -28,14 +28,8 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
         private string _ytdDetails = "";
         private string _mtdDetails = "";
         private double _entryWidth = 0.0;
-        private string _countStockAlert = "";
-        private string _countNewsAlert = "";
-        private string _countEmpHandbookAlert = "";
-        private string _countProductAlert = "";
-        private string _countMediaAlert = "";
-        private List<string> _carouselItems = [];
+        private ObservableCollection<string> _carouselItems = [];
         private DataTemplateSelector? _templateSelector = null;
-        private List<DashboardCarouselTemplate> _menuList = [];
         #endregion
         #region properties
         public string Version
@@ -113,32 +107,7 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
             get { return _entryWidth; }
             set { SetProperty(ref _entryWidth, value); }
         }
-        public string CountStockAlert
-        {
-            get { return _countStockAlert; }
-            set { SetProperty(ref _countStockAlert, value); }
-        }
-        public string CountNewsAlert
-        {
-            get { return _countNewsAlert; }
-            set { SetProperty(ref _countNewsAlert, value); }
-        }
-        public string CountEmpHandbookAlert
-        {
-            get { return _countEmpHandbookAlert; }
-            set { SetProperty(ref _countEmpHandbookAlert, value); }
-        }
-        public string CountProductAlert
-        {
-            get { return _countProductAlert; }
-            set { SetProperty(ref _countProductAlert, value); }
-        }
-        public string CountMediaAlert
-        {
-            get { return _countMediaAlert; }
-            set { SetProperty(ref _countMediaAlert, value); }
-        }
-        public List<string> CarouselItems
+        public ObservableCollection<string> CarouselItems
         {
             get { return _carouselItems; }
             set { SetProperty(ref _carouselItems, value); }
@@ -148,15 +117,12 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
             get { return _templateSelector; }
             set { SetProperty(ref _templateSelector, value); }
         }
-        public List<DashboardCarouselTemplate> MenuList
-        {
-            get { return _menuList; }
-            set { SetProperty(ref _menuList, value); }
-        }
         #endregion
         #endregion
 
         public Command? RefreshCommand { get; set; } = null;
+        public DashboardMainModel? DashboardData = null;
+        public FilterDataModel? FilterData = null;
         public bool IsDisplayGraph = false;
         public bool IsDisplayCurrency = false;
 
@@ -171,6 +137,8 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
 
         public async void SetupData()
         {
+            IsBusy = true; IsRefreshing = true;
+            FlagIcon = "ic_uncheck";
             var _login = AppDatabase.Instance.SqlConnection.Query<LoginMainModel>
                 ("Select * from LoginMainModel").FirstOrDefault();
             if (_login != null && _login.UserData != null)
@@ -185,6 +153,28 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
             await GetDashboardData();
             await GetCurrencyData();
             SetupCarouselMenu();
+
+            var _dbSalesTarget = AppDatabase.Instance.SqlConnection.Query<SalesTargetModule>
+                ("Select * from SalesTargetModule").FirstOrDefault();
+            var _dbBranch = AppDatabase.Instance.SqlConnection.Query<Branch>
+                ("Select * from Branch").FirstOrDefault();
+            var _userid = Preferences.Default.Get("userId", "");
+            var _country = Preferences.Default.Get("country", "");
+            var _subs = Preferences.Default.Get("subsidiary", "");
+            if (string.IsNullOrWhiteSpace(_userid)) { _userid = _dbSalesTarget?.Type; }
+            if (string.IsNullOrWhiteSpace(_country)) { _country = _dbBranch?.branch; }
+            if (string.IsNullOrWhiteSpace(_subs)) { _subs = _dbSalesTarget?.Subsidiary; }
+
+            Subsidiary = _subs ?? "";
+            IsSubsidiaryVisible = !string.IsNullOrEmpty(_subs);
+            FilterData = new FilterDataModel
+            {
+                Country = _country ?? "",
+                Subsidiary = _subs ?? "",
+                UserId = _userid ?? "",
+                UserName = _userid ?? "",
+            };
+            IsBusy = false; IsRefreshing = false;
         }
 
         private async Task GetDashboardData()
@@ -230,15 +220,9 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
                         Preferences.Default.Set("dashb-ytdGP", items.GPPYTD);
                     }
 
-                    CountStockAlert = items.StockAlertCount.ToString();
-                    CountNewsAlert = items.NewsCount.ToString();
-                    CountEmpHandbookAlert = items.HandbookCount.ToString();
-                    CountProductAlert = items.CatalogCount.ToString();
                     var total = items.PhotoCount + items.VideoCount;
-                    CountMediaAlert = total.ToString();
                     items.TotalMediaCount = total.ToString();
-
-                    //RenderIconItems(country, subsidiary, ShareData.selectedUser); //Preferences.Default.Get("userId", "");
+                    DashboardData = items;
                 }
                 if (_res.SystemCode == 0)
                 { await App.DisplayAlert("API Error", "Please contact system admin", null, "Okay"); }
@@ -247,8 +231,6 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
 
         private async Task GetCurrencyData()
         {
-            Subsidiary = Preferences.Default.Get("subsidiary", "");
-            IsSubsidiaryVisible = !string.IsNullOrEmpty(Subsidiary);
             if (IsDisplayCurrency && App.AppClient != null)
             {
                 UsdRate = "-";
@@ -259,14 +241,7 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
                     Date = DateTime.Now.ToString("yyyy-MM-dd")
                 };
                 var _res = await App.AppClient.GetCurrency(model);
-                if (_res.SystemCode == 401)
-                {
-                    AppDatabase.Instance.DeleteAllData();
-                    Preferences.Default.Clear();
-                    await App.DisplayAlert("Relogin", "Please login again", null, "Okay");
-                    Application.Current?.Dispatcher.Dispatch(() =>
-                    { Application.Current.Windows[0].Page = new Login(); });
-                }
+                if (_res.SystemCode == 401) { }
                 if (_res.SystemCode == 200 && _res.items != null)
                 {
                     foreach (var item in _res.items.ExchangeRate)
@@ -284,7 +259,88 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
 
         private void SetupCarouselMenu()
         {
-            MenuList =
+            var _login = AppDatabase.Instance.SqlConnection.Query<LoginMainModel>
+                ("Select * from LoginMainModel").FirstOrDefault();
+            string[] menuList = [
+                "StockAlert",
+                "CustomerAging",
+                "SalesOrder",
+                "PurchaseOrder",
+                "CustomerVisit",
+                "StaffDirectory",
+                "News",
+                "MediaGallery",
+                "EmployeeHandbook",
+                "ProductCatalogue"
+            ];
+
+            #region filter menu by user module
+            var filtered = new List<string>();
+            var properties = typeof(UserModules).GetProperties();
+            var _userModules = new UserModules();
+            if (_login != null) _userModules = _login.UserData?.UserModules;
+            foreach (var item in menuList)
+            {
+                foreach (var property in properties)
+                {
+                    if (item.Equals(property.Name))
+                    {
+                        var exist = Convert.ToBoolean(property.GetValue(_userModules, null));
+                        if (exist) filtered.Add(property.Name);
+                    }
+                }
+            }
+            filtered.Add("MyProfile");
+            if (_login != null)
+            {
+                var myProfile = _login?.UserData;
+                if (myProfile != null && !myProfile.IsOfficeCredential)
+                    filtered.Add("ResetPassword");
+            }
+            #endregion
+            #region set view item template
+            DataTemplate? cell1, cell2 = null;
+            CarouselItems.Add("1");
+            if (filtered.Count <= 8)
+            {
+                cell1 = new DataTemplate(() =>
+                {
+                    var _view = new CarouselCell
+                    { MenuFilter = filtered, MenuList = CarouselDataSource(), DashboardData = DashboardData };
+                    _view.BuildView();
+                    return _view;
+                });
+            }
+            else
+            {
+                var _page1 = new List<string>();
+                var _page2 = new List<string>();
+                for (int a = 0; a < 8; a++) _page1.Add(filtered[a]);
+                for (int a = 8; a < filtered.Count; a++) _page2.Add(filtered[a]);
+
+                cell1 = new DataTemplate(() =>
+                {
+                    var _view = new CarouselCell
+                    { MenuFilter = _page1, MenuList = CarouselDataSource(), DashboardData = DashboardData };
+                    _view.BuildView();
+                    return _view;
+                });
+                cell2 = new DataTemplate(() =>
+                {
+                    var _view = new CarouselCell
+                    { MenuFilter = _page2, MenuList = CarouselDataSource(), DashboardData = DashboardData };
+                    _view.BuildView();
+                    return _view;
+                });
+                CarouselItems.Add("2");
+            }
+            TemplateSelector = new DashBoardDataTemplate { FirstTemplate = cell1, SecondTemplate = cell2 };
+            #endregion
+        }
+
+        private static List<DashboardCarouselTemplate> CarouselDataSource()
+        {
+            return
             [
                 new DashboardCarouselTemplate()
                 {
@@ -381,88 +437,8 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
                     SecondLabel = "Password",
                     Type = "ResetPassword",
                     CountType = ""
-                },
-            ];
-            var _login = AppDatabase.Instance.SqlConnection.Query<LoginMainModel>
-                ("Select * from LoginMainModel").FirstOrDefault();
-
-            string[] menuList = [
-                "StockAlert",
-                "CustomerAging",
-                "SalesOrder",
-                "PurchaseOrder",
-                "CustomerVisit",
-                "StaffDirectory",
-                "News",
-                "MediaGallery",
-                "EmployeeHandbook",
-                "ProductCatalogue"
-            ];
-
-            #region filter menu by user module
-            var filtered = new List<string>();
-            var properties = typeof(UserModules).GetProperties();
-            var _userModules = new UserModules();
-            if (_login != null) _userModules = _login.UserData?.UserModules;
-            foreach (var item in menuList)
-            {
-                foreach (var property in properties)
-                {
-                    if (item.Equals(property.Name))
-                    {
-                        var exist = Convert.ToBoolean(property.GetValue(_userModules, null));
-                        if (exist) filtered.Add(property.Name);
-                    }
                 }
-            }
-            filtered.Add("MyProfile");
-            if (_login != null)
-            {
-                var myProfile = _login?.UserData;
-                if (myProfile != null && !myProfile.IsOfficeCredential)
-                    filtered.Add("ResetPassword");
-            }
-            #endregion
-            #region set view item template
-            var firstTemplate = new DataTemplate();
-            var secondTemplate = new DataTemplate();
-            CarouselItems = [];
-            CarouselItems.Add("1");
-
-            if (filtered.Count <= 8)
-            {
-                firstTemplate = new DataTemplate(() =>
-                {
-                    var cell = new CarouselCell { MenuFilter = filtered, MenuList = MenuList };
-                    cell.BuildView();
-                    return cell;
-                });
-            }
-            else
-            {
-                CarouselItems.Add("2");
-                var _page1 = new List<string>();
-                var _page2 = new List<string>();
-                for (int a = 0; a < 8; a++) _page1.Add(filtered[a]);
-                for (int a = 8; a < filtered.Count; a++) _page2.Add(filtered[a]);
-
-                firstTemplate = new DataTemplate(() =>
-                {
-                    var cell = new CarouselCell { MenuFilter = _page1, MenuList = MenuList };
-                    cell.BuildView();
-                    return cell;
-                });
-                secondTemplate = new DataTemplate(() =>
-                {
-                    var cell = new CarouselCell { MenuFilter = _page2, MenuList = MenuList };
-                    cell.BuildView();
-                    return cell;
-                });
-            }
-
-            TemplateSelector = new DashBoardDataTemplate
-            { FirstTemplate = firstTemplate, SecondTemplate = secondTemplate };
-            #endregion
+            ];
         }
     }
 }

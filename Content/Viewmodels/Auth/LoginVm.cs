@@ -59,6 +59,8 @@ namespace wwrc_maui.Content.Viewmodels.Auth
 
         public async void ExecuteLogin()
         {
+            IsBusy = true;
+            await Task.Delay(300);
             if (string.IsNullOrEmpty(Email))
                 await App.DisplayAlert("Empty", "Please insert your email", null, "Okay");
             else if (string.IsNullOrEmpty(Password))
@@ -127,7 +129,7 @@ namespace wwrc_maui.Content.Viewmodels.Auth
                                 //AppTheme appTheme = AppInfo.RequestedTheme;
 
                                 Application.Current?.Dispatcher.Dispatch(() =>
-                                { Application.Current.Windows[0].Page = new MainPage(); });
+                                { Application.Current.Windows[0].Page = new NavigationPage(new MainPage()); });
                             }
                         }
                         else await App.DisplayAlert("Error", res.SystemMessage, null, "Okay");
@@ -138,6 +140,7 @@ namespace wwrc_maui.Content.Viewmodels.Auth
                     }
                 }
             }
+            IsBusy = false;
         }
 
         async void ExecuteLogin365()

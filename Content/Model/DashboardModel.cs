@@ -8,21 +8,14 @@ namespace wwrc_maui.Content.Model
     public class DashboardModel
     {
         #region dashboard sales person
-        public class SalesPersonList
+        public class SalesPersonList : INotifyPropertyChanged
         {
             public string Id { get; set; } = "";
             public string Title { get; set; } = "";
             public string Position { get; set; } = "";
             public string ProfileImage { get; set; } = "";
-        }
 
-        public class SalesPersonChecked : INotifyPropertyChanged
-        {
             private bool _checked;
-            public string Id { get; set; } = "";
-            public string Title { get; set; } = "";
-            public string Position { get; set; } = "";
-            public string ProfileImage { get; set; } = "";
             public bool Checked
             {
                 get { return _checked; }

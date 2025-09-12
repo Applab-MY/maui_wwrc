@@ -141,6 +141,7 @@ public partial class CustomNavigationBar : ContentView
         var _view = (StackLayout)sender;
         await _view.ScaleTo(0.9, 100);
         _view.Scale = 1;
+        OnRightIconTapped?.Invoke();
     }
 
     async void OnBadgeNo_Tapped(object sender, EventArgs e)

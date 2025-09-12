@@ -107,6 +107,7 @@ public partial class CustomEntry : Grid
     #endregion
     #endregion
 
+    public Action<string>? OnTextChanged = null;
     bool _isPwdTapped = true;
 
     public CustomEntry() { InitializeComponent(); }
@@ -137,5 +138,6 @@ public partial class CustomEntry : Grid
     {
         if (sender is not Entry) return;
         SetText = e.NewTextValue; //to send back to binding vm
+        OnTextChanged?.Invoke(e.NewTextValue);
     }
 }

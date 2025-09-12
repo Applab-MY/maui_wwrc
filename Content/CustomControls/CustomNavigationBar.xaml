@@ -5,8 +5,8 @@
              xmlns:base="clr-namespace:wwrc_maui.Content.CustomControls.Base"
              HorizontalOptions="Fill">
     
-    <Grid HorizontalOptions="Fill" ColumnSpacing="0" x:Name="grid_bar" RowDefinitions="45"
-          BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource OffBlack}}"
+    <Grid HorizontalOptions="Fill" ColumnSpacing="0" x:Name="grid_bar" RowDefinitions="Auto"
+          BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource OffBlack}}"
           ColumnDefinitions="Auto,*,Auto">
         <!--col 1 btn: side menu-->
         <StackLayout x:Name="stack_topleft" Padding="15" HorizontalOptions="Start" IsVisible="False"
@@ -22,7 +22,7 @@
                HorizontalOptions="Center"/>
         <!--col 2 img : logo-->
         <Image x:Name="img_center" HorizontalOptions="Center" Aspect="AspectFit" Grid.Column="1"
-               VerticalOptions="Center" MaximumHeightRequest="35"/>
+               VerticalOptions="Center" HeightRequest="35"/>
         <!--col 3 toolbar-->
         <StackLayout x:Name="stack_topright" Padding="15" HorizontalOptions="Start"
                      VerticalOptions="Center" Grid.Column="2">

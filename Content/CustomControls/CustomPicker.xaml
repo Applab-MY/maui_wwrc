@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="wwrc_maui.Content.CustomControls.CustomPicker"
+             xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls.Base"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:helper="clr-namespace:wwrc_maui.Content.Helper">
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <toolkit:IsStringNullOrEmptyConverter x:Key="IsStringNullConverter" />
+            <helper:InverseBoolConverter x:Key="InverseBoolConverter"/>
+        </ResourceDictionary>
+    </ContentView.Resources>
+    <!--base-->
+    <Border x:Name="border_" StrokeShape="RoundRectangle 10">
+        <!--content-->
+        <Grid ColumnSpacing="10" Padding="15,0" HorizontalOptions="Fill"
+              ColumnDefinitions="*, Auto" RowDefinitions="Auto">
+            <!--lbl : title-->
+            <Label x:Name="lbl_title" VerticalOptions="Center" HorizontalOptions="Fill"
+                   HorizontalTextAlignment="Start" VerticalTextAlignment="Center"
+                   LineBreakMode="TailTruncation" MaxLines="1"
+                   FontAttributes="Italic" HeightRequest="50"
+                   TextColor="LightGray"/>
+            <!--hidden : id-->
+            <controls:BorderlessEntry x:Name="entry_selected" TextChanged="entrySelected_TextChanged"
+                                      IsVisible="False"/>
+            <!--lbl : selected-->
+            <Label x:Name="lbl_selected" VerticalOptions="Center" HorizontalOptions="Fill"
+                   HorizontalTextAlignment="Start" VerticalTextAlignment="Center"
+                   LineBreakMode="TailTruncation" MaxLines="1" HeightRequest="50"
+                   IsVisible="False"/>
+            <!--img right-side-->
+            <Image Source="ic_dropdown" WidthRequest="30" HeightRequest="30" Aspect="AspectFit"
+                   x:Name="img_dropdown" VerticalOptions="Center" Grid.Column="1"
+                   HorizontalOptions="End"/>
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnPicker_Tapped" NumberOfTapsRequired="1"/>
+            </Grid.GestureRecognizers>
+        </Grid>
+    </Border>
+</ContentView>

@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.Metrics;
-using wwrc_maui.Content.Viewmodels.Common;
+﻿using wwrc_maui.Content.Viewmodels.Common;
 using static wwrc_maui.Content.Model.DashboardModel;
 
 namespace wwrc_maui.Content.Viewmodels.Dashboard
@@ -8,15 +7,19 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
     {
         #region bindable properties
         #region beans
-        private List<string> _salesPerson = [];
+        private string _salesPerson = "";
         private bool _isSubsVisible = false;
         private bool _isSalesVisible = false;
         #endregion
         #region properties
-        public List<string> SalesPerson
+        public string SalesPerson
         {
             get { return _salesPerson; }
-            set { SetProperty(ref _salesPerson, value); }
+            set
+            {
+                SetProperty(ref _salesPerson, value);
+                IsSalesVisible = !string.IsNullOrEmpty(value);
+            }
         }
         public bool IsSubsVisible
         {

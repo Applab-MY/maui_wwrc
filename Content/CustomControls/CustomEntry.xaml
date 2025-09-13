@@ -17,8 +17,9 @@
                 </StackLayout.GestureRecognizers>
             </StackLayout>
             <!--entry-->
-            <controls:BorderlessEntry x:Name="entry_" VerticalOptions="Center"
-                                      TextChanged="OnEntry_TextChanged"/>
+            <controls:BorderlessEntry x:Name="entry_" VerticalOptions="Center" TextChanged="OnEntry_TextChanged"
+                    TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                    PlaceholderColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}"/>
             <!--img right-side-->
             <StackLayout x:Name="stack_right" HorizontalOptions="End" VerticalOptions="Center"
                          Padding="10,5,15,5" IsVisible="False" Spacing="0">

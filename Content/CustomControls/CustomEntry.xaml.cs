@@ -1,3 +1,4 @@
+using CommunityToolkit.Maui.Behaviors;
 using Microsoft.Maui.Controls.Shapes;
 
 namespace wwrc_maui.Content.CustomControls;
@@ -56,7 +57,10 @@ public partial class CustomEntry : Grid
     public void UpdatePlaceholder(string data) { entry_.Placeholder = data; }
     public void UpdateEntryIcon(string data)
     {
+        var _theme = Application.Current?.RequestedTheme;
+        var tint = new IconTintColorBehavior { TintColor = _theme == AppTheme.Light ? Colors.Black : Colors.White };
         img_left.Source = data;
+        img_left.Behaviors.Add(tint);
         stack_left.IsVisible = !string.IsNullOrEmpty(data);
         SetEntrySize();
     }

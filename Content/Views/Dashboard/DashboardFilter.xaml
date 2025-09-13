@@ -43,8 +43,9 @@
                       ColumnDefinitions="*,Auto">
                     <VerticalStackLayout HorizontalOptions="Fill" Spacing="0">
                         <Label Text="Sales Person" HorizontalOptions="Start" Style="{StaticResource AlertTitle}"/>
-                        <!--<Label Text="{Binding SalesPerson}" HorizontalOptions="Start" Style="{StaticResource PopupPromptButton}"
-                               MaxLines="1" LineBreakMode="TailTruncation" IsVisible="{Binding IsSalesVisible}"/>-->
+                        <Label Text="{Binding SalesPerson}" HorizontalOptions="Start" Style="{StaticResource PopupPromptButton}"
+                               MaxLines="1" LineBreakMode="TailTruncation" IsVisible="{Binding IsSalesVisible}"
+                               Padding="0,5"/>
                         <Label Text="None selected" HorizontalOptions="Center"
                                HorizontalTextAlignment="Center" LineBreakMode="WordWrap" Padding="15"
                                IsVisible="{Binding IsSalesVisible, Converter={StaticResource InverseBool}}"/>

@@ -1,6 +1,7 @@
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Maui.Controls.Shapes;
-using System.Collections.ObjectModel;
 using wwrc_maui.Content.Viewmodels.Dashboard;
+using static wwrc_maui.Content.Helper.ReferenceMessenger;
 using static wwrc_maui.Content.Model.DashboardModel;
 
 namespace wwrc_maui.Content.Views.Dashboard;
@@ -8,6 +9,7 @@ namespace wwrc_maui.Content.Views.Dashboard;
 public partial class DashboardFilter : ContentPage
 {
     DashboardFilterVm viewmodel = new();
+    FilterSalesPersonView salesView = new();
 
     public DashboardFilter(DashboardMainModel? model = null, FilterDataModel? filterModel = null)
     {
@@ -17,9 +19,19 @@ public partial class DashboardFilter : ContentPage
         viewmodel.FilterModel = filterModel;
         BindingContext = viewmodel;
 
+        #region vm actions
         viewmodel.OnClearFilterTap += async () =>
-        { SetupView(); await Task.Delay(500); await Navigation.PopAsync(); };
-        viewmodel.OnRefreshTap += async () => { await Navigation.PopAsync(); };
+        {
+            SetupView(); await Task.Delay(500);
+            await Navigation.PopAsync();
+            WeakReferenceMessenger.Default.Send(new StringNotify("RefreshDashboardFilterModel"));
+        };
+        viewmodel.OnRefreshTap += async () =>
+        {
+            await Navigation.PopAsync();
+            WeakReferenceMessenger.Default.Send(new StringNotify("RefreshDashboardFilterModel"));
+        };
+        #endregion
     }
 
     protected override void OnAppearing()
@@ -39,13 +51,18 @@ public partial class DashboardFilter : ContentPage
             BuildCountryList(viewmodel.FilterModel.Country);
             viewmodel.SetupSubsidiary(viewmodel.FilterModel.Country);
             if (viewmodel.FilterModel != null && !string.IsNullOrEmpty(viewmodel.FilterModel.Subsidiary))
-            { BuildSubsidiaryList(viewmodel.FilterModel.Subsidiary); }
+            {
+                BuildSubsidiaryList(viewmodel.FilterModel.Subsidiary);
+                viewmodel.SetupSalesList(viewmodel.FilterModel.Country, viewmodel.FilterModel.Subsidiary);
+                salesView = new FilterSalesPersonView { Itemsource = viewmodel.SalesList };
+            }
             else BuildSubsidiaryList();
         }
         else BuildCountryList();
 
         if (viewmodel.FilterModel != null && !string.IsNullOrEmpty(viewmodel.FilterModel.UserId))
-        { viewmodel.IsSalesVisible = !string.IsNullOrEmpty(viewmodel.FilterModel.UserId); }
+        { viewmodel.SalesPerson = viewmodel.FilterModel.UserId; }
+        else viewmodel.SalesPerson = "";
     }
 
     #region UI elements
@@ -238,8 +255,8 @@ public partial class DashboardFilter : ContentPage
                 if (viewmodel.FilterModel != null)
                 {
                     viewmodel.FilterModel.Subsidiary = txt.Text;
-                    viewmodel.SetupSalesList(viewmodel.FilterModel.Country,
-                        viewmodel.FilterModel.Subsidiary);
+                    viewmodel.SetupSalesList(viewmodel.FilterModel.Country, viewmodel.FilterModel.Subsidiary);
+                    salesView = new FilterSalesPersonView { Itemsource = viewmodel.SalesList };
                 }
             }
         }
@@ -257,20 +274,25 @@ public partial class DashboardFilter : ContentPage
             await App.DisplayAlert("Info", "Please select a subsidiary.", null, "Okay");
         else
         {
-            var _view = new FilterSalesPersonView
-            { Itemsource = viewmodel.SalesList };
             void closeAction(bool okay)
             {
                 if (okay)
                 {
-                    if (_view.Selected != null)
+                    if (salesView.Selected != null)
                     {
-                        viewmodel.FilterModel!.UserId = _view.Selected.Id;
-                        viewmodel.FilterModel!.UserName = _view.Selected.Id;
+                        viewmodel.FilterModel!.UserId = salesView.Selected.Id;
+                        viewmodel.FilterModel!.UserName = salesView.Selected.Id;
+                        viewmodel.SalesPerson = salesView.Selected.Title;
                     }
                 }
+                else
+                {
+                    // for reset all checked item
+                    foreach (var item in salesView.Itemsource)
+                    { item.Checked = false; }
+                }
             }
-            await App.DisplayAlert("Sales Person", null, _view, "Okay", "Cancel", closeAction);
+            await App.DisplayAlert("Sales Person", null, salesView, "Okay", "Cancel", closeAction);
         }
     }
     #endregion

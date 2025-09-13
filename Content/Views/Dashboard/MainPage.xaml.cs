@@ -1,6 +1,8 @@
+using CommunityToolkit.Mvvm.Messaging;
 using wwrc_maui.Content.Model;
 using wwrc_maui.Content.Viewmodels.Dashboard;
 using wwrc_maui.Content.Views.Auth;
+using static wwrc_maui.Content.Helper.ReferenceMessenger;
 
 namespace wwrc_maui.Content.Views.Dashboard;
 
@@ -15,6 +17,12 @@ public partial class MainPage : ContentPage
         navbar.OnLeftIconTapped += OnFilter_Tapped;
         navbar.OnRightIconTapped += OnLogout_Tapped;
         viewmodel.SetupData();
+
+        WeakReferenceMessenger.Default.Register<StringNotify>(this, (receiver, message) =>
+        {
+            if (message.Value != null && message.Value.Equals("RefreshDashboardFilterModel"))
+            { viewmodel.SetupData(); }
+        });
     }
 
     private async void OnFilter_Tapped()

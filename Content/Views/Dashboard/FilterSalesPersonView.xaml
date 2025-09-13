@@ -5,8 +5,8 @@
              xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
              xmlns:model="clr-namespace:wwrc_maui.Content.Model">
     <Grid HorizontalOptions="Fill" RowDefinitions="Auto,*" ColumnDefinitions="*"
-          RowSpacing="10">
-        <controls:CustomEntry x:Name="entry_search" Placeholder="Search Sales Person" SetText="{Binding SearchText}"
+          RowSpacing="10" VerticalOptions="Fill">
+        <controls:CustomEntry x:Name="entry_search" Placeholder="Search Sales Person"
                 VerticalOptions="Center" Margin="0" EntryIcon="ic_search" Grid.Row="0"/>
         <ListView HorizontalOptions="Fill" VerticalOptions="Start" HasUnevenRows="True" Grid.Row="1"
                   SeparatorVisibility="None" ItemsSource="{Binding Itemsource}"

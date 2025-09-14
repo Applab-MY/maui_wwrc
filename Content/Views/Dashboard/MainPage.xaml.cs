@@ -49,5 +49,6 @@ public partial class MainPage : ContentPage
         if (sender is not Grid view) return;
         await view.FadeTo(0.3, 200);
         view.Opacity = 1;
+        await Navigation.PushAsync(new CurrencyExchangeRate());
     }
 }

@@ -5,17 +5,5 @@
              HorizontalOptions="Fill" VerticalOptions="Fill">
     <Grid x:Name="grid_cell" HorizontalOptions="Fill" VerticalOptions="Fill"
           RowDefinitions="Auto,Auto" ColumnDefinitions="*,*,*,*"
-          RowSpacing="10" ColumnSpacing="8">
-        <!--#region row 1-->
-        <!--column 1-->
-        <!--<VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="0">
-            <Image Source="{Binding }" Aspect="AspectFit" HorizontalOptions="Center"
-                   VerticalOptions="Center"/>
-            <Label Text="{Binding }" HorizontalOptions="Center" VerticalOptions="Center"
-                   MaxLines="2" LineBreakMode="TailTruncation"/>
-        </VerticalStackLayout>-->
-        <!--#endregion-->
-        <!--#region row 2-->
-        <!--#endregion-->
-    </Grid>
+          RowSpacing="10" ColumnSpacing="8"/>
 </StackLayout>

@@ -16,7 +16,7 @@
                     <ViewCell>
                         <VerticalStackLayout Spacing="0">
                             <Grid HorizontalOptions="Fill" ColumnSpacing="10" Padding="0,8"
-                                  RowDefinitions="Auto" ColumnDefinitions="AUto,*,Auto">
+                                  RowDefinitions="Auto" ColumnDefinitions="Auto,*,Auto">
                                 <controls:CustomCircleImg ImgFromSource="{Binding ProfileImage}" HorizontalOptions="Start"
                                                           SetSize="40" ImgAspect="AspectFit" Grid.Column="0"/>
                                 <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Fill"

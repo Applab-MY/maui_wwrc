@@ -18,6 +18,7 @@
               RowSpacing="0" x:DataType="vm:DashboardFilterVm">
             <!--nav bar-->
             <controls:CustomNavigationBar IconLeft="ic_back" x:Name="navbar" Title="Filter Dashboard"/>
+            <BoxView HorizontalOptions="Fill" VerticalOptions="End" Style="{StaticResource BoxviewNavbar}"/>
             <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="Fill" Spacing="0"
                                  Margin="20" Grid.Row="1">
                 <!--country-->

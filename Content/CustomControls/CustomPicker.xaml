@@ -12,31 +12,36 @@
         </ResourceDictionary>
     </ContentView.Resources>
     <!--base-->
-    <Border x:Name="border_" StrokeShape="RoundRectangle 10">
-        <!--content-->
-        <Grid ColumnSpacing="10" Padding="15,0" HorizontalOptions="Fill"
-              ColumnDefinitions="*, Auto" RowDefinitions="Auto">
-            <!--lbl : title-->
-            <Label x:Name="lbl_title" VerticalOptions="Center" HorizontalOptions="Fill"
-                   HorizontalTextAlignment="Start" VerticalTextAlignment="Center"
-                   LineBreakMode="TailTruncation" MaxLines="1"
-                   FontAttributes="Italic" HeightRequest="50"
-                   TextColor="LightGray"/>
-            <!--hidden : id-->
-            <controls:BorderlessEntry x:Name="entry_selected" TextChanged="entrySelected_TextChanged"
-                                      IsVisible="False"/>
-            <!--lbl : selected-->
-            <Label x:Name="lbl_selected" VerticalOptions="Center" HorizontalOptions="Fill"
-                   HorizontalTextAlignment="Start" VerticalTextAlignment="Center"
-                   LineBreakMode="TailTruncation" MaxLines="1" HeightRequest="50"
-                   IsVisible="False"/>
-            <!--img right-side-->
-            <Image Source="ic_dropdown" WidthRequest="30" HeightRequest="30" Aspect="AspectFit"
-                   x:Name="img_dropdown" VerticalOptions="Center" Grid.Column="1"
-                   HorizontalOptions="End"/>
-            <Grid.GestureRecognizers>
-                <TapGestureRecognizer Tapped="OnPicker_Tapped" NumberOfTapsRequired="1"/>
-            </Grid.GestureRecognizers>
-        </Grid>
-    </Border>
+    <Grid>
+        <Border x:Name="border_" StrokeShape="RoundRectangle 10">
+            <!--content-->
+            <Grid ColumnSpacing="10" Padding="15,0" HorizontalOptions="Fill"
+                  ColumnDefinitions="*, Auto" RowDefinitions="Auto">
+                <!--lbl : title-->
+                <Label x:Name="lbl_title" VerticalOptions="Center" HorizontalOptions="Fill"
+                       HorizontalTextAlignment="Start" VerticalTextAlignment="Center"
+                       LineBreakMode="TailTruncation" MaxLines="1"
+                       FontAttributes="Italic" HeightRequest="50"
+                       TextColor="LightGray"/>
+                <!--hidden : id-->
+                <controls:BorderlessEntry x:Name="entry_selected" TextChanged="entrySelected_TextChanged"
+                                          IsVisible="False"/>
+                <!--lbl : selected-->
+                <Label x:Name="lbl_selected" VerticalOptions="Center" HorizontalOptions="Fill"
+                       HorizontalTextAlignment="Start" VerticalTextAlignment="Center"
+                       LineBreakMode="TailTruncation" MaxLines="1" HeightRequest="50"
+                       IsVisible="False"/>
+                <!--img right-side-->
+                <Image Source="ic_dropdown" WidthRequest="30" HeightRequest="30" Aspect="AspectFit"
+                       x:Name="img_dropdown" VerticalOptions="Center" Grid.Column="1"
+                       HorizontalOptions="End"/>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnPicker_Tapped" NumberOfTapsRequired="1"/>
+                </Grid.GestureRecognizers>
+            </Grid>
+        </Border>
+        <Label Style="{StaticResource PopupPromptButton}" HorizontalOptions="Start" x:Name="lbl_title2"
+               LineBreakMode="TailTruncation" HorizontalTextAlignment="Start" FontSize="12"
+               IsVisible="False"/>
+    </Grid>
 </ContentView>

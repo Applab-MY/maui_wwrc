@@ -1,6 +1,8 @@
 using MauiPopup;
 using MauiPopup.Views;
+using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Shapes;
+using System.Collections.ObjectModel;
 
 namespace wwrc_maui.Content.CustomControls;
 
@@ -8,6 +10,11 @@ public partial class CustomPicker : ContentView
 {
     #region bindables
     #region custom properties
+    public bool NoCustomView
+    {
+        get => (bool)GetValue(NoCustomViewProperty);
+        set { SetValue(NoCustomViewProperty, value); }
+    }
     public string Title
     {
         get => (string)GetValue(TitleProperty);
@@ -30,6 +37,9 @@ public partial class CustomPicker : ContentView
     }
     #endregion
     #region bindable properties
+    public static BindableProperty NoCustomViewProperty =
+        BindableProperty.Create(nameof(NoCustomView), typeof(bool), typeof(CustomPicker), defaultValue: false,
+            propertyChanged: (bindable, oldVal, newVal) => { ((CustomPicker)bindable).UpdateNoCustomView((bool)newVal); });
     public static BindableProperty TitleProperty =
         BindableProperty.Create(nameof(Title), typeof(string), typeof(CustomPicker), defaultValue: string.Empty,
             propertyChanged: (bindable, oldVal, newVal) => { ((CustomPicker)bindable).UpdateTitle((string)newVal); });
@@ -45,7 +55,16 @@ public partial class CustomPicker : ContentView
             propertyChanged: (bindable, oldVal, newVal) => { ((CustomPicker)bindable).UpdateCornerRadius((int)newVal); });
     #endregion
     #region binding implementation
-    public void UpdateTitle(string data) { lbl_title.Text = data; }
+    public void UpdateNoCustomView(bool data)
+    {
+        border_.IsVisible = !data;
+        lbl_title2.IsVisible = data;
+    }
+    public void UpdateTitle(string data)
+    {
+        lbl_title.Text = data;
+        lbl_title2.Text = data;
+    }
     public void UpdateItemsSource(List<string> data)
     {
         var view = BuildPickerView(data);
@@ -57,6 +76,9 @@ public partial class CustomPicker : ContentView
             Margin = new Thickness(30, 50),
             IsCloseOnBackgroundClick = false,
         };
+        //action to open popup from code behind, not from tap gesture
+        OpenPicker += async () =>
+        { if (pickerView != null) await PopupAction.DisplayPopup(pickerView); };
     }
     public void UpdateSelectedItem(string data) { entry_selected.Text = data; }
     private void entrySelected_TextChanged(object? sender, TextChangedEventArgs e)
@@ -65,6 +87,7 @@ public partial class CustomPicker : ContentView
         lbl_selected.Text = string.Empty;
         lbl_selected.IsVisible = false;
         lbl_title.IsVisible = true;
+        lbl_title2.Text = string.Empty;
         if (!string.IsNullOrEmpty(e.NewTextValue))
         {
             if (ItemsSource?.Count > 0)
@@ -74,6 +97,7 @@ public partial class CustomPicker : ContentView
                 {
                     lbl_selected.Text = found;
                     lbl_selected.IsVisible = true;
+                    lbl_title2.Text = found;
                     lbl_title.IsVisible = false;
                     SelectedItem = found; //to send back to binding vm
                 }
@@ -90,6 +114,8 @@ public partial class CustomPicker : ContentView
     #endregion
 
     public Action<bool>? IsListEmpty = null;
+    public Action? OpenPicker = null; //action to open popup from code behind, not from tap gesture
+    public Action<string>? OnItemSelected = null; //callback when item selected
     BasePopupPage? pickerView = null;
 
     public CustomPicker()
@@ -155,7 +181,8 @@ public partial class CustomPicker : ContentView
             VerticalOptions = LayoutOptions.End,
             Padding = new Thickness(15),
         };
-        var lblCancel = new Label { Text = "Cancel", Style = _styleBtn, };
+        var lblCancel = new Label
+        { Text = "Cancel", Style = _styleBtn, HorizontalOptions = LayoutOptions.Center };
         #endregion
 
         var tap = new TapGestureRecognizer();
@@ -225,6 +252,7 @@ public partial class CustomPicker : ContentView
 
             var found = ItemsSource?.Where(x => x.Equals(lblValue.Text)).FirstOrDefault();
             if (found is not null) entry_selected.Text = lblValue.Text;
+            OnItemSelected?.Invoke(lblValue.Text);
             await PopupAction.ClosePopup();
         }
     }
@@ -233,8 +261,8 @@ public partial class CustomPicker : ContentView
     {
         if (sender is StackLayout stacklayout)
         {
-            await stacklayout.ScaleTo(0.9, 100);
-            stacklayout.Scale = 1;
+            await stacklayout.FadeTo(0.3, 200);
+            stacklayout.Opacity = 1;
             entry_selected.Text = string.Empty;
             await PopupAction.ClosePopup();
         }

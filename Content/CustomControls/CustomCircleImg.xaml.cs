@@ -47,7 +47,8 @@ public partial class CustomCircleImg : Grid
     public void UpdateHasImage(bool data) { border_default.IsVisible = !data; }
     public void UpdateImgFromByte(byte[] data)
     {
-        img_default.Source = "ic_elipse_info";
+        var theme = Application.Current?.RequestedTheme;
+        img_default.Source = theme == AppTheme.Light ? "ic_elipse_info" : "ic_elipse_info_2";
         if (data != null)
         {
             var converter = new ByteArrayToImageSourceConverter();
@@ -57,7 +58,8 @@ public partial class CustomCircleImg : Grid
     }
     public void UpdateImgFromSource(string data)
     {
-        img_default.Source = "ic_elipse_info";
+        var theme = Application.Current?.RequestedTheme;
+        img_default.Source = theme == AppTheme.Light ? "ic_elipse_info" : "ic_elipse_info_2";
         if (!string.IsNullOrEmpty(data))
         {
             img_default.Source = data;

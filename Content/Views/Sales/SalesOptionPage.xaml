@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="wwrc_maui.Content.Views.Sales.SalesOptionPage"
+             xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
+             xmlns:helper="clr-namespace:wwrc_maui.Content.Helper"
+             NavigationPage.HasNavigationBar="False">
+
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <helper:IntegerNullConverter x:Key="IntegerNullConverter"/>
+        </ResourceDictionary>
+    </ContentView.Resources>
+    <Grid HorizontalOptions="Fill" VerticalOptions="Fill" RowDefinitions="Auto,*" ColumnDefinitions="*">
+        <BoxView HorizontalOptions="Fill" Margin="0,0,0,15" Style="{StaticResource BoxviewNavbar}"
+                 VerticalOptions="Start" Grid.Row="0"/>
+        <ListView HorizontalOptions="Fill" VerticalOptions="Start" HasUnevenRows="True" Grid.Row="1"
+                  SeparatorVisibility="None" ItemTapped="ListView_ItemTapped" x:Name="listview">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid HorizontalOptions="Fill" VerticalOptions="Fill" Padding="15,10"
+                              ColumnDefinitions="Auto,*,Auto,Auto" RowDefinitions="Auto" ColumnSpacing="0">
+                            <Image Source="{Binding Image}" HeightRequest="30" WidthRequest="30"
+                                   VerticalOptions="Center" HorizontalOptions="Start" Aspect="AspectFit"
+                                   Grid.Column="0" Margin="10,0,0,0"/>
+                            <VerticalStackLayout HorizontalOptions="Fill" Grid.Column="1" Margin="10,0,0,0">
+                                <Label Text="{Binding Name}" VerticalOptions="Center" Style="{StaticResource PopupPromptButton}"
+                                       HorizontalOptions="Start" MaxLines="1" LineBreakMode="TailTruncation"/>
+                                <Label Text="{Binding Desc}" VerticalOptions="Center" HorizontalOptions="Start"
+                                       MaxLines="2" LineBreakMode="TailTruncation"/>
+                            </VerticalStackLayout>
+                            <Border BackgroundColor="Red" Padding="8,5" StrokeShape="RoundRectangle 10"
+                                    IsVisible="{Binding AlertCount, Converter={StaticResource IntegerNullConverter}}"
+                                    Grid.Column="2" VerticalOptions="Center" HorizontalOptions="End" Margin="10,0,0,0">
+                                <Label Text="{Binding AlertCount}" TextColor="White" FontSize="12"
+                                       Style="{StaticResource PopupPromptButton}"/>
+                            </Border>
+                            <Image Source="{AppThemeBinding Light=ic_more, Dark=ic_more_light}"
+                                   HeightRequest="20" WidthRequest="20" VerticalOptions="Center"
+                                   HorizontalOptions="End" Aspect="AspectFit" Grid.Column="3"
+                                   Margin="10,0,0,0"/>
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+
+</ContentView>

@@ -93,8 +93,9 @@
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray600}}" />
         <Setter Property="FontFamily" Value="UbuntuBold"/>
         <Setter Property="FontSize" Value="14"/>
-        <Setter Property="TextColor" Value="White"/>
-        <Setter Property="BorderWidth" Value="0"/>
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource PrimaryDark}, Dark={StaticResource Primary}}"/>
+        <Setter Property="BorderWidth" Value="2"/>
+        <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource PrimaryDark}, Dark={StaticResource Primary}}"/>
         <Setter Property="CornerRadius" Value="8"/>
         <Setter Property="Padding" Value="14,10"/>
         <Setter Property="MinimumHeightRequest" Value="44"/>

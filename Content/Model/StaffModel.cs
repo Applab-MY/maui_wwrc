@@ -148,5 +148,13 @@ namespace wwrc_maui.Content.Model
             private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
             { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)); }
         }
+
+        public class OptionPageModel()
+        {
+            public int Index { get; set; }
+            public string Name { get; set; } = "";
+            public string Desc { get; set; } = "";
+            public string Image { get; set; } = "";
+        }
     }
 }

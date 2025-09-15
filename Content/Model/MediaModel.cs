@@ -62,5 +62,14 @@
             public DateTime CreateDate { get; set; } = new DateTime();
             public string IsRead { get; set; } = "";
         }
+
+        public class OptionPageModel()
+        {
+            public int Index { get; set; }
+            public string Name { get; set; } = "";
+            public string Desc { get; set; } = "";
+            public string Image { get; set; } = "";
+            public int AlertCount { get; set; } = 0;
+        }
     }
 }

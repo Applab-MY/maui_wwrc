@@ -7,7 +7,7 @@ namespace wwrc_maui.Content.Helper
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             var text = " - ";
-            if (value != null) text = value.ToString();
+            if (!string.IsNullOrEmpty(value?.ToString())) text = value.ToString();
             if (!string.IsNullOrEmpty(text))
             {
                 if (text.Contains("NULL"))

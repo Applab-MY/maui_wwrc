@@ -79,6 +79,7 @@ public partial class CustomNavigationBar : ContentView
     {
         lbl_title.Text = data;
         lbl_title.IsVisible = !string.IsNullOrEmpty(data);
+        img_center.IsVisible = string.IsNullOrEmpty(data) && !string.IsNullOrEmpty(BarImage);
     }
     public void UpdateTitleFontSize(int data) { lbl_title.FontSize = data; }
     public void UpdateTitleTextColor(string data) { lbl_title.TextColor = Color.FromArgb(data); }

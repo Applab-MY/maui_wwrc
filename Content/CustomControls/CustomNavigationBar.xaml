@@ -18,7 +18,7 @@
         </StackLayout>
         <!--col 2 lbl : title-->
         <Label x:Name="lbl_title" VerticalOptions="Center" Style="{StaticResource AlertTitle}"
-               Grid.Column="1" Margin="10,5" VerticalTextAlignment="Center"
+               Grid.Column="1" Margin="10,0" VerticalTextAlignment="Center" HeightRequest="60"
                HorizontalOptions="Center"/>
         <!--col 2 img : logo-->
         <Image x:Name="img_center" HorizontalOptions="Center" Aspect="AspectFit" Grid.Column="1"

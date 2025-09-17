@@ -41,6 +41,10 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android|AnyCPU'">
+	  <AndroidPackageFormat>apk</AndroidPackageFormat>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
@@ -60,6 +64,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Platforms\Android\Resources\xml\file_paths.xml" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui" Version="12.2.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.76.0" />
@@ -71,6 +79,28 @@
 		<PackageReference Include="RGPopup.Maui" Version="1.2.1" />
 		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
 		<PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />
+		<PackageReference Include="Xam.Plugin.Media" Version="6.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <AndroidResource Update="Platforms\Android\Resources\drawable\launcher.png">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </AndroidResource>
+	  <AndroidResource Update="Platforms\Android\Resources\xml\file_paths.xml">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </AndroidResource>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Content\Views\Dashboard\CurrencyExchangeDateList.xaml.cs">
+	    <DependentUpon>CurrencyExchangeDateList.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Content\Views\Media\Gallery\GalleryPhotoTab.xaml.cs">
+	    <DependentUpon>GalleryPhotoTab.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Content\Views\Media\Gallery\GalleryVideoTab.xaml.cs">
+	    <DependentUpon>GalleryVideoTab.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -110,6 +140,12 @@
 	  <MauiXaml Update="Content\Views\Dashboard\CurrencyExchangeRate.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Dashboard\CurrencyExchangeRateCell.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Dashboard\CurrencyExchangeDateList.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Dashboard\DashboardFilter.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -122,16 +158,52 @@
 	  <MauiXaml Update="Content\Views\Dashboard\TabCell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Media\EmpHandbook\EmpHandbookCell.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Media\EmpHandbook\EmpHandbookMainPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Media\EmpHandbook\HandbookDetailsCell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Media\Gallery\GalleryMainPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Media\Gallery\PhotoDetailsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Media\Gallery\PhotoListPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Media\Gallery\GalleryPhotoTab.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Media\Gallery\TabCell.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Media\Gallery\GalleryVideoTab.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Media\Gallery\VideoDetailsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Media\MediaOptionPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Media\News\NewsDetailsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Media\News\NewsListCell.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Media\News\NewsMainPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Media\Product\ProductCell.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Media\Product\ProductDetailsCell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Media\Product\ProductMainPage.xaml">
@@ -146,10 +218,40 @@
 	  <MauiXaml Update="Content\Views\Profile\ProfileOptionPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Sales\CustomerAging\CustomerAgingCell.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Sales\CustomerAging\CustomerAgingCellMore.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Sales\CustomerAging\CustomerAgingDetails.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Sales\CustomerAging\CustomerAgingDetailsMore.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Sales\CustomerAging\CustomerAgingMainPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Sales\CustomerAging\FilterSalesPersonView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Sales\CustomerAging\MonthListCell.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Sales\CustomerAging\MonthListCellMore.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Sales\PurchaseOrder\PurchaseOrderMainCell.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Sales\PurchaseOrder\PurchaseOrderMainPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Sales\PurchaseOrder\PurchaseOrderMonth.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Sales\PurchaseOrder\PurchaseOrderMonthCell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Sales\SalesOptionPage.xaml">
@@ -170,6 +272,10 @@
 	  <MauiXaml Update="Content\Views\Staff\StaffOptionPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Platforms\Android\Resources\drawable\" />
 	</ItemGroup>
 
 </Project>

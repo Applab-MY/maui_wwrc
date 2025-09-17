@@ -4,21 +4,35 @@
              x:Class="wwrc_maui.Content.Views.Media.Gallery.GalleryMainPage"
              xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
              xmlns:vm="clr-namespace:wwrc_maui.Content.Viewmodels.Media.Gallery"
+             xmlns:helper="clr-namespace:wwrc_maui.Content.Helper"
              NavigationPage.HasNavigationBar="False">
 
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <helper:InverseBoolConverter x:Key="InverseBool"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <AbsoluteLayout HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
         <Grid HorizontalOptions="Fill" VerticalOptions="Fill" AbsoluteLayout.LayoutFlags="All"
-              AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*,Auto" ColumnDefinitions="*"
-              RowSpacing="0" x:DataType="vm:GalleryVm">
+              AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*" ColumnDefinitions="*"
+              RowSpacing="0" x:DataType="vm:GalleryVm" >
             <!--nav bar-->
-            <controls:CustomNavigationBar IconLeft="ic_back" x:Name="navbar"/>
+            <controls:CustomNavigationBar IconLeft="ic_back" x:Name="navbar" Title="Media Gallery"/>
             <BoxView HorizontalOptions="Fill" Margin="0" Style="{StaticResource BoxviewNavbar}"
                      VerticalOptions="End"/>
             <!--content-->
             <Grid HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1" ColumnDefinitions="*"
                   RowDefinitions="Auto,*">
                 <!--row 1 : tab bar-->
-                <!--row 2 : listview-->
+                <Grid x:Name="tabbar" HorizontalOptions="Fill" ColumnSpacing="0" RowDefinitions="Auto"
+                      Margin="15,0"/>
+                <!--row 2 : tab content-->
+                <ContentView x:Name="view_content" HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1" 
+                             IsVisible="{Binding NoData, Converter={StaticResource InverseBool}}"
+                             Margin="15,10"/>
+                <!--no data-->
+                <controls:CustomNoData Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center"
+                                       IsVisible="{Binding NoData}"/>
             </Grid>
         </Grid>
         <!--loading overlay-->

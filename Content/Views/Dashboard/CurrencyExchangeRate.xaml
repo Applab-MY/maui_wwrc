@@ -4,6 +4,7 @@
              x:Class="wwrc_maui.Content.Views.Dashboard.CurrencyExchangeRate"
              xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
              xmlns:vm="clr-namespace:wwrc_maui.Content.Viewmodels.Dashboard"
+             xmlns:cell="clr-namespace:wwrc_maui.Content.Views.Dashboard"
              xmlns:helper="clr-namespace:wwrc_maui.Content.Helper"
              NavigationPage.HasNavigationBar="False">
     <ContentPage.Resources>
@@ -26,22 +27,22 @@
                 <!--exchange data-->
                 <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Grid.Row="0"
                          Spacing="0" Grid.Column="0">
-                    <Label Style="{StaticResource AlertTitle}" FontSize="12" HorizontalOptions="Start"
+                    <Label Style="{StaticResource AlertTitle}" FontSize="14" HorizontalOptions="Start"
                            Text="Local Currency" LineBreakMode="TailTruncation"/>
                     <Label Style="{StaticResource PopupPromptButton}" HorizontalOptions="Start"
                            Text="{Binding LocalCurrency, Converter={StaticResource StringNullConverter}}"
-                           LineBreakMode="TailTruncation" HorizontalTextAlignment="Start" FontSize="12"/>
+                           LineBreakMode="TailTruncation" HorizontalTextAlignment="Start" FontSize="14"/>
                 </VerticalStackLayout>
                 <!--days rate-->
                 <Grid HorizontalOptions="Fill" ColumnSpacing="5" Grid.Row="0" Grid.Column="1"
                       ColumnDefinitions="*,Auto">
                     <!--title, value-->
                     <VerticalStackLayout HorizontalOptions="Fill" Spacing="0">
-                        <Label Style="{StaticResource AlertTitle}" FontSize="12" HorizontalOptions="Start"
+                        <Label Style="{StaticResource AlertTitle}" FontSize="14" HorizontalOptions="Start"
                                Text="Last 7-Days Rate" LineBreakMode="WordWrap"/>
-                        <controls:CustomPicker NoCustomView="True" HorizontalOptions="Fill" Title="Select Date"
-                                SelectedItem="{Binding SelectedDate, Converter={StaticResource StringNullConverter}}"
-                                x:Name="picker_"/>
+                        <Label Style="{StaticResource PopupPromptButton}" HorizontalOptions="Start"
+                               Text="{Binding SelectedDate, Converter={StaticResource StringNullConverter}}"
+                               LineBreakMode="TailTruncation" HorizontalTextAlignment="Start" FontSize="14"/>
                     </VerticalStackLayout>
                     <!--img : arrow-->
                     <Image Source="{AppThemeBinding Light=ic_dropdown, Dark=ic_dropdown_light}" VerticalOptions="Center" 
@@ -58,25 +59,7 @@
                       ItemTapped="listview_ItemTapped" Margin="15,0">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <ViewCell>
-                            <VerticalStackLayout Spacing="0">
-                                <Grid HorizontalOptions="Fill" ColumnSpacing="10" Padding="0,8"
-                                      RowDefinitions="Auto" ColumnDefinitions="Auto,*,Auto">
-                                    <controls:CustomCircleImg ImgFromSource="{Binding CurrencyImage}" HorizontalOptions="Start"
-                                                              SetSize="40" ImgAspect="AspectFit" Grid.Column="0"/>
-                                    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Fill"
-                                             Spacing="0" Grid.Column="1">
-                                        <Label Text="{Binding CurrencyCode, Converter={StaticResource StringNullConverter}}"
-                                               FontAttributes="Bold" MaxLines="1" LineBreakMode="TailTruncation"/>
-                                        <Label Text="{Binding CurrencyName, Converter={StaticResource StringNullConverter}}"
-                                               MaxLines="1" LineBreakMode="TailTruncation"/>
-                                    </VerticalStackLayout>
-                                    <Label Text="{Binding ExchangeRate, Converter={StaticResource StringNullConverter}}"
-                                           HorizontalOptions="End" VerticalOptions="Center" FontAttributes="Bold" Grid.Column="2"/>
-                                </Grid>
-                                <BoxView HeightRequest="1" HorizontalOptions="Fill"/>
-                            </VerticalStackLayout>
-                        </ViewCell>
+                        <cell:CurrencyExchangeRateCell/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

@@ -85,8 +85,8 @@ public partial class MediaOptionPage : ContentView
         {
             if (item.Name.Equals("News")) await Navigation.PushAsync(new NewsMainPage());
             if (item.Name.Equals("Media Gallery")) await Navigation.PushAsync(new GalleryMainPage());
-            if (item.Name.Equals("Employee Handbook")) await Navigation.PushAsync(new EmpHandbookMainPage());
-            if (item.Name.Equals("Product Catalogue")) await Navigation.PushAsync(new ProductMainPage());
+            if (item.Name.Equals("Employee Handbook")) await Navigation.PushAsync(new EmpHandbookMainPage("*", ""));
+            if (item.Name.Equals("Product Catalogue")) await Navigation.PushAsync(new ProductMainPage(""));
         }
     }
 }

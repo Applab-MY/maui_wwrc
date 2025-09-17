@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ViewCell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+          xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+          x:Class="wwrc_maui.Content.Views.Sales.CustomerAging.MonthListCell">
+    <Grid HorizontalOptions="Fill" ColumnDefinitions="*,*,Auto" RowDefinitions="Auto"
+          ColumnSpacing="10">
+        <Label Text="{Binding Month}" HorizontalOptions="Fill" MaxLines="1" LineBreakMode="TailTruncation"
+               Margin="15,10,0,10" VerticalOptions="Center" HorizontalTextAlignment="Start"/>
+        <Label Text="{Binding TotalOutstanding, StringFormat='{0:N2}'}" HorizontalOptions="End"
+               MaxLines="1" LineBreakMode="TailTruncation" Margin="0,10" VerticalOptions="Center"
+               HorizontalTextAlignment="End" FontAttributes="Bold" Grid.Column="1"/>
+        <Image Source="{AppThemeBinding Light=ic_more, Dark=ic_more_light}" HeightRequest="20"
+               Aspect="AspectFit" VerticalOptions="Center" Grid.Column="2" Margin="0,10,10,10"
+               HorizontalOptions="End"/>
+        <BoxView HeightRequest="1" HorizontalOptions="Fill" VerticalOptions="End" Grid.ColumnSpan="3"/>
+    </Grid>
+</ViewCell>

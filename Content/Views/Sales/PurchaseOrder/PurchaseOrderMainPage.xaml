@@ -3,22 +3,83 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="wwrc_maui.Content.Views.Sales.PurchaseOrder.PurchaseOrderMainPage"
              xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
+             xmlns:cell="clr-namespace:wwrc_maui.Content.Views.Sales.PurchaseOrder"
              xmlns:vm="clr-namespace:wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder"
+             xmlns:helper="clr-namespace:wwrc_maui.Content.Helper"
              NavigationPage.HasNavigationBar="False">
-    
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <helper:InverseBoolConverter x:Key="InverseBool"/>
+            <helper:StringNullConverter x:Key="StringNull"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <AbsoluteLayout HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
         <Grid HorizontalOptions="Fill" VerticalOptions="Fill" AbsoluteLayout.LayoutFlags="All"
-              AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*,Auto" ColumnDefinitions="*"
+              AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*" ColumnDefinitions="*"
               RowSpacing="0" x:DataType="vm:PurchaseOrderVm">
             <!--nav bar-->
-            <controls:CustomNavigationBar IconLeft="ic_back" IconRight="ic_search" x:Name="navbar"/>
+            <controls:CustomNavigationBar IconLeft="ic_back" IconRight="ic_search" x:Name="navbar"
+                                          Title="Purchase Order"/>
             <BoxView HorizontalOptions="Fill" Margin="0" Style="{StaticResource BoxviewNavbar}"
                      VerticalOptions="End"/>
             <!--content-->
             <Grid HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1" ColumnDefinitions="*"
-                  RowDefinitions="Auto,*">
-                <!--row 1 : tab bar-->
-                <!--row 2 : listview-->
+                  RowDefinitions="Auto,Auto,*">
+                <!--row 1 : search bar-->
+                <controls:CustomEntry HorizontalOptions="Fill" Placeholder="search purchase order..." VerticalOptions="Start"
+                      x:Name="entry_search" Margin="20,10" SetWidth="{Binding EntryWidth}"
+                      IsVisible="{Binding IsSearchVisible}"/>
+                <!--row 2 : filter bar-->
+                <Grid ColumnSpacing="10" HorizontalOptions="Fill" VerticalOptions="Start" Margin="10,8"
+                      RowDefinitions="Auto" Grid.Row="1" ColumnDefinitions="Auto,2,0.45*,2,0.55*,Auto">
+                    <!--country-->
+                    <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="0">
+                        <Label Text="Country" HorizontalOptions="Start" Style="{StaticResource AlertTitle}"
+                               FontSize="12"/>
+                        <Label Text="{Binding Country, Converter={StaticResource StringNull}}" HorizontalOptions="Start"
+                               MaxLines="1" LineBreakMode="TailTruncation" FontSize="12"/>
+                    </VerticalStackLayout>
+                    <BoxView WidthRequest="2" VerticalOptions="Fill" Grid.Column="1" Margin="0,5"
+                             BackgroundColor="{StaticResource Primary}"/>
+                    <!--subsidiary-->
+                    <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="0" Grid.Column="2">
+                        <Label Text="Subsidiary" HorizontalOptions="Start" Style="{StaticResource AlertTitle}"
+                               FontSize="12"/>
+                        <Label Text="{Binding Subsidiary, Converter={StaticResource StringNull}}" HorizontalOptions="Start"
+                               MaxLines="1" LineBreakMode="TailTruncation" FontSize="12"/>
+                    </VerticalStackLayout>
+                    <BoxView WidthRequest="2" VerticalOptions="Fill" Grid.Column="3" Margin="0,5"
+                             BackgroundColor="{StaticResource Primary}"/>
+                    <!--sales person-->
+                    <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="0" Grid.Column="4">
+                        <Label Text="Sales Person" HorizontalOptions="Start" Style="{StaticResource AlertTitle}"
+                               FontSize="12"/>
+                        <Label Text="{Binding SalesPerson, Converter={StaticResource StringNull}}" HorizontalOptions="Start"
+                               MaxLines="1" LineBreakMode="TailTruncation" Style="{StaticResource PopupPromptButton}"
+                               FontSize="12"/>
+                        <VerticalStackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnSales_Tapped" NumberOfTapsRequired="1"/>
+                        </VerticalStackLayout.GestureRecognizers>
+                    </VerticalStackLayout>
+                    <Image Source="{AppThemeBinding Light=ic_dropdown, Dark=ic_dropdown_light}" HeightRequest="20"
+                           Aspect="AspectFit" HorizontalOptions="End" VerticalOptions="Center" Grid.Column="5"/>
+                </Grid>
+                <!--row 3 : listview-->
+                <ListView HorizontalOptions="Fill" ItemsSource="{Binding PoMain}" SeparatorVisibility="None"
+                          HasUnevenRows="True" VerticalOptions="Fill" ItemTapped="ListView_ItemTapped" Grid.Row="2"
+                          Margin="0,15,0,5" IsVisible="{Binding NoData, Converter={StaticResource InverseBool}}"
+                          IsPullToRefreshEnabled="true" RefreshCommand="{Binding RefreshCommand}"
+                          IsRefreshing="{Binding IsRefreshing}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <cell:PurchaseOrderMainCell/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <!--no data-->
+                <controls:CustomNoData Grid.Row="2" HorizontalOptions="Center" VerticalOptions="Center"
+                                       IsVisible="{Binding NoData}"/>
             </Grid>
         </Grid>
         <!--loading overlay-->

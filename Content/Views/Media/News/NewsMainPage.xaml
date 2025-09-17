@@ -3,22 +3,44 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="wwrc_maui.Content.Views.Media.News.NewsMainPage"
              xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
-             xmlns:vm="clr-namespace:wwrc_maui.Content.Viewmodels.Media.News"
+             xmlns:vm="clr-namespace:wwrc_maui.Content.Viewmodels.Media"
+             xmlns:helper="clr-namespace:wwrc_maui.Content.Helper"
+             xmlns:cell="clr-namespace:wwrc_maui.Content.Views.Media.News"
              NavigationPage.HasNavigationBar="False">
 
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <helper:InverseBoolConverter x:Key="InverseBool"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <AbsoluteLayout HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
         <Grid HorizontalOptions="Fill" VerticalOptions="Fill" AbsoluteLayout.LayoutFlags="All"
-              AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*,Auto" ColumnDefinitions="*"
+              AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*" ColumnDefinitions="*"
               RowSpacing="0" x:DataType="vm:NewsVm">
             <!--nav bar-->
-            <controls:CustomNavigationBar IconLeft="ic_back" IconRight="ic_search" x:Name="navbar"/>
-            <BoxView HorizontalOptions="Fill" Margin="0" Style="{StaticResource BoxviewNavbar}"
-                     VerticalOptions="End"/>
+            <controls:CustomNavigationBar IconLeft="ic_back" IconRight="ic_search" x:Name="navbar" Title="News"/>
+            <BoxView HorizontalOptions="Fill" Margin="0" Style="{StaticResource BoxviewNavbar}" VerticalOptions="End"/>
             <!--content-->
             <Grid HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1" ColumnDefinitions="*"
-                  RowDefinitions="Auto,*">
-                <!--row 1 : tab bar-->
+                  RowDefinitions="Auto,*" RowSpacing="0">
+                <!--row 1 : search bar-->
+                <controls:CustomEntry HorizontalOptions="Fill" Placeholder="search title..." VerticalOptions="Start"
+                                      x:Name="entry_search" Margin="20,10" SetWidth="{Binding EntryWidth}"
+                                      IsVisible="{Binding IsSearchVisible}"/>
                 <!--row 2 : listview-->
+                <ListView HorizontalOptions="Fill" ItemsSource="{Binding NewsList}" SeparatorVisibility="None"
+                          HasUnevenRows="True" VerticalOptions="Fill" ItemTapped="ListView_ItemTapped" Grid.Row="1"
+                          Margin="0,10,0,5" IsPullToRefreshEnabled="true" RefreshCommand="{Binding RefreshCommand}"
+                          IsRefreshing="{Binding IsRefreshing}" IsVisible="{Binding IsNewsVisible}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <cell:NewsListCell/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <!--no data-->
+                <controls:CustomNoData Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center"
+                                       IsVisible="{Binding IsNewsVisible, Converter={StaticResource InverseBool}}"/>
             </Grid>
         </Grid>
         <!--loading overlay-->

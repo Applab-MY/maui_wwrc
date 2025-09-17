@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="wwrc_maui.Content.Views.Sales.CustomerAging.CustomerAgingDetailsMore"
+             xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
+             xmlns:vm="clr-namespace:wwrc_maui.Content.Viewmodels.Sales.CustomerAging"
+             xmlns:helper="clr-namespace:wwrc_maui.Content.Helper"
+             xmlns:cell="clr-namespace:wwrc_maui.Content.Views.Sales.CustomerAging"
+             NavigationPage.HasNavigationBar="False">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <helper:InverseBoolConverter x:Key="InverseBool"/>
+            <helper:StringNullConverter x:Key="StringNull"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <AbsoluteLayout HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
+        <Grid HorizontalOptions="Fill" VerticalOptions="Fill" AbsoluteLayout.LayoutFlags="All"
+              AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*" ColumnDefinitions="*"
+              RowSpacing="0" x:DataType="vm:CustomerAgingDetailVm">
+            <!--nav bar-->
+            <controls:CustomNavigationBar IconLeft="ic_back" x:Name="navbar" Title="Details"/>
+            <BoxView HorizontalOptions="Fill" Margin="0" Style="{StaticResource BoxviewNavbar}"
+                     VerticalOptions="End"/>
+            <!--content-->
+            <Grid HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1" ColumnDefinitions="*"
+                  RowDefinitions="Auto,*" RowSpacing="0">
+                <!--row 1 : header-->
+                <Grid HorizontalOptions="Fill" RowSpacing="0" Padding="15,20" ColumnDefinitions="*"
+                      RowDefinitions="Auto">
+                    <VerticalStackLayout HorizontalOptions="Fill" Spacing="0">
+                        <!--title-->
+                        <Label HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="WordWrap"
+                               Text="{Binding CardName}" Style="{StaticResource AlertTitle}"/>
+                        <!--table : details-->
+                        <Grid HorizontalOptions="Fill" RowSpacing="0" ColumnSpacing="10" ColumnDefinitions="Auto,*,Auto"
+                              RowDefinitions="Auto,Auto">
+                            <!--#region column 1-->
+                            <Image Source="ic_date_time" HeightRequest="25" Aspect="AspectFit" VerticalOptions="Center"
+                                   HorizontalOptions="Start"/>
+                            <Image Source="ic_total_outstanding" HeightRequest="25" Aspect="AspectFit" VerticalOptions="Center"
+                                   HorizontalOptions="Start" Grid.Row="1"/>
+                            <!--#endregion-->
+                            <!--#region column 2-->
+                            <Label FontAttributes="Bold" MaxLines="1" LineBreakMode="TailTruncation"
+                                   Text="Month" HorizontalOptions="Fill" HorizontalTextAlignment="Start"
+                                   VerticalOptions="Center" Grid.Column="1"/>
+                            <Label FontAttributes="Bold" MaxLines="1" LineBreakMode="TailTruncation"
+                                   Text="Total Outstanding" HorizontalOptions="Fill" HorizontalTextAlignment="Start"
+                                   VerticalOptions="Center" Grid.Column="1" Grid.Row="1"/>
+                            <!--#endregion-->
+                            <!--#region column 3-->
+                            <Label Text="{Binding SelectedMonth}" HorizontalOptions="End" HorizontalTextAlignment="End"
+                                   VerticalOptions="Center" MaxLines="1" LineBreakMode="TailTruncation"
+                                   Grid.Column="2" Grid.Row="0"/>
+                            <Label Text="{Binding TotalOutstanding, StringFormat='{0:N2}'}" HorizontalOptions="End"
+                                   VerticalOptions="Center" MaxLines="1" LineBreakMode="TailTruncation"
+                                   Grid.Column="2" Grid.Row="1" HorizontalTextAlignment="End"/>
+                            <!--#endregion-->
+                            <!--lines-->
+                            <BoxView HeightRequest="1" HorizontalOptions="Fill" Grid.Column="1" Grid.ColumnSpan="2"
+                                     VerticalOptions="End"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Grid>
+                <!--row 2 : month list-->
+                <Grid HorizontalOptions="Fill" ColumnDefinitions="*" RowDefinitions="Auto" Grid.Row="1"
+                      Padding="15,0,15,20">
+                    <ScrollView IsVisible="{Binding NoDataAging, Converter={StaticResource InverseBool}}"
+                        HorizontalOptions="Fill" VerticalOptions="Fill">
+                        <Border HorizontalOptions="Fill" Padding="0" StrokeShape="RoundRectangle 10"
+                                Stroke="LightGray" VerticalOptions="Start">
+                            <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" VerticalOptions="Fill">
+                                <Grid HorizontalOptions="Fill" ColumnDefinitions="*,*,*" RowDefinitions="Auto"
+                                      ColumnSpacing="10" BackgroundColor="LightGray" Padding="15">
+                                    <Label Text="DOC No." FontAttributes="Bold" HorizontalOptions="Start"
+                                           HorizontalTextAlignment="Start" VerticalOptions="Center"/>
+                                    <Label Text="DOC DATE" FontAttributes="Bold" HorizontalOptions="End"
+                                           HorizontalTextAlignment="End" VerticalOptions="Center" Grid.Column="1"/>
+                                    <Label Text="OUTSTANDING" FontAttributes="Bold" HorizontalOptions="End"
+                                           HorizontalTextAlignment="End" VerticalOptions="Center" Grid.Column="2"/>
+                                </Grid>
+                                <ListView HorizontalOptions="Fill" ItemsSource="{Binding AgingDetailList}" SeparatorVisibility="None"
+                                          HasUnevenRows="True" VerticalOptions="Fill" Grid.Row="1"
+                                          ItemTapped="ListView_ItemTapped">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <cell:MonthListCellMore/>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </VerticalStackLayout>
+                        </Border>
+                    </ScrollView>
+                    <!--no data-->
+                    <controls:CustomNoData HorizontalOptions="Center" VerticalOptions="Center" IsVisible="{Binding NoDataAging}"/>
+                </Grid>
+            </Grid>
+        </Grid>
+        <!--loading overlay-->
+        <controls:CustomLoading AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1"
+                            x:Name="UiLoad" IsVisible="{Binding IsBusy}" IsAnimate="{Binding IsBusy}"/>
+    </AbsoluteLayout>
+
+</ContentPage>

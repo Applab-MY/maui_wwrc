@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="wwrc_maui.Content.Views.Media.Gallery.PhotoListPage"
+             xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
+             xmlns:helper="clr-namespace:wwrc_maui.Content.Helper"
+             xmlns:vm="clr-namespace:wwrc_maui.Content.Viewmodels.Media"
+             NavigationPage.HasNavigationBar="False">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <helper:InverseBoolConverter x:Key="InverseBool"/>
+            <helper:StringNullConverter x:Key="StringNullConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <AbsoluteLayout HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
+        <Grid HorizontalOptions="Fill" VerticalOptions="Fill" AbsoluteLayout.LayoutFlags="All"
+              AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*" ColumnDefinitions="*"
+              RowSpacing="0" x:DataType="vm:GalleryDetailsVm">
+            <!--nav bar-->
+            <controls:CustomNavigationBar IconLeft="ic_back" x:Name="navbar" Title="{Binding PageTitle}"/>
+            <BoxView HorizontalOptions="Fill" Margin="0" Style="{StaticResource BoxviewNavbar}"
+                     VerticalOptions="End"/>
+            <!--content-->
+            <RefreshView HorizontalOptions="Fill" VerticalOptions="Fill" IsRefreshing="{Binding IsRefreshing}"
+                         Command="{Binding RefreshCommand}" Grid.Row="1">
+                <ScrollView HorizontalOptions="Fill" VerticalOptions="Fill">
+                    <Grid HorizontalOptions="Fill" VerticalOptions="Fill"  ColumnDefinitions="*"
+                          RowDefinitions="*" RowSpacing="0">
+                        <!--row 1 : photo list-->
+                        <Grid x:Name="grid_content" HorizontalOptions="Fill" ColumnDefinitions="*,*,*,*"
+                              IsVisible="{Binding NoData, Converter={StaticResource InverseBool}}"
+                              RowSpacing="10" ColumnSpacing="10" Margin="15,20"/>
+                        <!--no data-->
+                        <controls:CustomNoData HorizontalOptions="Center" VerticalOptions="Center"
+                                       IsVisible="{Binding NoData}"/>
+                    </Grid>
+                </ScrollView>
+            </RefreshView>
+        </Grid>
+        <!--loading overlay-->
+        <controls:CustomLoading AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                x:Name="UiLoad" IsVisible="{Binding IsBusy}" IsAnimate="{Binding IsBusy}"/>
+    </AbsoluteLayout>
+
+</ContentPage>

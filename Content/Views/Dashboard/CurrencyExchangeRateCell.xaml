@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ViewCell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+          xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+          x:Class="wwrc_maui.Content.Views.Dashboard.CurrencyExchangeRateCell"
+          xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
+          xmlns:helper="clr-namespace:wwrc_maui.Content.Helper">
+    <VerticalStackLayout Spacing="0">
+        <VerticalStackLayout.Resources>
+            <ResourceDictionary>
+                <helper:StringNullConverter x:Key="StringNullConverter"/>
+            </ResourceDictionary>
+        </VerticalStackLayout.Resources>
+        <Grid HorizontalOptions="Fill" ColumnSpacing="10" Padding="0,10"
+              RowDefinitions="Auto" ColumnDefinitions="Auto,*,Auto">
+            <controls:CustomCircleImg ImgFromString="{Binding CurrencyImage}" HorizontalOptions="Start"
+                                      SetSize="50" ImgAspect="AspectFit" Grid.Column="0"/>
+            <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Fill"
+                                 Spacing="0" Grid.Column="1">
+                <Label Text="{Binding CurrencyCode, Converter={StaticResource StringNullConverter}}"
+                       FontAttributes="Bold" MaxLines="1" LineBreakMode="TailTruncation"/>
+                <Label Text="{Binding CurrencyName, Converter={StaticResource StringNullConverter}}"
+                       MaxLines="1" LineBreakMode="TailTruncation"/>
+            </VerticalStackLayout>
+            <Label Text="{Binding ExchangeRate, Converter={StaticResource StringNullConverter}}"
+                   HorizontalOptions="End" VerticalOptions="Center" FontAttributes="Bold" Grid.Column="2"/>
+        </Grid>
+        <BoxView HeightRequest="1" HorizontalOptions="Fill"/>
+    </VerticalStackLayout>
+</ViewCell>

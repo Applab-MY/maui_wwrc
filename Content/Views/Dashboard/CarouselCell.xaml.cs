@@ -8,6 +8,7 @@ public partial class CarouselCell : StackLayout
     public List<string> MenuFilter { get; set; } = [];
     public List<DashboardCarouselTemplate> MenuList { get; set; } = [];
     public DashboardMainModel? DashboardData { get; set; } = null;
+    public Action<DashboardCarouselTemplate>? OnCellTap { get; set; } = null;
 
     public CarouselCell() { InitializeComponent(); }
 
@@ -56,6 +57,7 @@ public partial class CarouselCell : StackLayout
     {
         #region UI elements
         var style = Application.Current?.Resources["PopupPromptButton"] as Style;
+        var lblid = new Label { Text = data.Type, IsVisible = false };
         var content = new VerticalStackLayout
         {
             HorizontalOptions = LayoutOptions.Fill,
@@ -91,9 +93,14 @@ public partial class CarouselCell : StackLayout
         };
         #endregion
 
+        content.Children.Add(lblid);
         content.Children.Add(imgIcon);
         content.Children.Add(lblTxt1);
         content.Children.Add(lblTxt2);
+        var tap = new TapGestureRecognizer();
+        tap.Tapped += OnCell_Tapped;
+        tap.NumberOfTapsRequired = 1;
+        content.GestureRecognizers.Add(tap);
         return content;
     }
 
@@ -108,7 +115,7 @@ public partial class CarouselCell : StackLayout
             HorizontalOptions = LayoutOptions.End,
             VerticalOptions = LayoutOptions.Start,
             Padding = new Thickness(8, 5),
-            IsVisible = !string.IsNullOrEmpty(data.CountType)
+            IsVisible = !string.IsNullOrEmpty(data.CountType) && !data.CountType.Equals("0")
         };
         var lblCount = new Label
         {
@@ -123,5 +130,18 @@ public partial class CarouselCell : StackLayout
 
         content.Content = lblCount;
         return content;
+    }
+
+    async void OnCell_Tapped(object? sender, EventArgs e)
+    {
+        if (sender != null)
+        {
+            if (sender is not VerticalStackLayout view) return;
+            await view.FadeTo(0.3, 200);
+            view.Opacity = 1;
+            var lblid = (Label)view.Children[0];
+            var found = MenuList.Where(_item => _item.Type.Equals(lblid.Text)).FirstOrDefault();
+            if (found != null) OnCellTap?.Invoke(found);
+        }
     }
 }

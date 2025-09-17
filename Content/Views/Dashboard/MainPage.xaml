@@ -13,8 +13,7 @@
               AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*,Auto" ColumnDefinitions="*"
               RowSpacing="0" x:DataType="vm:MainPageVm">
             <!--nav bar-->
-            <controls:CustomNavigationBar IconLeft="ic_filter" IconRight="ic_logout.png" BarImage="logo_db" 
-                                          x:Name="navbar" TitleTextColor="#000000"/>
+            <controls:CustomNavigationBar IconLeft="ic_filter" IconRight="ic_logout" BarImage="logo_db" x:Name="navbar"/>
             <!--content-->
             <RefreshView HorizontalOptions="Fill" VerticalOptions="Fill" IsRefreshing="{Binding IsRefreshing}"
                          Command="{Binding RefreshCommand}" Grid.Row="1">
@@ -34,21 +33,21 @@
                             <!--exchange data-->
                             <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Grid.Row="0"
                                                  Spacing="0" Grid.Column="0">
-                                <Label Style="{StaticResource AlertTitle}" FontSize="12" HorizontalOptions="Start"
+                                <Label Style="{StaticResource AlertTitle}" FontSize="14" HorizontalOptions="Start"
                                        Text="Exchange Date" LineBreakMode="TailTruncation"/>
                                 <Label Style="{StaticResource PopupPromptButton}" HorizontalOptions="Start"
                                        Text="{Binding ExchangeDate, StringFormat='\{0:dd MMMM, yyyy}'}"
                                        LineBreakMode="TailTruncation" HorizontalTextAlignment="Start"
-                                       FontSize="12"/>
+                                       FontSize="14"/>
                             </VerticalStackLayout>
                             <!--currency-->
                             <HorizontalStackLayout HorizontalOptions="Fill" Spacing="8" Grid.Row="0" Grid.Column="1">
                                 <Image Source="{Binding FlagIcon}" Aspect="AspectFit" HorizontalOptions="Start"
                                        VerticalOptions="Center" HeightRequest="30" />
-                                <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="0" >
-                                    <Label Style="{StaticResource AlertTitle}" FontSize="12" HorizontalOptions="Start"
+                                <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="0">
+                                    <Label Style="{StaticResource AlertTitle}" FontSize="14" HorizontalOptions="Start"
                                            Text="Currency" LineBreakMode="WordWrap"/>
-                                    <Label Style="{StaticResource PopupPromptButton}" HorizontalOptions="Start" FontSize="12"
+                                    <Label Style="{StaticResource PopupPromptButton}" HorizontalOptions="Start" FontSize="14"
                                            Text="{Binding UsdRate, StringFormat='\USD {0}'}" LineBreakMode="TailTruncation"/>
                                 </VerticalStackLayout>
                             </HorizontalStackLayout>
@@ -117,19 +116,32 @@
                         </Grid>
                         <!--carousel menus-->
                         <CarouselView x:Name="carouselView" HorizontalOptions="Fill" VerticalOptions="Center"
-                                      HorizontalScrollBarVisibility="Never" Margin="20,10" IndicatorView="indicatorView"
+                                      HorizontalScrollBarVisibility="Never" Margin="20,10" CurrentItemChanged="OnSwipe_Changed"
                                       ItemsSource="{Binding CarouselItems}" ItemTemplate="{Binding TemplateSelector}"/>
                         <!--carousel indicator-->
-                        <IndicatorView x:Name="indicatorView" HorizontalOptions="Center" VerticalOptions="Center"
+                        <!--<IndicatorView x:Name="indicatorView" HorizontalOptions="Center" VerticalOptions="Center"
                                 IndicatorColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" 
                                 SelectedIndicatorColor="{StaticResource Primary}" IndicatorsShape="Circle"
-                                Margin="20,10" IndicatorSize="15"/>
+                                Margin="20,10" IndicatorSize="15"/>-->
+                        <HorizontalStackLayout HorizontalOptions="Center" Spacing="8">
+                            <Border x:Name="indicator1" BackgroundColor="{StaticResource Primary}" WidthRequest="20"
+                                    HeightRequest="20" Padding="0" StrokeShape="RoundRectangle 10"/>
+                            <Border x:Name="indicator2" Style="{StaticResource BorderSecondary}" WidthRequest="20"
+                                    HeightRequest="20" Padding="0" StrokeShape="RoundRectangle 10"/>
+                        </HorizontalStackLayout>
                     </VerticalStackLayout>
                 </ScrollView>
             </RefreshView>
+            <Grid x:Name="grid_tabcontent" HorizontalOptions="Fill" VerticalOptions="Fill" RowDefinitions="*"
+                  BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource OffBlack}}"
+                  ColumnDefinitions="*" Grid.Row="1" IsVisible="False">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnTabContent_Tapped" NumberOfTapsRequired="1"/>
+                </Grid.GestureRecognizers>
+            </Grid>
             <!--bottom tab bar-->
             <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="End" Spacing="0" Grid.Row="2">
-                <BoxView HeightRequest="1" HorizontalOptions="Fill" Margin="0,5,0,0"/>
+                <BoxView HeightRequest="1" HorizontalOptions="Fill" Margin="0,10,0,0"/>
                 <Grid HorizontalOptions="Fill" RowDefinitions="Auto" ColumnDefinitions="*,*,*,*,*"
                       ColumnSpacing="0" Margin="0,10,0,15">
                     <tabcell:TabCell TabId="1" ImgDefault="menu_b_home_off" ImgSelected="menu_b_home_on"

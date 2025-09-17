@@ -2,8 +2,7 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="wwrc_maui.Content.Views.Dashboard.FilterSalesPersonView"
-             xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
-             xmlns:model="clr-namespace:wwrc_maui.Content.Model">
+             xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls">
     <Grid HorizontalOptions="Fill" RowDefinitions="Auto,*" ColumnDefinitions="*"
           RowSpacing="10" VerticalOptions="Fill">
         <controls:CustomEntry x:Name="entry_search" Placeholder="Search Sales Person"
@@ -17,7 +16,7 @@
                         <VerticalStackLayout Spacing="0">
                             <Grid HorizontalOptions="Fill" ColumnSpacing="10" Padding="0,8"
                                   RowDefinitions="Auto" ColumnDefinitions="Auto,*,Auto">
-                                <controls:CustomCircleImg ImgFromSource="{Binding ProfileImage}" HorizontalOptions="Start"
+                                <controls:CustomCircleImg ImgFromString="{Binding ProfileImage}" HorizontalOptions="Start"
                                                           SetSize="40" ImgAspect="AspectFit" Grid.Column="0"/>
                                 <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Fill"
                                                      Spacing="0" Grid.Column="1">

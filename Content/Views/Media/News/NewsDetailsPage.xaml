@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="wwrc_maui.Content.Views.Media.News.NewsDetailsPage"
+             xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
+             xmlns:vm="clr-namespace:wwrc_maui.Content.Viewmodels.Media"
+			 xmlns:helper="clr-namespace:wwrc_maui.Content.Helper"
+             xmlns:cell="clr-namespace:wwrc_maui.Content.Views.Media.News"
+             NavigationPage.HasNavigationBar="False">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <helper:InverseBoolConverter x:Key="InverseBool"/>
+            <helper:StringNullConverter x:Key="StringNull"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <AbsoluteLayout HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
+        <Grid HorizontalOptions="Fill" VerticalOptions="Fill" AbsoluteLayout.LayoutFlags="All"
+              AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*" ColumnDefinitions="*"
+              RowSpacing="0" x:DataType="vm:NewsVm">
+            <!--nav bar-->
+            <controls:CustomNavigationBar IconLeft="ic_back" x:Name="navbar" Title="News Details"/>
+            <BoxView HorizontalOptions="Fill" Margin="0" Style="{StaticResource BoxviewNavbar}" VerticalOptions="End"/>
+            <!--content-->
+            <Grid HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1" ColumnDefinitions="*"
+                  RowDefinitions="*,Auto" RowSpacing="0">
+                <!--row 1 : news details-->
+                <ScrollView HorizontalOptions="Fill" VerticalOptions="Fill">
+                    <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="Fill" Spacing="0" Padding="15,10">
+                        <Label Text="{Binding NewsDetailsModel.Title}" HorizontalOptions="Start"
+                               HorizontalTextAlignment="Start" LineBreakMode="WordWrap"
+                               Style="{StaticResource AlertTitle}" Margin="0,0,0,5"/>
+                        <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Start" Spacing="5">
+                            <Label Text="{Binding NewsDetailsModel.CreatedBy, StringFormat='\by {0}'}"
+                                   HorizontalOptions="Start" HorizontalTextAlignment="Start" LineBreakMode="WordWrap"
+                                   FontAttributes="Italic" FontSize="12"/>
+                            <Label Text="{Binding NewsDetailsModel.Date, StringFormat='\on {0}'}"
+                                   HorizontalOptions="Start" HorizontalTextAlignment="Start" LineBreakMode="WordWrap"
+                                   FontAttributes="Italic" FontSize="12"/>
+                        </HorizontalStackLayout>
+                        <Label Text="{Binding NewsDetailsModel.Description}" HorizontalOptions="Start"
+                               HorizontalTextAlignment="Start" LineBreakMode="WordWrap" Margin="0,20,0,0"/>
+                    </VerticalStackLayout>
+                </ScrollView>
+                <!--row 2 : attachment-->
+                <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="End" Spacing="8"
+                                     Margin="15,10,15,20" Grid.Row="1" IsVisible="{Binding HasAttachment}">
+                    <Label Text="{Binding AttachmentTitle}" HorizontalOptions="Center" LineBreakMode="WordWrap"
+                           HorizontalTextAlignment="Center" FontSize="12" Style="{StaticResource PopupPromptButton}"/>
+                    <Button Text="Download Attachment" VerticalOptions="End" Style="{StaticResource BtnTertiary}"
+                            Clicked="OnDownload_Clicked"/>
+                </VerticalStackLayout>
+            </Grid>
+        </Grid>
+        <!--loading overlay-->
+        <controls:CustomLoading AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                x:Name="UiLoad" IsVisible="{Binding IsBusy}" IsAnimate="{Binding IsBusy}"/>
+    </AbsoluteLayout>
+</ContentPage>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ViewCell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+          xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+          x:Class="wwrc_maui.Content.Views.Sales.PurchaseOrder.PurchaseOrderMonthCell"
+          xmlns:helper="clr-namespace:wwrc_maui.Content.Helper">
+    <VerticalStackLayout HorizontalOptions="Fill" Spacing="0">
+        <Grid HorizontalOptions="Fill" ColumnSpacing="10" RowDefinitions="Auto,Auto" Margin="15,5,15,15"
+              ColumnDefinitions="Auto,*,Auto">
+            <Grid.Resources>
+                <ResourceDictionary>
+                    <helper:InverseBoolConverter x:Key="InverseBool"/>
+                    <helper:StringNullConverter x:Key="StringNull"/>
+                </ResourceDictionary>
+            </Grid.Resources>
+            <!--icon-->
+            <Image Source="ic_status_red" HeightRequest="20" Aspect="AspectFit" HorizontalOptions="Start"
+                   VerticalOptions="Center" Grid.RowSpan="2">
+                <Image.Triggers>
+                    <DataTrigger TargetType="Image" Binding="{Binding DocStatus}" Value="O">
+                        <Setter Property="Source" Value="ic_status_green"/>
+                    </DataTrigger>
+                </Image.Triggers>
+            </Image>
+            <!--details-->
+            <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" Margin="0,10" Grid.Column="1"
+                                 VerticalOptions="Center" Grid.ColumnSpan="2">
+                <Label Text="{Binding PONO}" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                       MaxLines="1" LineBreakMode="TailTruncation" Style="{StaticResource PopupPromptButton}"/>
+                <Label Text="{Binding CardName}" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                       MaxLines="1" LineBreakMode="TailTruncation"/>
+                <Label Text="{Binding CardCode}" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                       MaxLines="1" LineBreakMode="TailTruncation"/>
+            </VerticalStackLayout>
+            <!--datetime-->
+            <Label Text="{Binding PostingDate}" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                   MaxLines="1" LineBreakMode="TailTruncation" Grid.Row="1" Grid.Column="1"
+                   VerticalTextAlignment="End" VerticalOptions="End" FontSize="12"/>
+            <!--amount-->
+            <HorizontalStackLayout HorizontalOptions="End" Spacing="8" VerticalOptions="End"
+                                   Grid.Row="1" Grid.Column="2">
+                <Label Text="{Binding CurrencyCode}" HorizontalOptions="End" HorizontalTextAlignment="End"
+                       MaxLines="1" LineBreakMode="TailTruncation" VerticalTextAlignment="End" VerticalOptions="End"
+                       Style="{StaticResource PopupPromptButton}"/>
+                <Label Text="{Binding DocTotal, StringFormat='{0:N2}'}" HorizontalOptions="End" HorizontalTextAlignment="End"
+                       MaxLines="1" LineBreakMode="TailTruncation" VerticalTextAlignment="End" VerticalOptions="End"
+                       Style="{StaticResource PopupPromptButton}"/>
+            </HorizontalStackLayout>
+        </Grid>
+        <BoxView HeightRequest="1" HorizontalOptions="Fill" VerticalOptions="End" />
+    </VerticalStackLayout>
+</ViewCell>

@@ -12,7 +12,9 @@ public partial class CustomCircleImg : Grid
     public Aspect ImgAspect { get => (Aspect)GetValue(ImgAspectProperty); set { SetValue(ImgAspectProperty, value); } }
     public bool HasImage { get => (bool)GetValue(HasImageProperty); set { SetValue(HasImageProperty, value); } }
     public byte[] ImgFromByte { get => (byte[])GetValue(ImgFromByteProperty); set { SetValue(ImgFromByteProperty, value); } }
-    public string ImgFromSource { get => (string)GetValue(ImgFromSourceProperty); set { SetValue(ImgFromSourceProperty, value); } }
+    public string ImgFromString { get => (string)GetValue(ImgFromStringProperty); set { SetValue(ImgFromStringProperty, value); } }
+    public Stream ImgFromStream { get => (Stream)GetValue(ImgFromStreamProperty); set { SetValue(ImgFromStreamProperty, value); } }
+    public ImageSource ImgSource { get => (ImageSource)GetValue(ImgSourceProperty); set { SetValue(ImgSourceProperty, value); } }
     #endregion
     #region bindable properties
     public static BindableProperty SetSizeProperty =
@@ -30,9 +32,15 @@ public partial class CustomCircleImg : Grid
     public static BindableProperty ImgFromByteProperty =
         BindableProperty.Create(nameof(ImgFromByte), typeof(byte[]), typeof(CustomCircleImg), defaultValue: null,
             propertyChanged: (bindable, oldVal, newVal) => { ((CustomCircleImg)bindable).UpdateImgFromByte((byte[])newVal); });
-    public static BindableProperty ImgFromSourceProperty =
-        BindableProperty.Create(nameof(ImgFromSource), typeof(string), typeof(CustomCircleImg), defaultValue: null,
+    public static BindableProperty ImgFromStringProperty =
+        BindableProperty.Create(nameof(ImgFromString), typeof(string), typeof(CustomCircleImg), defaultValue: null,
             propertyChanged: (bindable, oldVal, newVal) => { ((CustomCircleImg)bindable).UpdateImgFromSource((string)newVal); });
+    public static BindableProperty ImgFromStreamProperty =
+        BindableProperty.Create(nameof(ImgFromStream), typeof(Stream), typeof(CustomCircleImg), defaultValue: null,
+            propertyChanged: (bindable, oldVal, newVal) => { ((CustomCircleImg)bindable).UpdateImgFromStream((Stream)newVal); });
+    public static BindableProperty ImgSourceProperty =
+        BindableProperty.Create(nameof(ImgSource), typeof(ImageSource), typeof(CustomCircleImg), defaultValue: null,
+            propertyChanged: (bindable, oldVal, newVal) => { ((CustomCircleImg)bindable).UpdateImgSourceProperty((ImageSource)newVal); });
     #endregion
     #region binding implementation
     public void UpdateSetSize(double data)
@@ -61,6 +69,26 @@ public partial class CustomCircleImg : Grid
         var theme = Application.Current?.RequestedTheme;
         img_default.Source = theme == AppTheme.Light ? "ic_elipse_info" : "ic_elipse_info_2";
         if (!string.IsNullOrEmpty(data))
+        {
+            img_default.Source = data;
+            img_default.IsVisible = true;
+        }
+    }
+    public void UpdateImgFromStream(Stream data)
+    {
+        var theme = Application.Current?.RequestedTheme;
+        img_default.Source = theme == AppTheme.Light ? "ic_elipse_info" : "ic_elipse_info_2";
+        if (data != null)
+        {
+            img_default.Source = ImageSource.FromStream(() => data);
+            img_default.IsVisible = true;
+        }
+    }
+    public void UpdateImgSourceProperty(ImageSource data)
+    {
+        var theme = Application.Current?.RequestedTheme;
+        img_default.Source = theme == AppTheme.Light ? "ic_elipse_info" : "ic_elipse_info_2";
+        if (data != null)
         {
             img_default.Source = data;
             img_default.IsVisible = true;

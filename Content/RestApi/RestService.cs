@@ -1,9 +1,6 @@
-﻿using AndroidX.Browser.Trusted.Sharing;
-using Newtonsoft.Json;
-using SQLite;
+﻿using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Diagnostics.Metrics;
 using System.Text;
 using wwrc_maui.Content.Model;
 using wwrc_maui.Content.Model.Common;
@@ -14,6 +11,8 @@ using static wwrc_maui.Content.Model.CustomerVisitModel;
 using static wwrc_maui.Content.Model.DashboardModel;
 using static wwrc_maui.Content.Model.EmpHandbookModel;
 using static wwrc_maui.Content.Model.FcmTokenModel;
+using static wwrc_maui.Content.Model.MediaModel;
+using static wwrc_maui.Content.Model.NewsModel;
 using static wwrc_maui.Content.Model.PasswordModel;
 using static wwrc_maui.Content.Model.POModel;
 using static wwrc_maui.Content.Model.ProductModel;
@@ -32,9 +31,27 @@ namespace wwrc_maui.Content.RestApi
         string DbaseValue = "db_WWRC";
         static readonly int NOTIFICATION_ID = 100;
 
-        Task<RequestResult<ObservableCollection<ChangePasswordModel>>> IRestService.ChangePassword(API_ChangePasswordModel model)
+        async Task<RequestResult<ObservableCollection<ChangePasswordModel>>> IRestService.ChangePassword(API_ChangePasswordModel model)
         {
-            throw new NotImplementedException();
+            var uri = new Uri(string.Format("{0}/api/Login/ChangePassword", WSurl));
+            model.DBase = DbaseValue;
+            var json = JsonConvert.SerializeObject(model);
+            var contentJson = new StringContent(json, Encoding.UTF8, "application/json");
+            var result = new RequestResult<ObservableCollection<ChangePasswordModel>>();
+            try
+            {
+                var response = await client.PostAsync(uri, contentJson);
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    result = JsonConvert.DeserializeObject<RequestResult<ObservableCollection<ChangePasswordModel>>>(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error", ex.Message, "Login");
+            }
+            return result;
         }
 
         Task<RequestResult<ObservableCollection<ResponseHeader>>> IRestService.CreateCustomerVisit(API_CreateCustomerVisit model)
@@ -98,14 +115,70 @@ namespace wwrc_maui.Content.RestApi
             return result;
         }
 
-        Task<RequestResult<ObservableCollection<CustomerAgingMainModel>>> IRestService.GetCustomerAging(API_CustomerAging model)
+        async Task<RequestResult<ObservableCollection<CustomerAgingMainModel>>> IRestService.GetCustomerAging(API_CustomerAging model)
         {
-            throw new NotImplementedException();
+            if (client.DefaultRequestHeaders.Authorization == null)
+            {
+                client.DefaultRequestHeaders.Clear();
+                var token = Preferences.Default.Get("login_token", "");
+                if (!string.IsNullOrEmpty(token))
+                { client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", token); }
+            }
+
+            var uri = new Uri(string.Format("{0}/api/Aging/Get", WSurl));
+            model.DBase = DbaseValue;
+            var json = JsonConvert.SerializeObject(model);
+            //var json = "{\"dBase\":\"db_WWRC\",\"Country\":\"\",\"Company\":\"\",\"UserId\":\"\"} //currently not working
+            //var json = "{\"dBase\":\"db_WWRC\",\"Country\":\"ID\",\"Company\":\"WWRCIND_PROD\",\"UserId\":\"\"}"; //FY_LIVE
+            var contentJson = new StringContent(json, Encoding.UTF8, "application/json");
+            var result = new RequestResult<ObservableCollection<CustomerAgingMainModel>>();
+
+            try
+            {
+                var response = await client.PostAsync(uri, contentJson);
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    result = JsonConvert.DeserializeObject<RequestResult<ObservableCollection<CustomerAgingMainModel>>>(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error", ex.Message, "Login");
+            }
+            return result;
         }
 
-        Task<RequestResult<ObservableCollection<AgingDetailMainModel>>> IRestService.GetCustomerAgingDetail(API_CustomerAging model)
+        async Task<RequestResult<ObservableCollection<AgingDetailMainModel>>> IRestService.GetCustomerAgingDetail(API_CustomerAging model)
         {
-            throw new NotImplementedException();
+            if (client.DefaultRequestHeaders.Authorization == null)
+            {
+                client.DefaultRequestHeaders.Clear();
+                var token = Preferences.Default.Get("login_token", "");
+                if (!string.IsNullOrEmpty(token))
+                { client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", token); }
+            }
+
+            var uri = new Uri(string.Format("{0}/api/Aging/Details", WSurl));
+            model.DBase = DbaseValue;
+            var json = JsonConvert.SerializeObject(model);
+            var contentJson = new StringContent(json, Encoding.UTF8, "application/json");
+            var result = new RequestResult<ObservableCollection<AgingDetailMainModel>>();
+
+            try
+            {
+                var response = await client.PostAsync(uri, contentJson);
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    result = JsonConvert.DeserializeObject<RequestResult<ObservableCollection<AgingDetailMainModel>>>(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error", ex.Message, "Login");
+            }
+            return result;
         }
 
         Task<RequestResult<ObservableCollection<CustomerVisitMainModel>>> IRestService.GetCustomerVisit(API_CustomerVisitModel model)
@@ -182,24 +255,133 @@ namespace wwrc_maui.Content.RestApi
             throw new NotImplementedException();
         }
 
-        Task<RequestResult<ObservableCollection<EmployeeHandbookMainModel>>> IRestService.GetEmployeeHandbook(API_EmployeeHandbook model)
+        async Task<RequestResult<ObservableCollection<EmployeeHandbookMainModel>>> IRestService.GetEmployeeHandbook(API_EmployeeHandbook model)
         {
-            throw new NotImplementedException();
+            if (client.DefaultRequestHeaders.Authorization == null)
+            {
+                client.DefaultRequestHeaders.Clear();
+                var token = Preferences.Default.Get("login_token", "");
+                if (!string.IsNullOrEmpty(token))
+                { client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", token); }
+            }
+
+            var uri = new Uri(string.Format("{0}/api/EmployeeHandbook/Get", WSurl));
+            model.DBase = DbaseValue;
+            var json = JsonConvert.SerializeObject(model);
+            var contentJson = new StringContent(json, Encoding.UTF8, "application/json");
+            var result = new RequestResult<ObservableCollection<EmployeeHandbookMainModel>>();
+
+            try
+            {
+                var response = await client.PostAsync(uri, contentJson);
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    result = JsonConvert.DeserializeObject<RequestResult<ObservableCollection<EmployeeHandbookMainModel>>>(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error", ex.Message, "Login");
+            }
+            return result;
         }
 
-        Task<RequestResult<ObservableCollection<NewsModel.NewsMainModel>>> IRestService.GetNews()
+        async Task<RequestResult<ObservableCollection<NewsMainModel>>> IRestService.GetNews()
         {
-            throw new NotImplementedException();
+            if (client.DefaultRequestHeaders.Authorization == null)
+            {
+                client.DefaultRequestHeaders.Clear();
+                var token = Preferences.Default.Get("login_token", "");
+                if (!string.IsNullOrEmpty(token))
+                { client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", token); }
+            }
+
+            var uri = new Uri(string.Format("{0}/api/News/Get", WSurl));
+            var model = new API_NewsModel { DBase = DbaseValue };
+            var json = JsonConvert.SerializeObject(model);
+            var contentJson = new StringContent(json, Encoding.UTF8, "application/json");
+            var result = new RequestResult<ObservableCollection<NewsMainModel>>();
+
+            try
+            {
+                var response = await client.PostAsync(uri, contentJson);
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    result = JsonConvert.DeserializeObject<RequestResult<ObservableCollection<NewsMainModel>>>(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error", ex.Message, "Login");
+            }
+            return result;
         }
 
-        Task<RequestResult<ObservableCollection<MediaModel.MediaMainModel>>> IRestService.GetPhoto()
+        async Task<RequestResult<ObservableCollection<MediaMainModel>>> IRestService.GetPhoto()
         {
-            throw new NotImplementedException();
+            if (client.DefaultRequestHeaders.Authorization == null)
+            {
+                client.DefaultRequestHeaders.Clear();
+                var token = Preferences.Default.Get("login_token", "");
+                if (!string.IsNullOrEmpty(token))
+                { client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", token); }
+            }
+
+            var uri = new Uri(string.Format("{0}/api/Gallery/get", WSurl));
+            var model = new APIPhotoModel { dBase = DbaseValue };
+            var json = JsonConvert.SerializeObject(model);
+            var contentJson = new StringContent(json, Encoding.UTF8, "application/json");
+            var result = new RequestResult<ObservableCollection<MediaMainModel>>();
+
+            try
+            {
+                var response = await client.PostAsync(uri, contentJson);
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    result = JsonConvert.DeserializeObject<RequestResult<ObservableCollection<MediaMainModel>>>(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error", ex.Message, "Login");
+            }
+            return result;
         }
 
-        Task<RequestResult<ObservableCollection<POMainModel>>> IRestService.GetPurchase(API_PurchaseModel model)
+        async Task<RequestResult<ObservableCollection<POMainModel>>> IRestService.GetPurchase(API_PurchaseModel model)
         {
-            throw new NotImplementedException();
+            if (client.DefaultRequestHeaders.Authorization == null)
+            {
+                client.DefaultRequestHeaders.Clear();
+                var token = Preferences.Default.Get("login_token", "");
+                if (!string.IsNullOrEmpty(token))
+                { client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", token); }
+            }
+
+            var uri = new Uri(string.Format("{0}/api/PurchaseOrder/Get", WSurl));
+            model.DBase = DbaseValue;
+            var json = JsonConvert.SerializeObject(model);
+            var contentJson = new StringContent(json, Encoding.UTF8, "application/json");
+            var result = new RequestResult<ObservableCollection<POMainModel>>();
+
+            try
+            {
+                var response = await client.PostAsync(uri, contentJson);
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+
+                    result = JsonConvert.DeserializeObject<RequestResult<ObservableCollection<POMainModel>>>(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error", ex.Message, "Login");
+            }
+            return result;
         }
 
         Task<RequestResult<ObservableCollection<SalesOrderMainModel>>> IRestService.GetSalesOrder(API_SalesOrder model)
@@ -246,39 +428,202 @@ namespace wwrc_maui.Content.RestApi
             throw new NotImplementedException();
         }
 
-        Task<RequestResult<ObservableCollection<ProductMainModel>>> IRestService.ProductCatalog(API_ProductCatalogModel model)
+        async Task<RequestResult<ObservableCollection<ProductMainModel>>> IRestService.ProductCatalog(API_ProductCatalogModel model)
         {
-            throw new NotImplementedException();
+            if (client.DefaultRequestHeaders.Authorization == null)
+            {
+                client.DefaultRequestHeaders.Clear();
+                var token = Preferences.Default.Get("login_token", "");
+                if (!string.IsNullOrEmpty(token))
+                { client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", token); }
+            }
+
+            var uri = new Uri(string.Format("{0}/api/ProductCatalog/Get", WSurl));
+            model.DBase = DbaseValue;
+            var json = JsonConvert.SerializeObject(model);
+            var contentJson = new StringContent(json, Encoding.UTF8, "application/json");
+            var result = new RequestResult<ObservableCollection<ProductMainModel>>();
+
+            try
+            {
+                var response = await client.PostAsync(uri, contentJson);
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    result = JsonConvert.DeserializeObject<RequestResult<ObservableCollection<ProductMainModel>>>(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error", ex.Message, "Login");
+            }
+            return result;
         }
 
-        Task<bool> IRestService.ProfileUpdate(MultipartFormDataContent content)
+        async Task<bool> IRestService.ProfileUpdate(MultipartFormDataContent content)
         {
-            throw new NotImplementedException();
+            if (client.DefaultRequestHeaders.Authorization == null)
+            {
+                client.DefaultRequestHeaders.Clear();
+                var token = Preferences.Default.Get("login_token", "");
+                if (!string.IsNullOrEmpty(token))
+                { client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", token); }
+            }
+
+            var uri = new Uri(string.Format("{0}/api/Profile/Update", WSurl));
+            var dBase = new StringContent(DbaseValue);
+            content.Add(dBase, "dBase");
+            var result = false;
+
+            try
+            {
+                var response = await client.PostAsync(uri, content);
+                if (response.IsSuccessStatusCode) { result = true; }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error", ex.Message, "Login");
+            }
+            return result;
         }
 
-        Task<bool> IRestService.ReadEmployeeHandbook(MultipartFormDataContent content)
+        async Task<bool> IRestService.ReadEmployeeHandbook(MultipartFormDataContent content)
         {
-            throw new NotImplementedException();
+            if (client.DefaultRequestHeaders.Authorization == null)
+            {
+                client.DefaultRequestHeaders.Clear();
+                var token = Preferences.Default.Get("login_token", "");
+                if (!string.IsNullOrEmpty(token))
+                { client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", token); }
+            }
+
+            var uri = new Uri(string.Format("{0}/api/EmployeeHandbook/Read", WSurl));
+            var dBase = new StringContent(DbaseValue);
+            content.Add(dBase, "dBase");
+            var result = false;
+
+            try
+            {
+                var response = await client.PostAsync(uri, content);
+                if (response.IsSuccessStatusCode) { result = true; }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error", ex.Message, "Login");
+            }
+            return result;
         }
 
-        Task<bool> IRestService.ReadPhoto(MultipartFormDataContent content)
+        async Task<bool> IRestService.ReadPhoto(MultipartFormDataContent content)
         {
-            throw new NotImplementedException();
+            if (client.DefaultRequestHeaders.Authorization == null)
+            {
+                client.DefaultRequestHeaders.Clear();
+                var token = Preferences.Default.Get("login_token", "");
+                if (!string.IsNullOrEmpty(token))
+                { client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", token); }
+            }
+
+            var uri = new Uri(string.Format("{0}/api/Gallery/ReadPhoto", WSurl));
+            var dBase = new StringContent(DbaseValue);
+            content.Add(dBase, "dBase");
+            var result = false;
+
+            try
+            {
+                var response = await client.PostAsync(uri, content);
+                if (response.IsSuccessStatusCode) { result = true; }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error", ex.Message, "Login");
+            }
+            return result;
         }
 
-        Task<bool> IRestService.ReadProductCatalog(MultipartFormDataContent content)
+        async Task<bool> IRestService.ReadProductCatalog(MultipartFormDataContent content)
         {
-            throw new NotImplementedException();
+            if (client.DefaultRequestHeaders.Authorization == null)
+            {
+                client.DefaultRequestHeaders.Clear();
+                var token = Preferences.Default.Get("login_token", "");
+                if (!string.IsNullOrEmpty(token))
+                { client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", token); }
+            }
+
+            var uri = new Uri(string.Format("{0}/api/ProductCatalog/Read", WSurl));
+            var dBase = new StringContent(DbaseValue);
+            content.Add(dBase, "dBase");
+            var result = false;
+
+            try
+            {
+                var response = await client.PostAsync(uri, content);
+                if (response.IsSuccessStatusCode) { result = true; }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error", ex.Message, "Login");
+            }
+            return result;
         }
 
-        Task<bool> IRestService.ReadVideo(MultipartFormDataContent content)
+        async Task<bool> IRestService.ReadVideo(MultipartFormDataContent content)
         {
-            throw new NotImplementedException();
+            if (client.DefaultRequestHeaders.Authorization == null)
+            {
+                client.DefaultRequestHeaders.Clear();
+                var token = Preferences.Default.Get("login_token", "");
+                if (!string.IsNullOrEmpty(token))
+                { client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", token); }
+            }
+
+            var uri = new Uri(string.Format("{0}/api/Gallery/ReadVideo", WSurl));
+            var dBase = new StringContent(DbaseValue);
+            content.Add(dBase, "dBase");
+            var result = false;
+
+            try
+            {
+                var response = await client.PostAsync(uri, content);
+                if (response.IsSuccessStatusCode) { result = true; }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error", ex.Message, "Login");
+            }
+            return result;
         }
 
-        Task<RequestResult<ObservableCollection<StaffMainModel>>> IRestService.Staff(API_StaffModel model)
+        async Task<RequestResult<ObservableCollection<StaffMainModel>>> IRestService.Staff(API_StaffModel model)
         {
-            throw new NotImplementedException();
+            if (client.DefaultRequestHeaders.Authorization == null)
+            {
+                client.DefaultRequestHeaders.Clear();
+                var token = Preferences.Default.Get("login_token", "");
+                if (!string.IsNullOrEmpty(token))
+                { client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", token); }
+            }
+
+            var uri = new Uri(string.Format("{0}/api/Staff/Get", WSurl));
+            model.DBase = DbaseValue;
+            var json = JsonConvert.SerializeObject(model);
+            var contentJson = new StringContent(json, Encoding.UTF8, "application/json");
+            var result = new RequestResult<ObservableCollection<StaffMainModel>>();
+            try
+            {
+                var response = await client.PostAsync(uri, contentJson);
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    result = JsonConvert.DeserializeObject<RequestResult<ObservableCollection<StaffMainModel>>>(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error", ex.Message, "Login");
+            }
+            return result;
         }
 
         Task<RequestResult<ObservableCollection<ResponseHeader>>> IRestService.UpdateCustomerVisit(API_UpdateCustomerVisit model)
@@ -291,9 +636,31 @@ namespace wwrc_maui.Content.RestApi
             throw new NotImplementedException();
         }
 
-        Task<bool> IRestService.UpdateNews(MultipartFormDataContent content)
+        async Task<bool> IRestService.UpdateNews(MultipartFormDataContent content)
         {
-            throw new NotImplementedException();
+            if (client.DefaultRequestHeaders.Authorization == null)
+            {
+                client.DefaultRequestHeaders.Clear();
+                var token = Preferences.Default.Get("login_token", "");
+                if (!string.IsNullOrEmpty(token))
+                { client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", token); }
+            }
+
+            var uri = new Uri(string.Format("{0}/api/News/Read", WSurl));
+            var dBase = new StringContent(DbaseValue);
+            content.Add(dBase, "dBase");
+            var result = false;
+
+            try
+            {
+                var response = await client.PostAsync(uri, content);
+                if (response.IsSuccessStatusCode) result = true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error", ex.Message, "Login");
+            }
+            return result;
         }
     }
 }

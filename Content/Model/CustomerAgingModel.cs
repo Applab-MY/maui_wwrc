@@ -130,6 +130,14 @@ namespace wwrc_maui.Content.Model
             public string DocDate { get; set; } = "";
             public double Outstanding { get; set; }
         }
+
+        public class CustomerDetailDetailModel
+        {
+            public string CardCode { get; set; } = "";
+            public string Doc { get; set; } = "";
+            public string Date { get; set; } = "";
+            public string Outstanding { get; set; } = "";
+        }
         #endregion
     }
 }

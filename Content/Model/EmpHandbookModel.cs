@@ -14,6 +14,7 @@
             public string Filesize { get; set; } = "";
             public string CreateByName { get; set; } = "";
             public DateTime CreateDate { get; set; }
+            public string CreateDateString { get; set; } = "";
             public string IsRead { get; set; } = "";
         }
 

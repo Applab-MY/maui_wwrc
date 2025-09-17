@@ -41,7 +41,7 @@
             public string DefaultImgFalse { get; set; } = "";
         }
 
-        public class APINewsModel
+        public class API_NewsModel
         {
             public string DBase { get; set; } = "";
         }

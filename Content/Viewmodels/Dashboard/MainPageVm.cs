@@ -121,10 +121,12 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
         #endregion
 
         public Command? RefreshCommand { get; set; } = null;
+        public LoginMainModel? LoginData = null;
         public DashboardMainModel? DashboardData = null;
         public FilterDataModel? FilterData = null;
         public bool IsDisplayGraph = false;
         public bool IsDisplayCurrency = false;
+        public Action<DashboardCarouselTemplate>? OnCellMenuTap = null;
 
         public MainPageVm()
         {
@@ -139,11 +141,11 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
         {
             IsBusy = true; IsRefreshing = true;
             FlagIcon = "ic_uncheck";
-            var _login = AppDatabase.Instance.SqlConnection.Query<LoginMainModel>
+            LoginData = AppDatabase.Instance.SqlConnection.Query<LoginMainModel>
                 ("Select * from LoginMainModel").FirstOrDefault();
-            if (_login != null && _login.UserData != null)
+            if (LoginData != null && LoginData.UserData != null)
             {
-                var _mods = _login.UserData.UserModules;
+                var _mods = LoginData.UserData.UserModules;
                 if (_mods != null)
                 {
                     if (_mods.SalesTargetChart) { IsDisplayGraph = true; }
@@ -179,54 +181,64 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
 
         private async Task GetDashboardData()
         {
-            if (App.AppClient != null)
+            NetworkAccess accessType = Connectivity.Current.NetworkAccess;
+            if (accessType == NetworkAccess.Internet && App.AppClient != null)
             {
-                var model = new API_DashBoard
+                try
                 {
-                    Country = Preferences.Default.Get("country", ""),
-                    Company = Preferences.Default.Get("subsidiary", ""),
-                    UserId = Preferences.Default.Get("userId", "")
-                };
-                var _res = await App.AppClient.GetDashBoard(model);
-                if (_res.SystemCode == 401)
-                {
-                    AppDatabase.Instance.DeleteAllData();
-                    Preferences.Default.Clear();
-                    await App.DisplayAlert("Relogin", "Please login again", null, "Okay");
-                    Application.Current?.Dispatcher.Dispatch(() =>
-                    { Application.Current.Windows[0].Page = new Login(); });
-                }
-                if (_res.SystemCode == 200 && _res.items != null)
-                {
-                    var items = _res.items[0];
-                    if (IsDisplayGraph)
+                    var model = new API_DashBoard
                     {
-                        CenterPercentYtd = items.GPPYTD + "%";
-                        CenterPercentMtd = items.GPPMTD + "%";
-                        YtdProgress = Convert.ToDouble(items.YTDP) / 100;
-                        MtdProgress = Convert.ToDouble(items.MTDP) / 100;
-                        YtdSales = items.YTD;
-                        MtdSales = items.MTD;
-                        YtdDetails = items.YTDP;
-                        MtdDetails = items.MTDP;
-
-                        Preferences.Default.Set("dashb-mtd", items.MTD);
-                        Preferences.Default.Set("dashb-mtdTarget", items.MTDTarget);
-                        Preferences.Default.Set("dashb-mtdP", items.MTDP);
-                        Preferences.Default.Set("dashb-mtdGP", items.GPPMTD);
-                        Preferences.Default.Set("dashb-ytd", items.YTD);
-                        Preferences.Default.Set("dashb-ytdTarget", items.YTDTarget);
-                        Preferences.Default.Set("dashb-ytdP", items.YTDP);
-                        Preferences.Default.Set("dashb-ytdGP", items.GPPYTD);
+                        Country = Preferences.Default.Get("country", ""),
+                        Company = Preferences.Default.Get("subsidiary", ""),
+                        UserId = Preferences.Default.Get("userId", "")
+                    };
+                    var _res = await App.AppClient.GetDashBoard(model);
+                    if (_res.SystemCode == 401)
+                    {
+                        AppDatabase.Instance.DeleteAllData();
+                        Preferences.Default.Clear();
+                        await App.DisplayAlert("Relogin", "Please login again", null, "Okay");
+                        Application.Current?.Dispatcher.Dispatch(() =>
+                        { Application.Current.Windows[0].Page = new Login(); });
                     }
+                    else if (_res.SystemCode == 200 && _res.items != null)
+                    {
+                        var items = _res.items[0];
+                        if (IsDisplayGraph)
+                        {
+                            YtdProgress = Convert.ToDouble(items.YTDP) / 100;
+                            MtdProgress = Convert.ToDouble(items.MTDP) / 100;
+                            CenterPercentYtd = items.YTDP;
+                            CenterPercentMtd = items.MTDP;
+                            YtdSales = items.YTD;
+                            MtdSales = items.MTD;
+                            YtdDetails = items.GPPYTD + "%";
+                            MtdDetails = items.GPPMTD + "%";
 
-                    var total = items.PhotoCount + items.VideoCount;
-                    items.TotalMediaCount = total.ToString();
-                    DashboardData = items;
+                            Preferences.Default.Set("dashb-mtd", items.MTD);
+                            Preferences.Default.Set("dashb-mtdTarget", items.MTDTarget);
+                            Preferences.Default.Set("dashb-mtdP", items.MTDP);
+                            Preferences.Default.Set("dashb-mtdGP", items.GPPMTD);
+                            Preferences.Default.Set("dashb-ytd", items.YTD);
+                            Preferences.Default.Set("dashb-ytdTarget", items.YTDTarget);
+                            Preferences.Default.Set("dashb-ytdP", items.YTDP);
+                            Preferences.Default.Set("dashb-ytdGP", items.GPPYTD);
+                        }
+
+                        var total = items.PhotoCount + items.VideoCount;
+                        items.TotalMediaCount = total.ToString();
+                        DashboardData = items;
+                    }
+                    else await App.DisplayAlert("Error", "API error : " + _res.SystemCode.ToString()
+                        + ", " + _res.SystemMessage + "\r" + _res.SystemDebugMessage, null, "Okay");
                 }
-                if (_res.SystemCode == 0)
-                { await App.DisplayAlert("API Error", "Please contact system admin", null, "Okay"); }
+                catch (Exception ex)
+                {
+                    var error = ex.Message;
+                    await App.DisplayAlert("Exception", error, null, "Okay");
+                }
             }
+            else await App.DisplayAlert("No Internet", "Please check your internet connection.", null, "Okay");
         }
 
         private async Task GetCurrencyData()
@@ -259,8 +271,7 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
 
         private void SetupCarouselMenu()
         {
-            var _login = AppDatabase.Instance.SqlConnection.Query<LoginMainModel>
-                ("Select * from LoginMainModel").FirstOrDefault();
+            TemplateSelector = null;
             string[] menuList = [
                 "StockAlert",
                 "CustomerAging",
@@ -278,7 +289,7 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
             var filtered = new List<string>();
             var properties = typeof(UserModules).GetProperties();
             var _userModules = new UserModules();
-            if (_login != null) _userModules = _login.UserData?.UserModules;
+            if (LoginData != null) _userModules = LoginData.UserData?.UserModules;
             foreach (var item in menuList)
             {
                 foreach (var property in properties)
@@ -291,9 +302,9 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
                 }
             }
             filtered.Add("MyProfile");
-            if (_login != null)
+            if (LoginData != null)
             {
-                var myProfile = _login?.UserData;
+                var myProfile = LoginData?.UserData;
                 if (myProfile != null && !myProfile.IsOfficeCredential)
                     filtered.Add("ResetPassword");
             }
@@ -308,6 +319,7 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
                     var _view = new CarouselCell
                     { MenuFilter = filtered, MenuList = CarouselDataSource(), DashboardData = DashboardData };
                     _view.BuildView();
+                    _view.OnCellTap += OnCarouselCellTap;
                     return _view;
                 });
             }
@@ -323,6 +335,7 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
                     var _view = new CarouselCell
                     { MenuFilter = _page1, MenuList = CarouselDataSource(), DashboardData = DashboardData };
                     _view.BuildView();
+                    _view.OnCellTap += OnCarouselCellTap;
                     return _view;
                 });
                 cell2 = new DataTemplate(() =>
@@ -330,12 +343,25 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
                     var _view = new CarouselCell
                     { MenuFilter = _page2, MenuList = CarouselDataSource(), DashboardData = DashboardData };
                     _view.BuildView();
+                    _view.OnCellTap += OnCarouselCellTap;
                     return _view;
                 });
                 CarouselItems.Add("2");
             }
             TemplateSelector = new DashBoardDataTemplate { FirstTemplate = cell1, SecondTemplate = cell2 };
             #endregion
+        }
+
+        private void OnCarouselCellTap(DashboardCarouselTemplate data)
+        {
+            if (data.Type.Equals("CustomerAging")) { OnCellMenuTap?.Invoke(data); }
+            else if (data.Type.Equals("PurchaseOrder")) { OnCellMenuTap?.Invoke(data); }
+            else if (data.Type.Equals("News")) { OnCellMenuTap?.Invoke(data); }
+            else if (data.Type.Equals("MediaGallery")) { OnCellMenuTap?.Invoke(data); }
+            else if (data.Type.Equals("EmployeeHandbook")) { OnCellMenuTap?.Invoke(data); }
+            else if (data.Type.Equals("ProductCatalogue")) { OnCellMenuTap?.Invoke(data); }
+            else if (data.Type.Equals("MyProfile")) { OnCellMenuTap?.Invoke(data); }
+            else if (data.Type.Equals("ResetPassword")) { OnCellMenuTap?.Invoke(data); }
         }
 
         private static List<DashboardCarouselTemplate> CarouselDataSource()

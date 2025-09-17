@@ -53,6 +53,7 @@ namespace wwrc_maui.Content.Viewmodels.Auth
                     content.Add(_email, "Email");
                     var res = await App.AppClient.ForgotPassword(content);
                     if (res) await App.DisplayAlert("Success", "Forgot password requested", null, "Okay");
+                    else await App.DisplayAlert("Error", "Request password reset failed.", null, "Okay");
                 }
                 catch (Exception ex)
                 {

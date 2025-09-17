@@ -89,7 +89,14 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
                     {
                         var _subs = found.SubsidiaryList.Where(x => x.Subsidiary.Equals(subs)).FirstOrDefault();
                         if (_subs != null)
+                        {
+                            if (FilterModel != null && !string.IsNullOrEmpty(FilterModel.UserId))
+                            {
+                                foreach (var sp in _subs.SalesPersonList)
+                                { if (sp.Id.Equals(FilterModel.UserId)) { sp.Checked = true; } }
+                            }
                             SalesList = [.. _subs.SalesPersonList];
+                        }
                     }
                 }
             }

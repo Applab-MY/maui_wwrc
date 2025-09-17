@@ -80,10 +80,10 @@ namespace wwrc_maui.Content.Viewmodels.Auth
                             Version = Version,
                             Platform = Platform,
                         };
-                        var res = await App.AppClient.Login(model);
-                        if (res.SystemCode == 200 && res.items != null)
+                        var _res = await App.AppClient.Login(model);
+                        if (_res.SystemCode == 200 && _res.items != null)
                         {
-                            if (res.items.Count > 0)
+                            if (_res.items.Count > 0)
                             {
                                 AppDatabase.Instance.SqlConnection.DeleteAll<LoginMainModel>();
                                 AppDatabase.Instance.SqlConnection.DeleteAll<Userinfo>();
@@ -91,11 +91,11 @@ namespace wwrc_maui.Content.Viewmodels.Auth
                                 AppDatabase.Instance.SqlConnection.DeleteAll<ItemGroup>();
                                 AppDatabase.Instance.SqlConnection.DeleteAll<SalesTarget>();
                                 AppDatabase.Instance.SqlConnection.DeleteAll<Branch>();
-                                if (res.items[0].Data != null)
+                                if (_res.items[0].Data != null)
                                 {
-                                    AppDatabase.Instance.SqlConnection.Insert(res.items[0].Data);
-                                    AppDatabase.Instance.SqlConnection.Insert(res.items[0].Data?.Modules);
-                                    res.items[0].Data?.SalesTarget.ForEach(b =>
+                                    AppDatabase.Instance.SqlConnection.Insert(_res.items[0].Data);
+                                    AppDatabase.Instance.SqlConnection.Insert(_res.items[0].Data?.Modules);
+                                    _res.items[0].Data?.SalesTarget.ForEach(b =>
                                     {
                                         var model = new SalesTargetModule
                                         {
@@ -113,16 +113,16 @@ namespace wwrc_maui.Content.Viewmodels.Auth
                                         Preferences.Default.Set("userTitle", b.Type);
                                         Preferences.Default.Set("country", b.Country);
                                     });
-                                    res.items[0].Data?.ItemGroup.ForEach(b =>
+                                    _res.items[0].Data?.ItemGroup.ForEach(b =>
                                     { AppDatabase.Instance.SqlConnection.Insert(new ItemGroup { item = b }); });
 
-                                    var _is365 = Convert.ToBoolean(res.items[0].Data?.IsOfficeCredential);
+                                    var _is365 = Convert.ToBoolean(_res.items[0].Data?.IsOfficeCredential);
                                     if (!_is365) { Preferences.Default.Set("email", Email); }
                                 }
 
-                                var login = new LoginMainModel { Token = res.items[0].Token };
+                                var login = new LoginMainModel { Token = _res.items[0].Token };
                                 AppDatabase.Instance.SqlConnection.Insert(login);
-                                Preferences.Default.Set("login_token", res.items[0].Token);
+                                Preferences.Default.Set("login_token", _res.items[0].Token);
 
                                 //Post Token
                                 //await SendRegistrationToServer(LoginResult.items[0].Data.Id);
@@ -132,13 +132,13 @@ namespace wwrc_maui.Content.Viewmodels.Auth
                                 { Application.Current.Windows[0].Page = new NavigationPage(new MainPage()); });
                             }
                         }
-                        else await App.DisplayAlert("Error", res.SystemMessage, null, "Okay");
+                        else await App.DisplayAlert("Error: " + _res.SystemCode.ToString(), _res.SystemDebugMessage
+                            + ". " + _res.SystemMessage, null, "Okay");
                     }
                     catch (Exception ex)
-                    {
-                        await App.DisplayAlert("Error", ex.Message, null, "Okay");
-                    }
+                    { await App.DisplayAlert("Error", ex.Message, null, "Okay"); }
                 }
+                else await App.DisplayAlert("No Internet", "Please check your internet connection.", null, "Okay");
             }
             IsBusy = false;
         }

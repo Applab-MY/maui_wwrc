@@ -28,5 +28,13 @@
 	</array>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/appicon.appiconset</string>
+	<key>NSCameraUsageDescription</key>
+	<string>WWRC needs access to the camera to take photos for updating profiles and sending attachments.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>WWRC needs access to microphone for taking videos to send for attachments.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>WRWC needs access to the photo gallery for picking photos and videos for updating profile and send attachments.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>WRWC needs access to the photo gallery for picking photos and videos for updating profile and send attachments.</string>
 </dict>
 </plist>

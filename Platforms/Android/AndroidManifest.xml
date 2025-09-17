@@ -1,6 +1,25 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="14" android:versionName="2.2.4">
-	<application android:allowBackup="true" android:icon="@mipmap/appicon" android:supportsRtl="true"></application>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="14" android:versionName="2.2.4" package="com.applab.wwrc" android:installLocation="preferExternal">
+	<application android:label="WWRC" android:allowBackup="true" android:icon="@drawable/launcher" android:supportsRtl="true">
+		<provider android:name="androidx.core.content.FileProvider" android:grantUriPermissions="true" android:authorities="com.applab.wwrc.fileprovider" android:exported="false">
+			<meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths"></meta-data>
+		</provider>
+	</application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.CAMERA" />
+	<uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
+	<!-- Required only if your app needs to access images or photos that other apps created -->
+	<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+	<!-- Required only if your app needs to access videos that other apps created -->
+	<uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+	<!-- Required only if your app needs to access audio files that other apps created -->
+	<uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+	<queries>
+		<intent>
+			<action android:name="android.media.action.IMAGE_CAPTURE" />
+		</intent>
+	</queries>
 </manifest>

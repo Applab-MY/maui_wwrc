@@ -201,7 +201,7 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
                         Application.Current?.Dispatcher.Dispatch(() =>
                         { Application.Current.Windows[0].Page = new Login(); });
                     }
-                    else if (_res.SystemCode == 200 && _res.items != null)
+                    else if (_res.SystemCode == 200 && _res.items != null && _res.items.Count > 0)
                     {
                         var items = _res.items[0];
                         if (IsDisplayGraph)
@@ -229,6 +229,8 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
                         items.TotalMediaCount = total.ToString();
                         DashboardData = items;
                     }
+                    else if (_res.SystemCode == 200 && _res.items != null && _res.items.Count == 0)
+                    { } //bugfix :: sometimes api success but return null items
                     else await App.DisplayAlert("Error", "API error : " + _res.SystemCode.ToString()
                         + ", " + _res.SystemMessage + "\r" + _res.SystemDebugMessage, null, "Okay");
                 }
@@ -353,16 +355,7 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
         }
 
         private void OnCarouselCellTap(DashboardCarouselTemplate data)
-        {
-            if (data.Type.Equals("CustomerAging")) { OnCellMenuTap?.Invoke(data); }
-            else if (data.Type.Equals("PurchaseOrder")) { OnCellMenuTap?.Invoke(data); }
-            else if (data.Type.Equals("News")) { OnCellMenuTap?.Invoke(data); }
-            else if (data.Type.Equals("MediaGallery")) { OnCellMenuTap?.Invoke(data); }
-            else if (data.Type.Equals("EmployeeHandbook")) { OnCellMenuTap?.Invoke(data); }
-            else if (data.Type.Equals("ProductCatalogue")) { OnCellMenuTap?.Invoke(data); }
-            else if (data.Type.Equals("MyProfile")) { OnCellMenuTap?.Invoke(data); }
-            else if (data.Type.Equals("ResetPassword")) { OnCellMenuTap?.Invoke(data); }
-        }
+        { OnCellMenuTap?.Invoke(data); }
 
         private static List<DashboardCarouselTemplate> CarouselDataSource()
         {

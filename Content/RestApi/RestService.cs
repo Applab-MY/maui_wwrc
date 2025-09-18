@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Diagnostics.Metrics;
 using System.Text;
 using wwrc_maui.Content.Model;
 using wwrc_maui.Content.Model.Common;
@@ -250,9 +251,36 @@ namespace wwrc_maui.Content.RestApi
             throw new NotImplementedException();
         }
 
-        Task<RequestResult<ObservableCollection<DOList>>> IRestService.GetDOBySalesOrder(API_DObySO model)
+        async Task<RequestResult<ObservableCollection<DOList>>> IRestService.GetDOBySalesOrder(API_DObySO model)
         {
-            throw new NotImplementedException();
+            if (client.DefaultRequestHeaders.Authorization == null)
+            {
+                client.DefaultRequestHeaders.Clear();
+                var token = Preferences.Default.Get("login_token", "");
+                if (!string.IsNullOrEmpty(token))
+                { client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", token); }
+            }
+
+            var uri = new Uri(string.Format("{0}/api/SalesOrder/GetDOListBySO", WSurl));
+            model.DBase = DbaseValue;
+            var json = JsonConvert.SerializeObject(model);
+            var contentJson = new StringContent(json, Encoding.UTF8, "application/json");
+            var result = new RequestResult<ObservableCollection<DOList>>();
+
+            try
+            {
+                var response = await client.PostAsync(uri, contentJson);
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    result = JsonConvert.DeserializeObject<RequestResult<ObservableCollection<DOList>>>(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error", ex.Message, "Login");
+            }
+            return result;
         }
 
         async Task<RequestResult<ObservableCollection<EmployeeHandbookMainModel>>> IRestService.GetEmployeeHandbook(API_EmployeeHandbook model)
@@ -384,9 +412,36 @@ namespace wwrc_maui.Content.RestApi
             return result;
         }
 
-        Task<RequestResult<ObservableCollection<SalesOrderMainModel>>> IRestService.GetSalesOrder(API_SalesOrder model)
+        async Task<RequestResult<ObservableCollection<SalesOrderMainModel>>> IRestService.GetSalesOrder(API_SalesOrder model)
         {
-            throw new NotImplementedException();
+            if (client.DefaultRequestHeaders.Authorization == null)
+            {
+                client.DefaultRequestHeaders.Clear();
+                var token = Preferences.Default.Get("login_token", "");
+                if (!string.IsNullOrEmpty(token))
+                { client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", token); }
+            }
+
+            var uri = new Uri(string.Format("{0}/api/SalesOrder/Get", WSurl));
+            model.DBase = DbaseValue;
+            var json = JsonConvert.SerializeObject(model);
+            var contentJson = new StringContent(json, Encoding.UTF8, "application/json");
+            var result = new RequestResult<ObservableCollection<SalesOrderMainModel>>();
+
+            try
+            {
+                var response = await client.PostAsync(uri, contentJson);
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    result = JsonConvert.DeserializeObject<RequestResult<ObservableCollection<SalesOrderMainModel>>>(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error", ex.Message, "Login");
+            }
+            return result;
         }
 
         Task<RequestResult<ObservableCollection<SalesModel.SalesMainModel>>> IRestService.GetSalesResult(API_DashBoard model)

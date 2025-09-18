@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="wwrc_maui.Content.Views.Sales.PurchaseOrder.PurchaseOrderDetails"
+             xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
+             xmlns:cell="clr-namespace:wwrc_maui.Content.Views.Sales.PurchaseOrder"
+             xmlns:vm="clr-namespace:wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder"
+             xmlns:helper="clr-namespace:wwrc_maui.Content.Helper"
+             NavigationPage.HasNavigationBar="False">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <helper:InverseBoolConverter x:Key="InverseBool"/>
+            <helper:StringNullConverter x:Key="StringNull"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <AbsoluteLayout HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
+        <Grid HorizontalOptions="Fill" VerticalOptions="Fill" AbsoluteLayout.LayoutFlags="All"
+              AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*" ColumnDefinitions="*"
+              RowSpacing="0" x:DataType="vm:PurchaseOrderDetailVm">
+            <!--nav bar-->
+            <controls:CustomNavigationBar IconLeft="ic_back" x:Name="navbar" Title="Purchase Order Details"/>
+            <BoxView HorizontalOptions="Fill" Margin="0" Style="{StaticResource BoxviewNavbar}"
+                     VerticalOptions="End"/>
+            <!--content-->
+            <Grid HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1" ColumnDefinitions="*"
+                  RowDefinitions="Auto,*" RowSpacing="0">
+                <!--row 1 : header-->
+                <Grid HorizontalOptions="Fill" RowSpacing="0" Padding="15,20" ColumnDefinitions="*"
+                      RowDefinitions="Auto">
+                    <VerticalStackLayout HorizontalOptions="Fill" Spacing="0">
+                        <!--PO no.-->
+                        <Label HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="WordWrap"
+                               Text="{Binding PoNo, StringFormat='PO : {0}', Converter={StaticResource StringNull}}"
+                               Style="{StaticResource AlertTitle}"/>
+                        <!--supplier name-->
+                        <Label Text="Supplier Name" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                               Style="{StaticResource AlertTitle}" Margin="0,15,0,0"/>
+                        <Label Text="{Binding CardName, Converter={StaticResource StringNull}}"
+                               HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                               LineBreakMode="WordWrap"/>
+                        <!--supplier code-->
+                        <Label Text="Supplier Code" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                               Style="{StaticResource AlertTitle}" Margin="0,15,0,0"/>
+                        <Label Text="{Binding CardCode, Converter={StaticResource StringNull}}"
+                               HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                               LineBreakMode="WordWrap"/>
+                        <!--date & amount-->
+                        <Grid HorizontalOptions="Fill" ColumnSpacing="10" ColumnDefinitions="*,*" Margin="0,15,0,0"
+                              RowDefinitions="Auto">
+                            <!--PO date-->
+                            <VerticalStackLayout HorizontalOptions="Fill" Spacing="0">
+                                <Label Text="PO Date" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                                       Style="{StaticResource AlertTitle}" />
+                                <Label Text="{Binding PostingDate, Converter={StaticResource StringNull}}"
+                                       HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                                       LineBreakMode="WordWrap"/>
+                            </VerticalStackLayout>
+                            <!--total amount-->
+                            <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" Grid.Column="1">
+                                <Label Text="Total Amount" HorizontalOptions="End" HorizontalTextAlignment="End"
+                                       Style="{StaticResource AlertTitle}"/>
+                                <Label Text="{Binding TotalDoc}" HorizontalOptions="End" HorizontalTextAlignment="End"
+                                       LineBreakMode="WordWrap"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                        <!--currency & status-->
+                        <Grid HorizontalOptions="Fill" ColumnSpacing="10" ColumnDefinitions="*,*" Margin="0,15,0,0"
+                              RowDefinitions="Auto">
+                            <!--currency -->
+                            <VerticalStackLayout HorizontalOptions="Fill" Spacing="0">
+                                <Label Text="BP Currency" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                                       Style="{StaticResource AlertTitle}"/>
+                                <Label Text="{Binding Currency}" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                                       LineBreakMode="WordWrap"/>
+                            </VerticalStackLayout>
+                            <!--status-->
+                            <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" Grid.Column="1">
+                                <Label Text="Status" HorizontalOptions="End" HorizontalTextAlignment="End"
+                                       Style="{StaticResource AlertTitle}"/>
+                                <Label Text="{Binding Status}" HorizontalOptions="End" HorizontalTextAlignment="End"
+                                       LineBreakMode="WordWrap"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Grid>
+                <!--row 2 : month list-->
+                <Grid HorizontalOptions="Fill" ColumnDefinitions="*" RowDefinitions="Auto" Grid.Row="1"
+                      Padding="15,0,15,20">
+                    <ScrollView IsVisible="{Binding NoData, Converter={StaticResource InverseBool}}"
+                                HorizontalOptions="Fill" VerticalOptions="Fill">
+                        <Border HorizontalOptions="Fill" Padding="0" StrokeShape="RoundRectangle 10"
+                                Stroke="LightGray" VerticalOptions="Start">
+                            <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" VerticalOptions="Fill">
+                                <Grid HorizontalOptions="Fill" ColumnDefinitions="0.4*,0.25*,0.15*,0.2*" RowDefinitions="Auto"
+                                      ColumnSpacing="8" BackgroundColor="LightGray" Padding="15,8">
+                                    <Label Text="Item Name" FontAttributes="Bold" HorizontalOptions="Start" TextColor="Black"
+                                           HorizontalTextAlignment="Start" VerticalOptions="Center"
+                                           VerticalTextAlignment="Center"/>
+                                    <Label Text="Unit Price" FontAttributes="Bold" HorizontalOptions="Start" TextColor="Black"
+                                           HorizontalTextAlignment="Start" VerticalOptions="Center"
+                                           VerticalTextAlignment="Center" Grid.Column="1"/>
+                                    <Label Text="Qty" FontAttributes="Bold" HorizontalOptions="Center" TextColor="Black"
+                                           HorizontalTextAlignment="Center" VerticalOptions="Center"
+                                           VerticalTextAlignment="Center" Grid.Column="2"/>
+                                    <Label Text="Open Qty" FontAttributes="Bold" HorizontalOptions="End" TextColor="Black"
+                                           HorizontalTextAlignment="End" VerticalOptions="Center"
+                                           VerticalTextAlignment="Center" Grid.Column="3"/>
+                                </Grid>
+                                <ListView HorizontalOptions="Fill" ItemsSource="{Binding PoItems}" SeparatorVisibility="None"
+                                          HasUnevenRows="True" VerticalOptions="Fill" ItemTapped="ListView_ItemTapped" Grid.Row="1">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <cell:PurchaseOrderDetailsCell/>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </VerticalStackLayout>
+                        </Border>
+                    </ScrollView>
+                    <!--no data-->
+                    <controls:CustomNoData HorizontalOptions="Center" VerticalOptions="Center" Margin="0,20,0,0"
+                                           IsVisible="{Binding NoData}"/>
+                </Grid>
+            </Grid>
+        </Grid>
+        <!--loading overlay-->
+        <controls:CustomLoading AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                x:Name="UiLoad" IsVisible="{Binding IsBusy}" IsAnimate="{Binding IsBusy}"/>
+    </AbsoluteLayout>
+
+</ContentPage>

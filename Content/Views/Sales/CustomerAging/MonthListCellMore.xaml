@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ViewCell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-          x:Class="wwrc_maui.Content.Views.Sales.CustomerAging.MonthListCellMore">
-    <Grid HorizontalOptions="Fill" ColumnDefinitions="*,*,*" RowDefinitions="Auto"
+          x:Class="wwrc_maui.Content.Views.Sales.CustomerAging.MonthListCellMore"
+          xmlns:helper="clr-namespace:wwrc_maui.Content.Helper">
+    <Grid HorizontalOptions="Fill" ColumnDefinitions="0.25*,0.25*,0.5*" RowDefinitions="Auto"
           ColumnSpacing="10">
+        <Grid.Resources>
+            <ResourceDictionary>
+                <helper:StringNullConverter x:Key="StringNull"/>
+            </ResourceDictionary>
+        </Grid.Resources>
         <Label Text="{Binding Doc}" HorizontalOptions="Fill" MaxLines="1" LineBreakMode="TailTruncation"
                Margin="15,10,0,10" VerticalOptions="Center" HorizontalTextAlignment="Start"/>
         <Label Text="{Binding Date}" HorizontalOptions="Center" MaxLines="1" LineBreakMode="TailTruncation"
-               Margin="0,10" VerticalOptions="Center" HorizontalTextAlignment="Center"
-               FontAttributes="Bold" Grid.Column="1"/>
+               Margin="0,10" VerticalOptions="Center" HorizontalTextAlignment="Center" Grid.Column="1"/>
         <Label Text="{Binding Outstanding, StringFormat='{0:0,000.00}'}" HorizontalOptions="End" MaxLines="1"
                LineBreakMode="TailTruncation" Margin="0,10,15,10" VerticalOptions="Center"
                HorizontalTextAlignment="End" Grid.Column="2"/>

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="wwrc_maui.Content.Views.Sales.SalesOrder.SODeliveryDetails"
+             xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
+             xmlns:cell="clr-namespace:wwrc_maui.Content.Views.Sales.SalesOrder"
+             xmlns:vm="clr-namespace:wwrc_maui.Content.Viewmodels.Sales.SalesOrder"
+             xmlns:helper="clr-namespace:wwrc_maui.Content.Helper"
+             NavigationPage.HasNavigationBar="False">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <helper:InverseBoolConverter x:Key="InverseBool"/>
+            <helper:StringNullConverter x:Key="StringNull"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <AbsoluteLayout HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
+        <Grid HorizontalOptions="Fill" VerticalOptions="Fill" AbsoluteLayout.LayoutFlags="All"
+              AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*" ColumnDefinitions="*"
+              RowSpacing="0" x:DataType="vm:SalesOrderDetailsVm">
+            <!--nav bar-->
+            <controls:CustomNavigationBar IconLeft="ic_back" x:Name="navbar" Title="Delivery Details"/>
+            <BoxView HorizontalOptions="Fill" Margin="0" Style="{StaticResource BoxviewNavbar}"
+                     VerticalOptions="End"/>
+            <!--content-->
+            <Grid HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1" ColumnDefinitions="*"
+                  RowDefinitions="Auto,*,Auto" RowSpacing="0">
+                <!--row 1 : header-->
+                <Grid HorizontalOptions="Fill" RowSpacing="0" Padding="15,20" ColumnDefinitions="*"
+                      RowDefinitions="Auto">
+                    <VerticalStackLayout HorizontalOptions="Fill" Spacing="0">
+                        <!--DO no.-->
+                        <Label HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="WordWrap"
+                               Text="{Binding SoNo, StringFormat='DO : {0}', Converter={StaticResource StringNull}}"
+                               Style="{StaticResource AlertTitle}"/>
+                        <!--customer name-->
+                        <Label Text="Customer Name" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                               Style="{StaticResource AlertTitle}" Margin="0,15,0,0"/>
+                        <Label Text="{Binding CardName, Converter={StaticResource StringNull}}"
+                               HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                               LineBreakMode="WordWrap"/>
+                        <!--customer code-->
+                        <Label Text="Customer Code" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                               Style="{StaticResource AlertTitle}" Margin="0,15,0,0"/>
+                        <Label Text="{Binding CardCode, Converter={StaticResource StringNull}}"
+                               HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                               LineBreakMode="WordWrap"/>
+                        <!--do date & delivery date-->
+                        <Grid HorizontalOptions="Fill" ColumnSpacing="10" ColumnDefinitions="*,*" Margin="0,15,0,0"
+                              RowDefinitions="Auto">
+                            <!--do date-->
+                            <VerticalStackLayout HorizontalOptions="Fill" Spacing="0">
+                                <Label Text="DO Date" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                                       Style="{StaticResource AlertTitle}"/>
+                                <Label Text="{Binding DoPostingDate, Converter={StaticResource StringNull}}"
+                                       HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                                       LineBreakMode="WordWrap"/>
+                            </VerticalStackLayout>
+                            <!--delivery date-->
+                            <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" Grid.Column="1">
+                                <Label Text="Delivery Date" HorizontalOptions="End" HorizontalTextAlignment="End"
+                                       Style="{StaticResource AlertTitle}"/>
+                                <Label Text="{Binding DeliveryDate, Converter={StaticResource StringNull}}"
+                                       HorizontalOptions="End" HorizontalTextAlignment="End"
+                                       LineBreakMode="WordWrap"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                        <!--record close date & return date-->
+                        <Grid HorizontalOptions="Fill" ColumnSpacing="10" ColumnDefinitions="*,*" Margin="0,15,0,0"
+                              RowDefinitions="Auto">
+                            <!--record close date-->
+                            <VerticalStackLayout HorizontalOptions="Fill" Spacing="0">
+                                <Label Text="SO Date" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                                       Style="{StaticResource AlertTitle}" />
+                                <Label Text="{Binding DoCloseDate, Converter={StaticResource StringNull}}"
+                                       HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                                       LineBreakMode="WordWrap"/>
+                            </VerticalStackLayout>
+                            <!--return date-->
+                            <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" Grid.Column="1">
+                                <Label Text="Status" HorizontalOptions="End" HorizontalTextAlignment="End"
+                                       Style="{StaticResource AlertTitle}"/>
+                                <Label Text="{Binding DoReturnDate, Converter={StaticResource StringNull}}"
+                                       HorizontalOptions="End" HorizontalTextAlignment="End"
+                                       LineBreakMode="WordWrap"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                        <!--status-->
+                        <Label Text="Status" HorizontalOptions="Start" HorizontalTextAlignment="Start" Margin="0,15,0,0"
+                               Style="{StaticResource AlertTitle}"/>
+                        <Label Text="{Binding DoStatus}" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                               LineBreakMode="WordWrap"/>
+                    </VerticalStackLayout>
+                </Grid>
+                <!--row 2 : DO list items-->
+                <ScrollView HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1">
+                    <VerticalStackLayout HorizontalOptions="Fill" Spacing="10" VerticalOptions="Fill">
+                        <Grid HorizontalOptions="Fill" ColumnDefinitions="*" RowDefinitions="Auto" Padding="15,0">
+                            <Border HorizontalOptions="Fill" Padding="0" StrokeShape="RoundRectangle 10"
+                                    IsVisible="{Binding NoDeliveryItem, Converter={StaticResource InverseBool}}"
+                                    Stroke="LightGray" VerticalOptions="Start">
+                                <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" VerticalOptions="Fill">
+                                    <Grid HorizontalOptions="Fill" ColumnDefinitions="0.7*,0.3*" RowDefinitions="Auto"
+                                          ColumnSpacing="10" BackgroundColor="LightGray" Padding="15,8">
+                                        <Label Text="ITEM LIST" FontAttributes="Bold" HorizontalOptions="Start" TextColor="Black"
+                                               HorizontalTextAlignment="Start" VerticalOptions="Center"
+                                               VerticalTextAlignment="Center"/>
+                                        <Label Text="DELIVERY QTY" FontAttributes="Bold" HorizontalOptions="End" TextColor="Black"
+                                               HorizontalTextAlignment="End" VerticalOptions="Center"
+                                               VerticalTextAlignment="Center" Grid.Column="1"/>
+                                    </Grid>
+                                    <ListView HorizontalOptions="Fill" ItemsSource="{Binding DoItems}" SeparatorVisibility="None"
+                                              HasUnevenRows="True" VerticalOptions="Fill" ItemTapped="DoItemlist_ItemTapped" Grid.Row="1">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <cell:SODeliveryDetailsCell/>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+                                </VerticalStackLayout>
+                            </Border>
+                            <!--no data-->
+                            <Label Text="Delivery Items" HorizontalOptions="Center" VerticalOptions="Center" Style="{StaticResource AlertTitle}"
+                                   IsVisible="{Binding NoDeliveryItem}" HorizontalTextAlignment="Center" Margin="0,15,0,0"/>
+                            <controls:CustomNoData HorizontalOptions="Center" VerticalOptions="Center" Margin="0,90,0,0"
+                                                   IsVisible="{Binding NoDeliveryItem}"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                </ScrollView>
+            </Grid>
+        </Grid>
+        <!--loading overlay-->
+        <controls:CustomLoading AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                x:Name="UiLoad" IsVisible="{Binding IsBusy}" IsAnimate="{Binding IsBusy}"/>
+    </AbsoluteLayout>
+
+</ContentPage>

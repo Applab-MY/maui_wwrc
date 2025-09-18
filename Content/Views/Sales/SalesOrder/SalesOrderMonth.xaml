@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="wwrc_maui.Content.Views.Sales.SalesOrder.SalesOrderMainPage"
-             xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
-             xmlns:cell="clr-namespace:wwrc_maui.Content.Views.Sales.SalesOrder"
+             x:Class="wwrc_maui.Content.Views.Sales.SalesOrder.SalesOrderMonth"
              xmlns:vm="clr-namespace:wwrc_maui.Content.Viewmodels.Sales.SalesOrder"
+             xmlns:cell="clr-namespace:wwrc_maui.Content.Views.Sales.SalesOrder"
              xmlns:helper="clr-namespace:wwrc_maui.Content.Helper"
+             xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
              NavigationPage.HasNavigationBar="False">
 
     <ContentPage.Resources>
@@ -17,17 +17,17 @@
     <AbsoluteLayout HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
         <Grid HorizontalOptions="Fill" VerticalOptions="Fill" AbsoluteLayout.LayoutFlags="All"
               AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*" ColumnDefinitions="*"
-              RowSpacing="0" x:DataType="vm:SalesOrderVm">
+              RowSpacing="0" x:DataType="vm:SalesOrderMonthVm">
             <!--nav bar-->
             <controls:CustomNavigationBar IconLeft="ic_back" IconRight="ic_search" x:Name="navbar"
-                                          Title="Sales Order"/>
+                                          Title="{Binding PageTitle}"/>
             <BoxView HorizontalOptions="Fill" Margin="0" Style="{StaticResource BoxviewNavbar}"
                      VerticalOptions="End"/>
             <!--content-->
             <Grid HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1" ColumnDefinitions="*"
                   RowDefinitions="Auto,Auto,*">
                 <!--row 1 : search bar-->
-                <controls:CustomEntry HorizontalOptions="Fill" Placeholder="search sales order..." VerticalOptions="Start"
+                <controls:CustomEntry HorizontalOptions="Fill" Placeholder="search purchase order..." VerticalOptions="Start"
                                       x:Name="entry_search" Margin="20,10" SetWidth="{Binding EntryWidth}"
                                       IsVisible="{Binding IsSearchVisible}"/>
                 <!--row 2 : filter bar-->
@@ -35,7 +35,7 @@
                       RowDefinitions="Auto" Grid.Row="1" ColumnDefinitions="Auto,2,0.45*,2,0.55*,Auto">
                     <!--country-->
                     <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="0">
-                        <Label Text="Country" HorizontalOptions="Start" Style="{StaticResource AlertTitle}"
+                        <Label Text="COUNTRY" HorizontalOptions="Start" Style="{StaticResource AlertTitle}"
                                FontSize="12"/>
                         <Label Text="{Binding Country, Converter={StaticResource StringNull}}" HorizontalOptions="Start"
                                MaxLines="1" LineBreakMode="TailTruncation" FontSize="12"/>
@@ -44,7 +44,7 @@
                              BackgroundColor="{StaticResource Primary}"/>
                     <!--subsidiary-->
                     <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="0" Grid.Column="2">
-                        <Label Text="Subsidiary" HorizontalOptions="Start" Style="{StaticResource AlertTitle}"
+                        <Label Text="SUBSIDIARY" HorizontalOptions="Start" Style="{StaticResource AlertTitle}"
                                FontSize="12"/>
                         <Label Text="{Binding Subsidiary, Converter={StaticResource StringNull}}" HorizontalOptions="Start"
                                MaxLines="1" LineBreakMode="TailTruncation" FontSize="12"/>
@@ -53,7 +53,7 @@
                              BackgroundColor="{StaticResource Primary}"/>
                     <!--sales person-->
                     <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="0" Grid.Column="4">
-                        <Label Text="Sales Person" HorizontalOptions="Start" Style="{StaticResource AlertTitle}"
+                        <Label Text="SALES PERSON" HorizontalOptions="Start" Style="{StaticResource AlertTitle}"
                                FontSize="12"/>
                         <Label Text="{Binding SalesPerson, Converter={StaticResource StringNull}}" HorizontalOptions="Start"
                                MaxLines="1" LineBreakMode="TailTruncation" Style="{StaticResource PopupPromptButton}"
@@ -67,13 +67,13 @@
                 </Grid>
                 <!--row 3 : listview-->
                 <ListView HorizontalOptions="Fill" ItemsSource="{Binding SoMain}" SeparatorVisibility="None"
-                      HasUnevenRows="True" VerticalOptions="Fill" ItemTapped="ListView_ItemTapped" Grid.Row="2"
-                      Margin="0,15,0,5" IsVisible="{Binding NoData, Converter={StaticResource InverseBool}}"
-                      IsPullToRefreshEnabled="true" RefreshCommand="{Binding RefreshCommand}"
-                      IsRefreshing="{Binding IsRefreshing}">
+                          HasUnevenRows="True" VerticalOptions="Fill" ItemTapped="ListView_ItemTapped" Grid.Row="2"
+                          Margin="0,15,0,5" IsVisible="{Binding NoData, Converter={StaticResource InverseBool}}"
+                          IsPullToRefreshEnabled="true" RefreshCommand="{Binding RefreshCommand}"
+                          IsRefreshing="{Binding IsRefreshing}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <cell:SalesOrderMainCell/>
+                            <cell:SalesOrderMonthCell/>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
@@ -84,7 +84,7 @@
         </Grid>
         <!--loading overlay-->
         <controls:CustomLoading AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1"
-                            x:Name="UiLoad" IsVisible="{Binding IsBusy}" IsAnimate="{Binding IsBusy}"/>
+                        x:Name="UiLoad" IsVisible="{Binding IsBusy}" IsAnimate="{Binding IsBusy}"/>
     </AbsoluteLayout>
 
 </ContentPage>

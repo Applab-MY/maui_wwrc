@@ -24,6 +24,7 @@ public partial class PurchaseOrderMonth : ContentPage
     public async void Initialize()
     {
         await Task.Delay(300);
+        viewmodel.GetDashboardData();
         viewmodel.GetPurchaseByMonth();
     }
 
@@ -60,6 +61,6 @@ public partial class PurchaseOrderMonth : ContentPage
         if (sender is not ListView lv) return;
         lv.SelectedItem = null;
         var data = (PurchaseItem)e.Item;
-        //await Navigation.PushAsync(new CustomerAgingDetails(data.Id));
+        await Navigation.PushAsync(new PurchaseOrderDetails(data.PONO));
     }
 }

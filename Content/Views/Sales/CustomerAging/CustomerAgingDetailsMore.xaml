@@ -34,7 +34,7 @@
                                Text="{Binding CardName}" Style="{StaticResource AlertTitle}"/>
                         <!--table : details-->
                         <Grid HorizontalOptions="Fill" RowSpacing="0" ColumnSpacing="10" ColumnDefinitions="Auto,*,Auto"
-                              RowDefinitions="Auto,Auto">
+                              RowDefinitions="Auto,Auto" Margin="0,15,0,0">
                             <!--#region column 1-->
                             <Image Source="ic_date_time" HeightRequest="25" Aspect="AspectFit" VerticalOptions="Center"
                                    HorizontalOptions="Start"/>
@@ -67,17 +67,17 @@
                 <Grid HorizontalOptions="Fill" ColumnDefinitions="*" RowDefinitions="Auto" Grid.Row="1"
                       Padding="15,0,15,20">
                     <ScrollView IsVisible="{Binding NoDataAging, Converter={StaticResource InverseBool}}"
-                        HorizontalOptions="Fill" VerticalOptions="Fill">
+                                HorizontalOptions="Fill" VerticalOptions="Fill">
                         <Border HorizontalOptions="Fill" Padding="0" StrokeShape="RoundRectangle 10"
                                 Stroke="LightGray" VerticalOptions="Start">
                             <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" VerticalOptions="Fill">
-                                <Grid HorizontalOptions="Fill" ColumnDefinitions="*,*,*" RowDefinitions="Auto"
-                                      ColumnSpacing="10" BackgroundColor="LightGray" Padding="15">
-                                    <Label Text="DOC No." FontAttributes="Bold" HorizontalOptions="Start"
+                                <Grid HorizontalOptions="Fill" ColumnDefinitions="0.25*,0.25*,0.5*" RowDefinitions="Auto"
+                                      ColumnSpacing="10" BackgroundColor="LightGray" Padding="15,8">
+                                    <Label Text="DOC No." FontAttributes="Bold" HorizontalOptions="Start" TextColor="Black"
                                            HorizontalTextAlignment="Start" VerticalOptions="Center"/>
-                                    <Label Text="DOC DATE" FontAttributes="Bold" HorizontalOptions="End"
-                                           HorizontalTextAlignment="End" VerticalOptions="Center" Grid.Column="1"/>
-                                    <Label Text="OUTSTANDING" FontAttributes="Bold" HorizontalOptions="End"
+                                    <Label Text="DOC DATE" FontAttributes="Bold" HorizontalOptions="Center" TextColor="Black"
+                                           HorizontalTextAlignment="Center" VerticalOptions="Center" Grid.Column="1"/>
+                                    <Label Text="OUTSTANDING" FontAttributes="Bold" HorizontalOptions="End" TextColor="Black"
                                            HorizontalTextAlignment="End" VerticalOptions="Center" Grid.Column="2"/>
                                 </Grid>
                                 <ListView HorizontalOptions="Fill" ItemsSource="{Binding AgingDetailList}" SeparatorVisibility="None"
@@ -93,7 +93,8 @@
                         </Border>
                     </ScrollView>
                     <!--no data-->
-                    <controls:CustomNoData HorizontalOptions="Center" VerticalOptions="Center" IsVisible="{Binding NoDataAging}"/>
+                    <controls:CustomNoData HorizontalOptions="Center" VerticalOptions="Center" Margin="0,20,0,0"
+                                           IsVisible="{Binding NoDataAging}"/>
                 </Grid>
             </Grid>
         </Grid>

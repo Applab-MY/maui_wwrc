@@ -242,6 +242,12 @@
 	  <MauiXaml Update="Content\Views\Sales\CustomerAging\MonthListCellMore.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Sales\PurchaseOrder\PurchaseOrderDetails.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Sales\PurchaseOrder\PurchaseOrderDetailsCell.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Sales\PurchaseOrder\PurchaseOrderMainCell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -257,7 +263,31 @@
 	  <MauiXaml Update="Content\Views\Sales\SalesOptionPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Sales\SalesOrder\SalesOrderDetails.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Sales\SalesOrder\SalesOrderDetailsCellDo.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Sales\SalesOrder\SalesOrderDetailsCellSo.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Sales\SalesOrder\SalesOrderMainCell.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Sales\SalesOrder\SalesOrderMainPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Sales\SalesOrder\SalesOrderMonth.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Sales\SalesOrder\SalesOrderMonthCell.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Sales\SalesOrder\SODeliveryDetails.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Sales\SalesOrder\SODeliveryDetailsCell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Sales\StockAlert\StockAlertMainPage.xaml">

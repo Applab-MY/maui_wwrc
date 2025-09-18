@@ -102,15 +102,15 @@
                 <Grid HorizontalOptions="Fill" ColumnDefinitions="*" RowDefinitions="Auto" Grid.Row="1"
                       Padding="15,0,15,20">
                     <ScrollView IsVisible="{Binding NoData, Converter={StaticResource InverseBool}}"
-                        HorizontalOptions="Fill" VerticalOptions="Fill">
+                                HorizontalOptions="Fill" VerticalOptions="Fill">
                         <Border HorizontalOptions="Fill" Padding="0" StrokeShape="RoundRectangle 10"
                                 Stroke="LightGray" VerticalOptions="Start">
                             <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" VerticalOptions="Fill">
                                 <Grid HorizontalOptions="Fill" ColumnDefinitions="*,*,Auto" RowDefinitions="Auto"
-                                      ColumnSpacing="10" BackgroundColor="LightGray" Padding="15">
-                                    <Label Text="MONTH" FontAttributes="Bold" HorizontalOptions="Start"
+                                      ColumnSpacing="10" BackgroundColor="LightGray" Padding="15,8">
+                                    <Label Text="MONTH" FontAttributes="Bold" HorizontalOptions="Start" TextColor="Black"
                                            HorizontalTextAlignment="Start" VerticalOptions="Center"/>
-                                    <Label Text="OUTSTANDING" FontAttributes="Bold" HorizontalOptions="End"
+                                    <Label Text="OUTSTANDING" FontAttributes="Bold" HorizontalOptions="End" TextColor="Black"
                                            HorizontalTextAlignment="End" VerticalOptions="Center" Grid.Column="1"/>
                                 </Grid>
                                 <ListView HorizontalOptions="Fill" ItemsSource="{Binding MonthList}" SeparatorVisibility="None"
@@ -125,7 +125,7 @@
                         </Border>
                     </ScrollView>
                     <!--no data-->
-                    <controls:CustomNoData HorizontalOptions="Center" VerticalOptions="Center"
+                    <controls:CustomNoData HorizontalOptions="Center" VerticalOptions="Center" Margin="0,20,0,0"
                                            IsVisible="{Binding NoData}"/>
                 </Grid>
             </Grid>

@@ -1,21 +1,22 @@
-using wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder;
+using wwrc_maui.Content.Viewmodels.Sales.SalesOrder;
 using wwrc_maui.Content.Views.Dashboard;
-using static wwrc_maui.Content.Model.POModel;
+using static wwrc_maui.Content.Model.SOModel;
 
-namespace wwrc_maui.Content.Views.Sales.PurchaseOrder;
+namespace wwrc_maui.Content.Views.Sales.SalesOrder;
 
-public partial class PurchaseOrderMainPage : ContentPage
+public partial class SalesOrderMonth : ContentPage
 {
-    PurchaseOrderVm viewmodel = new();
+    SalesOrderMonthVm viewmodel = new();
     FilterSalesPersonView salesView = new();
 
-    public PurchaseOrderMainPage()
+    public SalesOrderMonth(string selectedDate)
     {
         InitializeComponent();
+        viewmodel.selectedDate = selectedDate;
         navbar.OnLeftIconTapped += async () => { await Navigation.PopAsync(); };
         navbar.OnRightIconTapped += () => { viewmodel.IsSearchVisible = !viewmodel.IsSearchVisible; };
         viewmodel.OnFinishLoad += (data) => { salesView.Itemsource = viewmodel.SalesList; };
-        entry_search.OnTextChanged += viewmodel.SearchPurchaseOrder;
+        entry_search.OnTextChanged += viewmodel.SearchSalesOrder;
         BindingContext = viewmodel;
         Initialize();
     }
@@ -23,8 +24,9 @@ public partial class PurchaseOrderMainPage : ContentPage
     public async void Initialize()
     {
         await Task.Delay(300);
+        viewmodel.PageTitle = viewmodel.selectedDate;
         viewmodel.GetDashboardData();
-        viewmodel.GetPurchaseOrderList();
+        viewmodel.GetSalesOrderByMonth();
     }
 
     private async void OnSales_Tapped(object sender, TappedEventArgs e)
@@ -41,7 +43,7 @@ public partial class PurchaseOrderMainPage : ContentPage
                 {
                     viewmodel.SalesPerson = salesView.Selected.Id;
                     viewmodel.isFilterSales = true;
-                    viewmodel.GetPurchaseOrderList();
+                    viewmodel.GetSalesOrderByMonth();
                 }
             }
             else
@@ -59,7 +61,7 @@ public partial class PurchaseOrderMainPage : ContentPage
     {
         if (sender is not ListView lv) return;
         lv.SelectedItem = null;
-        var data = (POMainModel)e.Item;
-        await Navigation.PushAsync(new PurchaseOrderMonth(data.Date));
+        var data = (Db_SOList)e.Item;
+        await Navigation.PushAsync(new SalesOrderDetails(data));
     }
 }

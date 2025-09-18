@@ -67,13 +67,13 @@
                 </Grid>
                 <!--row 3 : total bar-->
                 <Border HorizontalOptions="Fill" VerticalOptions="Start" Grid.Row="2" StrokeShape="RoundRectangle 10"
-                        BackgroundColor="#ffeded" Padding="15,8" Margin="15,0">
+                        BackgroundColor="#F8B6B6" Padding="15,8" Margin="15,0">
                     <Grid HorizontalOptions="Fill" ColumnSpacing="10" VerticalOptions="Center" RowDefinitions="Auto"
                           ColumnDefinitions="Auto,*,Auto">
                         <Image Source="ic_alert" HeightRequest="20" Aspect="AspectFit" VerticalOptions="Center"
                                HorizontalOptions="Start"/>
                         <Label Text="TOTAL OVERDUE" HorizontalOptions="Fill" VerticalOptions="Center" Grid.Column="1"
-                               LineBreakMode="TailTruncation" MaxLines="1" FontSize="12"/>
+                               LineBreakMode="TailTruncation" MaxLines="1" FontSize="12" TextColor="Black"/>
                         <Label Text="{Binding TotalOverdue, Converter={StaticResource StringNull}}" HorizontalOptions="End"
                                VerticalOptions="Center" LineBreakMode="TailTruncation" MaxLines="1" TextColor="Red"
                                HorizontalTextAlignment="End" Style="{StaticResource PopupPromptButton}" Grid.Column="2"/>

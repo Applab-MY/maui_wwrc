@@ -14,6 +14,7 @@ using wwrc_maui.Content.Views.Profile.Details;
 using wwrc_maui.Content.Views.Sales;
 using wwrc_maui.Content.Views.Sales.CustomerAging;
 using wwrc_maui.Content.Views.Sales.PurchaseOrder;
+using wwrc_maui.Content.Views.Sales.SalesOrder;
 using wwrc_maui.Content.Views.Staff;
 using static wwrc_maui.Content.Helper.ReferenceMessenger;
 using static wwrc_maui.Content.Model.DashboardModel;
@@ -77,6 +78,7 @@ public partial class MainPage : ContentPage
     private async void OnCellMenu_Tapped(DashboardCarouselTemplate data)
     {
         if (data.Type.Equals("CustomerAging")) await Navigation.PushAsync(new CustomerAgingMainPage());
+        if (data.Type.Equals("SalesOrder")) await Navigation.PushAsync(new SalesOrderMainPage());
         if (data.Type.Equals("PurchaseOrder")) await Navigation.PushAsync(new PurchaseOrderMainPage());
         if (data.Type.Equals("News")) await Navigation.PushAsync(new NewsMainPage());
         if (data.Type.Equals("MediaGallery")) await Navigation.PushAsync(new GalleryMainPage());

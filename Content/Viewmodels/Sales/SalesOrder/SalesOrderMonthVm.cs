@@ -1,11 +1,11 @@
 ﻿using wwrc_maui.Content.Model;
 using wwrc_maui.Content.Viewmodels.Common;
 using static wwrc_maui.Content.Model.DashboardModel;
-using static wwrc_maui.Content.Model.POModel;
+using static wwrc_maui.Content.Model.SOModel;
 
-namespace wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder
+namespace wwrc_maui.Content.Viewmodels.Sales.SalesOrder
 {
-    public class PurchaseOrderMonthVm : BaseViewModel
+    public class SalesOrderMonthVm : BaseViewModel
     {
         #region bindable properties
         #region beans
@@ -13,7 +13,7 @@ namespace wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder
         string _country = "";
         string _subsidiary = "";
         string _salesperson = "";
-        List<PurchaseItem> _poMain = [];
+        List<Db_SOList> _soMain = [];
         bool _nodata = false;
         private double _entryWidth = 0.0;
         string _pagetitle = "";
@@ -39,12 +39,12 @@ namespace wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder
             get { return _salesperson; }
             set { SetProperty(ref _salesperson, value); }
         }
-        public List<PurchaseItem> PoMain
+        public List<Db_SOList> SoMain
         {
-            get { return _poMain; }
+            get { return _soMain; }
             set
             {
-                SetProperty(ref _poMain, value);
+                SetProperty(ref _soMain, value);
                 NoData = value.Count == 0;
             }
         }
@@ -68,35 +68,58 @@ namespace wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder
 
         public Command? RefreshCommand { get; set; } = null;
         public DashboardMainModel? DashboardData = null;
-        public List<PurchaseItem> PoMainCache = [];
+        public List<Db_SOList> SoMainCache = [];
         public Action<bool>? OnFinishLoad = null;
         public List<SalesPersonList> SalesList = [];
         public bool isFilterSales = false;
         public string selectedDate = "";
 
-        public PurchaseOrderMonthVm()
+        public SalesOrderMonthVm()
         {
             Country = Preferences.Default.Get("country", "");
             Subsidiary = Preferences.Default.Get("subsidiary", "");
             SalesPerson = Preferences.Default.Get("userId", "");
             EntryWidth = App.ScreenWidth - 40;
-            RefreshCommand = new Command(GetPurchaseByMonth);
+            RefreshCommand = new Command(GetSalesOrderByMonth);
         }
 
-        public async void GetPurchaseByMonth()
+        public async void GetSalesOrderByMonth()
         {
             IsBusy = true; IsRefreshing = true;
             await Task.Delay(500);
             try
             {
-                PoMainCache = []; PoMain = [];
-                string _query = "SELECT * FROM DB_Purchase WHERE Date ='" + selectedDate + "'";
-                PoMainCache = AppDatabase.Instance.SqlConnection.Query<PurchaseItem>(_query);
-                PoMain = PoMainCache;
+                SoMainCache = []; SoMain = [];
+                string _query = "SELECT * FROM Db_SOList WHERE SalesDate = '" + selectedDate + "'";
+                var items = AppDatabase.Instance.SqlConnection.Query<Db_SOList>(_query);
+                if (items.Count > 0)
+                {
+                    foreach (var data in items)
+                    {
+                        string cardCode = "(" + data.CardCode + ")";
+                        var dbData = new Db_SOList()
+                        {
+                            Id = data.Id,
+                            SalesDate = selectedDate,
+                            Country = data.Country,
+                            Company = data.Company,
+                            UserID = data.UserID,
+                            CardCode = cardCode,
+                            CardName = data.CardName,
+                            SONO = data.SONO,
+                            PostingDate = data.PostingDate,
+                            DeliveryDate = data.DeliveryDate,
+                            ApprovedDate = data.ApprovedDate,
+                            DODate = data.DODate,
+                            DocStatus = data.DocStatus,
+                            DocTotal = data.DocTotal,
+                            Currency = data.Currency,
 
-                string _qPoMonth = "SELECT * FROM DB_PurchaseMonth WHERE Date = '" + selectedDate + "'";
-                var items = AppDatabase.Instance.SqlConnection.Query<DB_PurchaseMonth>(_qPoMonth);
-                if (items.Count > 0) PageTitle = items[0].Date;
+                        };
+                        SoMainCache.Add(dbData);
+                    }
+                    SoMain = SoMainCache;
+                }
                 IsBusy = false; IsRefreshing = false;
             }
             catch (Exception ex)
@@ -107,14 +130,17 @@ namespace wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder
             }
         }
 
-        public void SearchPurchaseOrder(string? txt = null)
+        public void SearchSalesOrder(string? txt = null)
         {
-            if (string.IsNullOrEmpty(txt)) PoMain = PoMainCache;
+            if (string.IsNullOrEmpty(txt))
+            { SoMain = SoMainCache; }
             else
             {
-                var result = PoMainCache.FindAll(item => item.CardName.ToLower().Contains(txt) ||
-                    item.CardName.ToUpper().Contains(txt) || item.PONO.ToLower().Contains(txt));
-                PoMain = result;
+                var result = SoMainCache.FindAll(item => item.CardName.ToLower().Contains(txt)
+                    || item.CardName.ToUpper().Contains(txt) || item.SONO.ToLower().Contains(txt)
+                    || item.SONO.ToUpper().Contains(txt) || item.CardCode.ToUpper().Contains(txt)
+                    || item.CardCode.ToLower().Contains(txt));
+                SoMain = result;
             }
         }
 

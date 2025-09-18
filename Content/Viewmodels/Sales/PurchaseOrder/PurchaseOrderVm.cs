@@ -92,10 +92,10 @@ namespace wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder
             Subsidiary = Preferences.Default.Get("subsidiary", "");
             SalesPerson = Preferences.Default.Get("userId", "");
             EntryWidth = App.ScreenWidth - 40;
-            RefreshCommand = new Command(PurchaseOrderList);
+            RefreshCommand = new Command(GetPurchaseOrderList);
         }
 
-        public async void PurchaseOrderList()
+        public async void GetPurchaseOrderList()
         {
             IsBusy = true; IsRefreshing = true;
             NetworkAccess accessType = Connectivity.Current.NetworkAccess;
@@ -179,6 +179,8 @@ namespace wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder
                         AppDatabase.Instance.SqlConnection.InsertAll(Purchases);
                         AppDatabase.Instance.SqlConnection.InsertAll(PoItems);
                     }
+                    else if (_res.SystemCode == 200 && _res.items != null && _res.items.Count == 0)
+                    { } //bugfix :: sometimes api success but return null items
                     else await App.DisplayAlert("Error: " + _res.SystemCode.ToString(), _res.SystemDebugMessage
                             + ". " + _res.SystemMessage, null, "Okay");
                     IsBusy = false; IsRefreshing = false;
@@ -204,32 +206,35 @@ namespace wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder
                 var result = new List<PurchaseItem>();
                 var monthHash = new Dictionary<string, int>();
 
-                for (int i = 0; i < PoMainCache.Count; i++)
+                if (PoMainCache.Count > 0)
                 {
-                    if (PoMainCache[i].Data != null)
+                    for (int i = 0; i < PoMainCache.Count; i++)
                     {
-                        result = PoMainCache[i].Data.FindAll(item => item.CardName.ToLower().Contains(txt) ||
-                            item.CardName.ToUpper().Contains(txt) || item.PONO.ToLower().Contains(txt));
-                        if (result.Count > 0) numberList.Add(i);
-                        if (monthHash.ContainsKey(PoMainCache[i].Date))
+                        if (PoMainCache[i].Data != null)
                         {
-                            monthHash.Remove(PoMainCache[i].Date);
-                            monthHash.Add(PoMainCache[i].Date, result.Count);
+                            result = PoMainCache[i].Data.FindAll(item => item.CardName.ToLower().Contains(txt) ||
+                                item.CardName.ToUpper().Contains(txt) || item.PONO.ToLower().Contains(txt));
+                            if (result.Count > 0) numberList.Add(i);
+                            if (monthHash.ContainsKey(PoMainCache[i].Date))
+                            {
+                                monthHash.Remove(PoMainCache[i].Date);
+                                monthHash.Add(PoMainCache[i].Date, result.Count);
+                            }
+                            else monthHash.Add(PoMainCache[i].Date, result.Count);
                         }
-                        else monthHash.Add(PoMainCache[i].Date, result.Count);
                     }
-                }
 
-                foreach (var number in numberList)
-                {
-                    var current = new POMainModel();
-                    string date = PoMainCache[number].Date;
-                    int count = monthHash[date];
-                    current.Date = date;
-                    current.Records = count + " record(s) found";
-                    _cache.Add(current);
+                    foreach (var number in numberList)
+                    {
+                        var current = new POMainModel();
+                        string date = PoMainCache[number].Date;
+                        int count = monthHash[date];
+                        current.Date = date;
+                        current.Records = count + " record(s) found";
+                        _cache.Add(current);
+                    }
+                    PoMain = _cache;
                 }
-                PoMain = _cache;
             }
         }
 

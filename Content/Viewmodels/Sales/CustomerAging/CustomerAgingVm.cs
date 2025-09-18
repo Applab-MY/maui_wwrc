@@ -210,6 +210,8 @@ namespace wwrc_maui.Content.Viewmodels.Sales.CustomerAging
                             CustAgings = [.. CustAgingList.OrderByDescending(f => f.ALERT)];
                         }
                     }
+                    else if (_res.SystemCode == 200 && _res.items != null && _res.items.Count == 0)
+                    { } //bugfix :: sometimes api success but return null items
                     else await App.DisplayAlert("Error: " + _res.SystemCode.ToString(), _res.SystemDebugMessage
                             + ". " + _res.SystemMessage, null, "Okay");
                     IsBusy = false; IsRefreshing = false;
@@ -255,13 +257,15 @@ namespace wwrc_maui.Content.Viewmodels.Sales.CustomerAging
                     };
                     var _res = await App.AppClient.GetDashBoard(model);
                     if (_res.SystemCode == 401) { }
-                    else if (_res.SystemCode == 200 && _res.items != null)
+                    else if (_res.SystemCode == 200 && _res.items != null && _res.items.Count > 0)
                     {
                         DashboardData = _res.items[0];
                         SetupSalesList();
                     }
-                    //else await App.DisplayAlert("Error", "API error : " + _res.SystemCode.ToString()
-                    //    + ", " + _res.SystemMessage + "\r" + _res.SystemDebugMessage, null, "Okay");
+                    else if (_res.SystemCode == 200 && _res.items != null && _res.items.Count == 0)
+                    { } //bugfix :: sometimes api success but return null items
+                    else await App.DisplayAlert("Error", "API error : " + _res.SystemCode.ToString()
+                        + ", " + _res.SystemMessage + "\r" + _res.SystemDebugMessage, null, "Okay");
                     IsBusy = false; IsRefreshing = false;
                 }
                 catch (Exception ex)

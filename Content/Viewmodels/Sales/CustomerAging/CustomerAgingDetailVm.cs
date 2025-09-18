@@ -19,7 +19,7 @@ namespace wwrc_maui.Content.Viewmodels.Sales.CustomerAging
         string _utilized = "";
         string _credit = "";
         string _available = "";
-        string _outstanding = "";
+        string _outstanding = "0.00";
         string _selectedMonth = "";
         bool _nodata = false;
         bool _nodataAging = false;
@@ -256,6 +256,7 @@ namespace wwrc_maui.Content.Viewmodels.Sales.CustomerAging
             {
                 try
                 {
+                    AgingDetailList = [];
                     var model = new API_CustomerAging
                     {
                         Country = Preferences.Default.Get("country", ""),
@@ -276,9 +277,10 @@ namespace wwrc_maui.Content.Viewmodels.Sales.CustomerAging
                     }
                     else if (_res.SystemCode == 200 && _res.items != null && _res.items.Count > 0)
                     {
-                        TotalOutstanding = string.Format("{0:N2}", _res.items[0].TotalOutstanding);
-                        if (_res.items[0].DocList.Count > 0)
+                        if (_res.items[0] != null && _res.items[0].DocList != null &&
+                            _res.items[0].DocList.Count > 0)
                         {
+                            TotalOutstanding = string.Format("{0:N2}", _res.items[0].TotalOutstanding);
                             var _list = new List<CustomerDetailDetailModel>();
                             foreach (var docModel in _res.items[0].DocList)
                             {
@@ -295,6 +297,8 @@ namespace wwrc_maui.Content.Viewmodels.Sales.CustomerAging
                             AgingDetailList = _list;
                         }
                     }
+                    else if (_res.SystemCode == 200 && _res.items != null && _res.items.Count == 0)
+                    { } //bugfix :: sometimes api success but return null items
                     else await App.DisplayAlert("Error: " + _res.SystemCode.ToString(), _res.SystemDebugMessage
                             + ". " + _res.SystemMessage, null, "Okay");
                     IsBusy = false; IsRefreshing = false;

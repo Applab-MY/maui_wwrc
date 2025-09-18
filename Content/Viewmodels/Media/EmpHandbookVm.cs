@@ -106,8 +106,10 @@ namespace wwrc_maui.Content.Viewmodels.Media.EmpHandbook
                         }
                         Handbooks = handbooksCache;
                     }
-                    //else await App.DisplayAlert("Error: " + _res.SystemCode.ToString(), _res.SystemDebugMessage
-                    //    + ". " + _res.SystemMessage, null, "Okay");
+                    else if (_res.SystemCode == 200 && _res.items != null && _res.items.Count == 0)
+                    { } //bugfix :: sometimes api success but return null items
+                    else await App.DisplayAlert("Error: " + _res.SystemCode.ToString(), _res.SystemDebugMessage
+                        + ". " + _res.SystemMessage, null, "Okay");
                     IsBusy = true; IsRefreshing = true;
                 }
                 catch (Exception ex)

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ViewCell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="wwrc_maui.Content.Views.Sales.StockAlert.StockAlertMainCell"
+             xmlns:helper="clr-namespace:wwrc_maui.Content.Helper">
+    <Grid HorizontalOptions="Fill" ColumnSpacing="10" RowDefinitions="Auto" Margin="15,0"
+          ColumnDefinitions="Auto,*">
+        <Grid.Resources>
+            <ResourceDictionary>
+                <helper:InverseBoolConverter x:Key="InverseBool"/>
+                <helper:StringNullConverter x:Key="StringNull"/>
+            </ResourceDictionary>
+        </Grid.Resources>
+        <Image Source="{Binding ALERT}" HeightRequest="40" Aspect="AspectFit" HorizontalOptions="Start"
+               VerticalOptions="Center"/>
+        <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" Margin="0,10" Grid.Column="1"
+                             VerticalOptions="Center">
+            <Label Text="{Binding ItemCode}" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                   MaxLines="1" LineBreakMode="TailTruncation" Style="{StaticResource PopupPromptButton}">
+                <Label.Triggers>
+                    <DataTrigger TargetType="Label" Binding="{Binding ALERT}" Value="ic_status_red">
+                        <Setter Property="TextColor" Value="Red"/>
+                    </DataTrigger>
+                </Label.Triggers>
+            </Label>
+            <Label Text="{Binding ItemName}" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                   MaxLines="1" LineBreakMode="TailTruncation">
+                <Label.Triggers>
+                    <DataTrigger TargetType="Label" Binding="{Binding ALERT}" Value="ic_status_red">
+                        <Setter Property="TextColor" Value="Red"/>
+                    </DataTrigger>
+                </Label.Triggers>
+            </Label>
+            <HorizontalStackLayout HorizontalOptions="Fill" Spacing="5" VerticalOptions="Center">
+                <Label Text="Current Stock Level" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                       MaxLines="1" LineBreakMode="TailTruncation">
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding ALERT}" Value="ic_status_red">
+                            <Setter Property="TextColor" Value="Red"/>
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+                <Label Text="{Binding OnHand}" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                       MaxLines="1" LineBreakMode="TailTruncation">
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding ALERT}" Value="ic_status_red">
+                            <Setter Property="TextColor" Value="Red"/>
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+            </HorizontalStackLayout>
+            <HorizontalStackLayout HorizontalOptions="Fill" Spacing="5" VerticalOptions="Center">
+                <Label Text="Minimum Stock Level" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                       MaxLines="1" LineBreakMode="TailTruncation">
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding ALERT}" Value="ic_status_red">
+                            <Setter Property="TextColor" Value="Red"/>
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+                <Label Text="{Binding MinLevel}" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                       MaxLines="1" LineBreakMode="TailTruncation">
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding ALERT}" Value="ic_status_red">
+                            <Setter Property="TextColor" Value="Red"/>
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+        <BoxView HeightRequest="1" HorizontalOptions="Fill" Grid.ColumnSpan="2"
+                 VerticalOptions="End"/>
+    </Grid>
+</ViewCell>

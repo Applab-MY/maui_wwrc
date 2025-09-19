@@ -3,27 +3,72 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="wwrc_maui.Content.Views.Sales.StockAlert.StockAlertMainPage"
              xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
+             xmlns:cell="clr-namespace:wwrc_maui.Content.Views.Sales.StockAlert"
              xmlns:vm="clr-namespace:wwrc_maui.Content.Viewmodels.Sales.StockAlert"
+             xmlns:helper="clr-namespace:wwrc_maui.Content.Helper"
              NavigationPage.HasNavigationBar="False">
-    
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <helper:InverseBoolConverter x:Key="InverseBool"/>
+            <helper:StringNullConverter x:Key="StringNull"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <AbsoluteLayout HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
         <Grid HorizontalOptions="Fill" VerticalOptions="Fill" AbsoluteLayout.LayoutFlags="All"
-              AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*,Auto" ColumnDefinitions="*"
+              AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*" ColumnDefinitions="*"
               RowSpacing="0" x:DataType="vm:StockAlertVm">
             <!--nav bar-->
-            <controls:CustomNavigationBar IconLeft="ic_back" IconRight="ic_search" x:Name="navbar"/>
+            <controls:CustomNavigationBar IconLeft="ic_back" IconRight="ic_search" x:Name="navbar"
+                                          Title="Stock Alert"/>
             <BoxView HorizontalOptions="Fill" Margin="0" Style="{StaticResource BoxviewNavbar}"
                      VerticalOptions="End"/>
             <!--content-->
             <Grid HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1" ColumnDefinitions="*"
-                  RowDefinitions="Auto,*">
-                <!--row 1 : tab bar-->
+                  RowDefinitions="Auto,*,Auto">
+                <!--row 1 : search bar-->
+                <controls:CustomEntry HorizontalOptions="Fill" Placeholder="search stock..." VerticalOptions="Start"
+                                      x:Name="entry_search" Margin="20,10" SetWidth="{Binding EntryWidth}"
+                                      IsVisible="{Binding IsSearchVisible}"/>
                 <!--row 2 : listview-->
+                <ListView HorizontalOptions="Fill" ItemsSource="{Binding StockList}" SeparatorVisibility="None"
+                      HasUnevenRows="True" VerticalOptions="Fill" ItemTapped="ListView_ItemTapped" Grid.Row="1"
+                      Margin="0,15,0,5" IsVisible="{Binding NoData, Converter={StaticResource InverseBool}}"
+                      IsPullToRefreshEnabled="true" RefreshCommand="{Binding RefreshCommand}"
+                      IsRefreshing="{Binding IsRefreshing}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <cell:StockAlertMainCell/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <!--no data-->
+                <controls:CustomNoData Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center"
+                                       IsVisible="{Binding NoData}"/>
+                <!--row 3 : color status-->
+                <BoxView HeightRequest="1" HorizontalOptions="Fill" VerticalOptions="Start" Grid.Row="2"/>
+                <Grid HorizontalOptions="Fill" ColumnSpacing="10" VerticalOptions="End"
+                      Margin="15,10" Grid.Row="2" ColumnDefinitions="*,*">
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="5">
+                        <Image Source="ic_status_grey" HeightRequest="15" VerticalOptions="Center"
+                               HorizontalOptions="Center"/>
+                        <Label Text="Normal Stock" VerticalOptions="Center" HorizontalOptions="Center"
+                               LineBreakMode="TailTruncation" FontSize="12" MaxLines="2"
+                               HorizontalTextAlignment="Center"/>
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="5" Grid.Column="1">
+                        <Image Source="ic_status_red" HeightRequest="15" VerticalOptions="Center"
+                               HorizontalOptions="Center"/>
+                        <Label Text="Min Stock Alert" VerticalOptions="Center" HorizontalOptions="Center"
+                               LineBreakMode="TailTruncation" FontSize="12" MaxLines="2"
+                               HorizontalTextAlignment="Center"/>
+                    </HorizontalStackLayout>
+                </Grid>
             </Grid>
         </Grid>
         <!--loading overlay-->
         <controls:CustomLoading AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1"
-                                x:Name="UiLoad" IsVisible="{Binding IsBusy}" IsAnimate="{Binding IsBusy}"/>
+                            x:Name="UiLoad" IsVisible="{Binding IsBusy}" IsAnimate="{Binding IsBusy}"/>
     </AbsoluteLayout>
 
 </ContentPage>

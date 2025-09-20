@@ -439,7 +439,7 @@ namespace wwrc_maui.Content.RestApi
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Error", ex.Message, "Login");
+                Debug.WriteLine("Error", ex.Message, "GetSalesOrder");
             }
             return result;
         }
@@ -449,9 +449,36 @@ namespace wwrc_maui.Content.RestApi
             throw new NotImplementedException();
         }
 
-        Task<RequestResult<ObservableCollection<StockAlertMainModel>>> IRestService.GetStockAlert(API_StockAlert model)
+        async Task<RequestResult<ObservableCollection<StockAlertMainModel>>> IRestService.GetStockAlert(API_StockAlert model)
         {
-            throw new NotImplementedException();
+            if (client.DefaultRequestHeaders.Authorization == null)
+            {
+                client.DefaultRequestHeaders.Clear();
+                var token = Preferences.Default.Get("login_token", "");
+                if (!string.IsNullOrEmpty(token))
+                { client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", token); }
+            }
+
+            var uri = new Uri(string.Format("{0}/api/StockAlert/Get", WSurl));
+            model.DBase = DbaseValue;
+            var json = JsonConvert.SerializeObject(model);
+            var contentJson = new StringContent(json, Encoding.UTF8, "application/json");
+            var result = new RequestResult<ObservableCollection<StockAlertMainModel>>();
+
+            try
+            {
+                var response = await client.PostAsync(uri, contentJson);
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    result = JsonConvert.DeserializeObject<RequestResult<ObservableCollection<StockAlertMainModel>>>(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error", ex.Message, "GetStockAlert");
+            }
+            return result;
         }
 
         async Task<RequestResult<ObservableCollection<LoginMainModel>>> IRestService.Login(API_LoginModel model)
@@ -478,9 +505,27 @@ namespace wwrc_maui.Content.RestApi
             return result;
         }
 
-        Task<RequestResult<ObservableCollection<LoginMainModel>>> IRestService.MicrosoftLogin(API_MicrosoftLoginModel model)
+        async Task<RequestResult<ObservableCollection<LoginMainModel>>> IRestService.MicrosoftLogin(API_MicrosoftLoginModel model)
         {
-            throw new NotImplementedException();
+            var uri = new Uri(string.Format("{0}/api/Login/MicrosoftLogin", WSurl));
+            model.dBase = DbaseValue;
+            var json = JsonConvert.SerializeObject(model);
+            var contentJson = new StringContent(json, Encoding.UTF8, "application/json");
+            var result = new RequestResult<ObservableCollection<LoginMainModel>>();
+            try
+            {
+                var response = await client.PostAsync(uri, contentJson);
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    result = JsonConvert.DeserializeObject<RequestResult<ObservableCollection<LoginMainModel>>>(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error", ex.Message, "Login");
+            }
+            return result;
         }
 
         async Task<RequestResult<ObservableCollection<ProductMainModel>>> IRestService.ProductCatalog(API_ProductCatalogModel model)

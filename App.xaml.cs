@@ -1,9 +1,11 @@
-﻿using Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;
+﻿using Microsoft.Identity.Client;
+using Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;
 using Microsoft.Maui.Handlers;
 using RGPopup.Maui.Extensions;
 using System.Diagnostics;
 using wwrc_maui.Content.CustomControls;
 using wwrc_maui.Content.CustomControls.Base;
+using wwrc_maui.Content.Interfaces;
 using wwrc_maui.Content.RestApi;
 using wwrc_maui.Content.Views.Auth;
 
@@ -17,6 +19,10 @@ namespace wwrc_maui
         public static double ScreenHeight;
         public static Window? AppPage;
         public static IRestService? AppClient;
+        public static IPublicClientApplication? OClient = null;
+        public static string ClientId = "aeb29272-0767-4ba2-ab45-4e231cc40d3a";
+        //public static string ClientId = "9be06a28-806c-430f-93d5-49cdb62fdc50";
+        public static string[] OClientScopes = { "User.Read" };
 
         public App()
         {
@@ -51,6 +57,15 @@ namespace wwrc_maui
 
             AppPage = CreateWindow(null);
             AppClient = new RestService();
+
+            OClient = PublicClientApplicationBuilder.Create(ClientId).WithRedirectUri($"msal{ClientId}://auth")
+#if Android
+                .WithParentActivityOrWindow(() => Platform.CurrentActivity)
+#endif
+                .WithIosKeychainSecurityGroup("com.microsoft.adalcache").Build();
+            //ServiceCollection services = new();
+            //services.AddSingleton<IMicrosoftClient, Platform.Android.AndroidMicrosoftClient>();
+            //using ServiceProvider provider = services.BuildServiceProvider();
 
             var width = DeviceDisplay.Current.MainDisplayInfo.Width;
             var height = DeviceDisplay.Current.MainDisplayInfo.Height;

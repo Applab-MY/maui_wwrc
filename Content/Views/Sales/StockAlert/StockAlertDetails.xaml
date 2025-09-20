@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="wwrc_maui.Content.Views.Sales.StockAlert.StockAlertDetails"
+             xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
+             xmlns:cell="clr-namespace:wwrc_maui.Content.Viewmodels.Sales.StockAlert"
+             xmlns:helper="clr-namespace:wwrc_maui.Content.Helper"
+             xmlns:vm="clr-namespace:wwrc_maui.Content.Viewmodels.Sales.StockAlert"
+             NavigationPage.HasNavigationBar="False">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <helper:InverseBoolConverter x:Key="InverseBool"/>
+            <helper:StringNullConverter x:Key="StringNull"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <AbsoluteLayout HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
+        <Grid HorizontalOptions="Fill" VerticalOptions="Fill" AbsoluteLayout.LayoutFlags="All"
+              AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*,Auto" ColumnDefinitions="*"
+              RowSpacing="0" x:DataType="vm:StockAlertDetailsVm">
+            <!--nav bar-->
+            <controls:CustomNavigationBar IconLeft="ic_back" x:Name="navbar" Title="Stock Alert Details"/>
+            <BoxView HorizontalOptions="Fill" Margin="0" Style="{StaticResource BoxviewNavbar}"
+                     VerticalOptions="End"/>
+            <!--content-->
+            <Grid HorizontalOptions="Fill" VerticalOptions="Fill" ColumnDefinitions="*" Grid.Row="1"
+                  RowDefinitions="Auto,*" RowSpacing="0">
+                <!--row 1 : header-->
+                <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" VerticalOptions="Start" Padding="15">
+                    <!--item code-->
+                    <Label HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="WordWrap"
+                           Text="{Binding ItemCode, Converter={StaticResource StringNull}}" Style="{StaticResource AlertTitle}"/>
+                    <!--item name-->
+                    <Label Text="{Binding ItemName, Converter={StaticResource StringNull}}" HorizontalOptions="Start"
+                           HorizontalTextAlignment="Start"/>
+                    <!--manufacture-->
+                    <Label Text="{Binding Manufacture, Converter={StaticResource StringNull}}" HorizontalOptions="Start"
+                           HorizontalTextAlignment="Start" LineBreakMode="WordWrap" Margin="0,15,0,0"/>
+                    <!--item group-->
+                    <Label Text="{Binding ItemGroup, Converter={StaticResource StringNull}}" HorizontalOptions="Start"
+                           HorizontalTextAlignment="Start" Style="{StaticResource AlertTitle}" FontSize="14"/>
+                    <!--stock details-->
+                    <Border HorizontalOptions="Fill" Padding="0" StrokeShape="RoundRectangle 10" Margin="0,15,0,0"
+                            IsVisible="{Binding NoData, Converter={StaticResource InverseBool}}"
+                            Stroke="LightGray" VerticalOptions="Start">
+                        <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" VerticalOptions="Fill">
+                            <Grid HorizontalOptions="Fill" ColumnDefinitions="0.4*,0.15*,0.15*,0.15*,0.15*" RowDefinitions="Auto"
+                                  ColumnSpacing="8" BackgroundColor="LightGray" Padding="15,8">
+                                <Label Text="Warehouse" FontAttributes="Bold" HorizontalOptions="Start" TextColor="Black"
+                                       HorizontalTextAlignment="Start" VerticalOptions="Center"
+                                       VerticalTextAlignment="Center"/>
+                                <Label Text="OnHand" FontAttributes="Bold" HorizontalOptions="Start" TextColor="Black"
+                                       HorizontalTextAlignment="Start" VerticalOptions="Center" FontSize="12"
+                                       VerticalTextAlignment="Center" Grid.Column="1"/>
+                                <Label Text="Commtd." FontAttributes="Bold" HorizontalOptions="Center" TextColor="Black"
+                                       HorizontalTextAlignment="Center" VerticalOptions="Center" FontSize="12"
+                                       VerticalTextAlignment="Center" Grid.Column="2"/>
+                                <Label Text="Order" FontAttributes="Bold" HorizontalOptions="End" TextColor="Black"
+                                       HorizontalTextAlignment="End" VerticalOptions="Center" FontSize="12"
+                                       VerticalTextAlignment="Center" Grid.Column="3"/>
+                                <Label Text="Avail." FontAttributes="Bold" HorizontalOptions="End" TextColor="Black"
+                                       HorizontalTextAlignment="End" VerticalOptions="Center" FontSize="12"
+                                       VerticalTextAlignment="Center" Grid.Column="4"/>
+                            </Grid>
+                            <ListView HorizontalOptions="Fill" ItemsSource="{Binding ListDetails}" SeparatorVisibility="None"
+                                      HasUnevenRows="True" VerticalOptions="Fill" ItemTapped="ListView_ItemTapped" Grid.Row="1"
+                                      Margin="0,10,0,5">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <cell:StockDetailsCell/>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </VerticalStackLayout>
+                    </Border>
+                    <!--no data-->
+                    <controls:CustomNoData HorizontalOptions="Center" VerticalOptions="Center" Margin="0,30"
+                                           IsVisible="{Binding NoData}"/>
+                </VerticalStackLayout>
+                <!--row 2 : details-->
+                <Grid HorizontalOptions="Fill" RowSpacing="0" ColumnSpacing="10" VerticalOptions="Fill" Margin="15"
+                      ColumnDefinitions="0.65*,0.35*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" Grid.Row="1">
+                    <!--#region column 1-->
+                    <Label Text="Min Level" HorizontalOptions="Start" HorizontalTextAlignment="Start" VerticalOptions="Center"
+                           LineBreakMode="WordWrap" Grid.Row="0" Grid.Column="0" FontAttributes="Bold"/>
+                    <Label Text="Last Purchase Price" HorizontalOptions="Start" HorizontalTextAlignment="Start" VerticalOptions="Center"
+                           LineBreakMode="WordWrap" Grid.Row="1" Grid.Column="0" FontAttributes="Bold"/>
+                    <Label Text="Last Purchase Currency" HorizontalOptions="Start" HorizontalTextAlignment="Start" VerticalOptions="Center"
+                           LineBreakMode="WordWrap" Grid.Row="2" Grid.Column="0" FontAttributes="Bold"/>
+                    <Label Text="Last Purchase Date" HorizontalOptions="Start" HorizontalTextAlignment="Start" VerticalOptions="Center"
+                           LineBreakMode="WordWrap" Grid.Row="3" Grid.Column="0" FontAttributes="Bold"/>
+                    <Label Text="Last Selling Price" HorizontalOptions="Start" HorizontalTextAlignment="Start" VerticalOptions="Center"
+                           LineBreakMode="WordWrap" Grid.Row="4" Grid.Column="0" FontAttributes="Bold"/>
+                    <Label Text="Last Selling Currency" HorizontalOptions="Start" HorizontalTextAlignment="Start" VerticalOptions="Center"
+                           LineBreakMode="WordWrap" Grid.Row="5" Grid.Column="0" FontAttributes="Bold"/>
+                    <Label Text="Last Selling Date" HorizontalOptions="Start" HorizontalTextAlignment="Start" VerticalOptions="Center"
+                           LineBreakMode="WordWrap" Grid.Row="6" Grid.Column="0" FontAttributes="Bold"/>
+                    <!--#endregion-->
+                    <!--#region column 2-->
+                    <Label Text="{Binding MinLevel}" HorizontalOptions="Start" HorizontalTextAlignment="Start" VerticalOptions="Center"
+                           LineBreakMode="WordWrap" Grid.Row="0" Grid.Column="1" />
+                    <Label Text="{Binding LastPrhsPrice}" HorizontalOptions="Start" HorizontalTextAlignment="Start" VerticalOptions="Center"
+                           LineBreakMode="WordWrap" Grid.Row="1" Grid.Column="1" />
+                    <Label Text="{Binding LastPrhsCurrency}" HorizontalOptions="Start" HorizontalTextAlignment="Start" VerticalOptions="Center"
+                           LineBreakMode="WordWrap" Grid.Row="2" Grid.Column="1" />
+                    <Label Text="{Binding LastPrhsDate}" HorizontalOptions="Start" HorizontalTextAlignment="Start" VerticalOptions="Center"
+                           LineBreakMode="WordWrap" Grid.Row="3" Grid.Column="1" />
+                    <Label Text="{Binding LastSellPrice}" HorizontalOptions="Start" HorizontalTextAlignment="Start" VerticalOptions="Center"
+                           LineBreakMode="WordWrap" Grid.Row="4" Grid.Column="1" />
+                    <Label Text="{Binding LastSellCurrency}" HorizontalOptions="Start" HorizontalTextAlignment="Start" VerticalOptions="Center"
+                           LineBreakMode="WordWrap" Grid.Row="5" Grid.Column="1" />
+                    <Label Text="{Binding LastSellDate}" HorizontalOptions="Start" HorizontalTextAlignment="Start" VerticalOptions="Center"
+                           LineBreakMode="WordWrap" Grid.Row="6" Grid.Column="1" />
+                    <!--#endregion-->
+                </Grid>
+            </Grid>
+        </Grid>
+        <!--loading overlay-->
+        <controls:CustomLoading AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                x:Name="UiLoad" IsVisible="{Binding IsBusy}" IsAnimate="{Binding IsBusy}"/>
+    </AbsoluteLayout>
+
+</ContentPage>

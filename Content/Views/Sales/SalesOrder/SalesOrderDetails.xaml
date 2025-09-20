@@ -157,26 +157,26 @@
             <BoxView HeightRequest="1" HorizontalOptions="Fill" VerticalOptions="Start" Grid.Row="2"/>
             <HorizontalStackLayout HorizontalOptions="Fill" Spacing="10" VerticalOptions="End"
                                    Margin="15,10" Grid.Row="2">
-                <HorizontalStackLayout HorizontalOptions="Start" Spacing="5">
+                <HorizontalStackLayout HorizontalOptions="Start" Spacing="5" MaximumWidthRequest="{Binding BtomIconSize}">
                     <Image Source="ic_status_yellow" HeightRequest="15" VerticalOptions="Center"
                            HorizontalOptions="Start"/>
                     <Label Text="Waiting Delivery" VerticalOptions="Center" HorizontalOptions="Start"
                            LineBreakMode="TailTruncation" FontSize="12" MaxLines="2"
-                           WidthRequest="{Binding BtomIconSize}" HorizontalTextAlignment="Start"/>
+                           HorizontalTextAlignment="Start"/>
                 </HorizontalStackLayout>
-                <HorizontalStackLayout HorizontalOptions="Center" Spacing="5">
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="5" MaximumWidthRequest="{Binding BtomIconSize}">
                     <Image Source="ic_status_blue" HeightRequest="15" VerticalOptions="Center"
                            HorizontalOptions="Center"/>
                     <Label Text="Return" VerticalOptions="Center" HorizontalOptions="Center"
                            LineBreakMode="TailTruncation" FontSize="12" MaxLines="2"
-                           WidthRequest="{Binding BtomIconSize}" HorizontalTextAlignment="Center"/>
+                           HorizontalTextAlignment="Center"/>
                 </HorizontalStackLayout>
-                <HorizontalStackLayout HorizontalOptions="End" Spacing="5">
+                <HorizontalStackLayout HorizontalOptions="End" Spacing="5" MaximumWidthRequest="{Binding BtomIconSize}">
                     <Image Source="ic_status_lightgreen" HeightRequest="15" VerticalOptions="Center"
                            HorizontalOptions="End"/>
                     <Label Text="Out from Warehouse" VerticalOptions="Center" HorizontalOptions="End"
                            LineBreakMode="TailTruncation" FontSize="12" MaxLines="2"
-                           WidthRequest="{Binding BtomIconSize}" HorizontalTextAlignment="End"/>
+                           HorizontalTextAlignment="End"/>
                 </HorizontalStackLayout>
             </HorizontalStackLayout>
         </Grid>

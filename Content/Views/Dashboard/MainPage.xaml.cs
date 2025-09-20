@@ -15,6 +15,7 @@ using wwrc_maui.Content.Views.Sales;
 using wwrc_maui.Content.Views.Sales.CustomerAging;
 using wwrc_maui.Content.Views.Sales.PurchaseOrder;
 using wwrc_maui.Content.Views.Sales.SalesOrder;
+using wwrc_maui.Content.Views.Sales.StockAlert;
 using wwrc_maui.Content.Views.Staff;
 using static wwrc_maui.Content.Helper.ReferenceMessenger;
 using static wwrc_maui.Content.Model.DashboardModel;
@@ -77,6 +78,7 @@ public partial class MainPage : ContentPage
 
     private async void OnCellMenu_Tapped(DashboardCarouselTemplate data)
     {
+        if (data.Type.Equals("StockAlert")) await Navigation.PushAsync(new StockAlertMainPage());
         if (data.Type.Equals("CustomerAging")) await Navigation.PushAsync(new CustomerAgingMainPage());
         if (data.Type.Equals("SalesOrder")) await Navigation.PushAsync(new SalesOrderMainPage());
         if (data.Type.Equals("PurchaseOrder")) await Navigation.PushAsync(new PurchaseOrderMainPage());
@@ -102,11 +104,11 @@ public partial class MainPage : ContentPage
         }
         if (tabNo == 2)
         {
-            navbar.Title = "Staff"; navbar.BarImage = "";
-            navbar.IconRight = ""; navbar.IconLeft = "";
-            var view = new StaffOptionPage();
-            grid_tabcontent.Children.Add(view);
-            grid_tabcontent.IsVisible = true;
+            //navbar.Title = "Staff"; navbar.BarImage = "";
+            //navbar.IconRight = ""; navbar.IconLeft = "";
+            //var view = new StaffOptionPage();
+            //grid_tabcontent.Children.Add(view);
+            //grid_tabcontent.IsVisible = true;
         }
         if (tabNo == 3)
         {

@@ -200,6 +200,7 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
                         await App.DisplayAlert("Relogin", "Please login again", null, "Okay");
                         Application.Current?.Dispatcher.Dispatch(() =>
                         { Application.Current.Windows[0].Page = new Login(); });
+                        return;
                     }
                     else if (_res.SystemCode == 200 && _res.items != null && _res.items.Count > 0)
                     {

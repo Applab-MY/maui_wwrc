@@ -145,7 +145,7 @@ namespace wwrc_maui.Content.Viewmodels.Sales.SalesOrder
         List<Db_DOList> doListCache = [];
 
         public SalesOrderDetailsVm()
-        { BtomIconSize = Math.Floor((App.ScreenWidth - 110)/3); }
+        { BtomIconSize = Math.Floor((App.ScreenWidth - 50)/3); }
 
         public void SetSOData()
         {

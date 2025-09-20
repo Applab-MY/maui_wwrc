@@ -1,4 +1,6 @@
-﻿using wwrc_maui.Content.Model;
+﻿using Microsoft.Identity.Client;
+using wwrc_maui.Content.Interfaces;
+using wwrc_maui.Content.Model;
 using wwrc_maui.Content.Viewmodels.Common;
 using wwrc_maui.Content.Views.Dashboard;
 using static wwrc_maui.Content.Model.Auth.LoginModel;
@@ -55,6 +57,7 @@ namespace wwrc_maui.Content.Viewmodels.Auth
             Version += "Ver." + AppInfo.VersionString;
             EntryWidth = App.ScreenWidth - 40;
             LoginCommand = new Command(ExecuteLogin);
+            Login365Command = new Command(Test365);
         }
 
         public async void ExecuteLogin()
@@ -143,68 +146,77 @@ namespace wwrc_maui.Content.Viewmodels.Auth
             IsBusy = false;
         }
 
+        async void Test365()
+        {
+            //DependencyService.Get<IMicrosoftClient>().Authenticate();
+            //DependencyService.Get<IMicrosoftClient>().Initialize();
+            try
+            {
+                //var options = new WebAuthenticatorOptions
+                //{
+                //    Url = new Uri("https://login.microsoftonline.com"),
+                //    CallbackUrl = new Uri("myapp://"),
+                //    PrefersEphemeralWebBrowserSession = true
+                //};
+                //var authResult = await WebAuthenticator.Default.AuthenticateAsync(options);
+
+                WebAuthenticatorResult authResult = await WebAuthenticator.Default.AuthenticateAsync(
+                    new Uri("https://login.microsoftonline.com"), new Uri("myapp://"));
+                string accessToken = authResult?.AccessToken;
+            }
+            catch (TaskCanceledException e)
+            {
+                // Use stopped auth
+            }
+        }
+
         async void ExecuteLogin365()
         {
-            //AuthenticationResult authResult = null;
-            try
+            IsBusy = true; IsRefreshing = true;
+            AuthenticationResult? authResult = null;
+            NetworkAccess accessType = Connectivity.Current.NetworkAccess;
+            if (accessType == NetworkAccess.Internet && App.AppClient != null)
             {
-                //IEnumerable<IAccount> accounts = await App.PCA.GetAccountsAsync();
-                //while (accounts.Any())
-                //{
-                //    await App.PCA.RemoveAsync(accounts.FirstOrDefault());
-                //    accounts = await App.PCA.GetAccountsAsync();
-                //}
+                try
+                {
+                    if (App.OClient != null)
+                    {
+                        var accounts = await App.OClient.GetAccountsAsync();
+                        while (accounts.Any())
+                        {
+                            await App.OClient.RemoveAsync(accounts.FirstOrDefault());
+                            accounts = await App.OClient.GetAccountsAsync();
+                        }
 
-                //IAccount firstAccount = accounts.FirstOrDefault();
-                //if (firstAccount != null)
-                //{
-                //    authResult = await App.PCA.AcquireTokenSilent(App.Scopes, firstAccount)
-                //    .ExecuteAsync();
-                //}
-                //else
-                //{
-                //    SystemWebViewOptions systemWebViewOptions = new SystemWebViewOptions()
-                //    { iOSHidePrivacyPrompt = true, };
-                //    authResult = await App.PCA.AcquireTokenInteractive(App.Scopes)
-                //        .WithPrompt(Prompt.ForceLogin).WithParentActivityOrWindow(App.ParentWindow)
-                //        .WithSystemWebViewOptions(systemWebViewOptions).ExecuteAsync();
-                //}
-
-                //if (authResult != null)
-                //{
-                //    var content = await GetHttpContentWithTokenAsync(authResult.AccessToken);
-                //    UpdateUserFromMicrosoft(content, authResult.AccessToken);
-                //}
-                //else DummyData(); //mark for testing
+                        //20250919 : 365 auth not reach authResult, fix => use Android.MainActivity.OnActivityResult for now
+                        var firstAccount = accounts.FirstOrDefault();
+                        if (firstAccount != null)
+                            authResult = await App.OClient.AcquireTokenSilent(App.OClientScopes, firstAccount).ExecuteAsync();
+                        else
+                        {
+                            var systemWebViewOptions = new SystemWebViewOptions() { iOSHidePrivacyPrompt = true, };
+                            authResult = await App.OClient.AcquireTokenInteractive(App.OClientScopes)
+                                .WithPrompt(Prompt.ForceLogin).WithParentActivityOrWindow(App.AppPage)
+                                .WithSystemWebViewOptions(systemWebViewOptions).ExecuteAsync();
+                            await App.DisplayAlert("LoginVm", "success return to callback function", null, "Okay");
+                        }
+                    }
+                    IsBusy = false; IsRefreshing = false;
+                }
+                catch (Exception ex)
+                {
+                    var error = ex.Message;
+                    IsBusy = false; IsRefreshing = false;
+                    await App.DisplayAlert("Authentication failed: ", error, null, "Dismiss");
+                }
             }
-            catch (Exception ex)
-            {
-                await App.DisplayAlert("Authentication failed: ", ex.Message, null, "Dismiss");
-            }
+            else await App.DisplayAlert("No Internet", "Please check your internet connection.", null, "Okay");
+            IsBusy = false; IsRefreshing = false;
         }
 
-        public async Task<string> GetHttpContentWithTokenAsync(string token)
+        public void SendRegistrationToServer(string userId)
         {
-            try
-            {
-                //get data from API
-                HttpClient client = new();
-                HttpRequestMessage message = new(HttpMethod.Get, "https://graph.microsoft.com/v1.0/me");
-                message.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-                HttpResponseMessage response = await client.SendAsync(message);
-                string responseString = await response.Content.ReadAsStringAsync();
-                return responseString;
-            }
-            catch (Exception ex)
-            {
-                //await DisplayAlert("API call to graph failed: ", ex.Message, "Dismiss");
-                return ex.ToString();
-            }
-        }
-
-        public async Task SendRegistrationToServer(string userId)
-        {
-            string fcmToken = null;
+            //string? fcmToken = null;
             //if (Application.Current.Properties.ContainsKey("fcm_token"))
             //{ fcmToken = Application.Current.Properties["fcm_token"] as string; }
             //else fcmToken = RequestFcmToken();

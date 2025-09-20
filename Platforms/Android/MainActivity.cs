@@ -1,8 +1,11 @@
 ﻿using Android.App;
+using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Android.Views;
+using CommunityToolkit.Mvvm.Messaging;
 using RGPopup.Maui.Droid;
+using static wwrc_maui.Content.Helper.ReferenceMessenger;
 
 namespace wwrc_maui
 {
@@ -25,5 +28,12 @@ namespace wwrc_maui
 
         public override void OnBackPressed()
         { Popup.SendBackPressed(base.OnBackPressed); }
+
+        protected override void OnActivityResult(int requestCode, Result resultCode, Intent? data)
+        {
+            //2001:usercancel, 2003:success => send back to Login.cs
+            WeakReferenceMessenger.Default.Send(new KeyValueNotify(new KeyValue
+            { Key = "O365login", Value = resultCode.ToString() }));
+        }
     }
 }

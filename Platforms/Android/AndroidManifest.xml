@@ -4,6 +4,15 @@
 		<provider android:name="androidx.core.content.FileProvider" android:grantUriPermissions="true" android:authorities="com.applab.wwrc.fileprovider" android:exported="false">
 			<meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths"></meta-data>
 		</provider>
+		<activity android:name="microsoft.identity.client.BrowserTabActivity"
+				  android:configChanges="orientation|screenSize" android:exported="true">
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+				<data android:scheme="aeb29272-0767-4ba2-ab45-4e231cc40d3a" android:host="auth" />
+			</intent-filter>
+		</activity>
 	</application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />
@@ -20,6 +29,7 @@
 	<queries>
 		<intent>
 			<action android:name="android.media.action.IMAGE_CAPTURE" />
+			<action android:name="android.support.customtabs.action.CustomTabsService" />
 		</intent>
 	</queries>
 </manifest>

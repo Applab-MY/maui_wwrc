@@ -26,7 +26,7 @@
             <Grid HorizontalOptions="Fill" VerticalOptions="Fill" ColumnDefinitions="*" Grid.Row="1"
                   RowDefinitions="Auto,*" RowSpacing="0">
                 <!--row 1 : header-->
-                <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" VerticalOptions="Start" Padding="15">
+                <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" VerticalOptions="Start" Padding="15,15,15,25">
                     <!--item code-->
                     <Label HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="WordWrap"
                            Text="{Binding ItemCode, Converter={StaticResource StringNull}}" Style="{StaticResource AlertTitle}"/>
@@ -44,10 +44,10 @@
                             IsVisible="{Binding NoData, Converter={StaticResource InverseBool}}"
                             Stroke="LightGray" VerticalOptions="Start">
                         <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" VerticalOptions="Fill">
-                            <Grid HorizontalOptions="Fill" ColumnDefinitions="0.4*,0.15*,0.15*,0.15*,0.15*" RowDefinitions="Auto"
-                                  ColumnSpacing="8" BackgroundColor="LightGray" Padding="15,8">
-                                <Label Text="Warehouse" FontAttributes="Bold" HorizontalOptions="Start" TextColor="Black"
-                                       HorizontalTextAlignment="Start" VerticalOptions="Center"
+                            <Grid HorizontalOptions="Fill" ColumnDefinitions="0.25*,0.2*,0.15*,0.2*,0.2*" RowDefinitions="Auto"
+                                  ColumnSpacing="8" BackgroundColor="LightGray" Padding="8">
+                                <Label Text="Whouse" FontAttributes="Bold" HorizontalOptions="Start" TextColor="Black"
+                                       HorizontalTextAlignment="Start" VerticalOptions="Center" FontSize="12"
                                        VerticalTextAlignment="Center"/>
                                 <Label Text="OnHand" FontAttributes="Bold" HorizontalOptions="Start" TextColor="Black"
                                        HorizontalTextAlignment="Start" VerticalOptions="Center" FontSize="12"
@@ -55,16 +55,15 @@
                                 <Label Text="Commtd." FontAttributes="Bold" HorizontalOptions="Center" TextColor="Black"
                                        HorizontalTextAlignment="Center" VerticalOptions="Center" FontSize="12"
                                        VerticalTextAlignment="Center" Grid.Column="2"/>
-                                <Label Text="Order" FontAttributes="Bold" HorizontalOptions="End" TextColor="Black"
-                                       HorizontalTextAlignment="End" VerticalOptions="Center" FontSize="12"
+                                <Label Text="Order" FontAttributes="Bold" HorizontalOptions="Center" TextColor="Black"
+                                       HorizontalTextAlignment="Center" VerticalOptions="Center" FontSize="12"
                                        VerticalTextAlignment="Center" Grid.Column="3"/>
                                 <Label Text="Avail." FontAttributes="Bold" HorizontalOptions="End" TextColor="Black"
                                        HorizontalTextAlignment="End" VerticalOptions="Center" FontSize="12"
                                        VerticalTextAlignment="Center" Grid.Column="4"/>
                             </Grid>
                             <ListView HorizontalOptions="Fill" ItemsSource="{Binding ListDetails}" SeparatorVisibility="None"
-                                      HasUnevenRows="True" VerticalOptions="Fill" ItemTapped="ListView_ItemTapped" Grid.Row="1"
-                                      Margin="0,10,0,5">
+                                      HasUnevenRows="True" VerticalOptions="Fill" ItemTapped="ListView_ItemTapped">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <cell:StockDetailsCell/>
@@ -74,11 +73,14 @@
                         </VerticalStackLayout>
                     </Border>
                     <!--no data-->
-                    <controls:CustomNoData HorizontalOptions="Center" VerticalOptions="Center" Margin="0,30"
+                    <Label Text="Warehouse Stock" HorizontalOptions="Center" HorizontalTextAlignment="Center" Margin="0,15,0,0"
+                           IsVisible="{Binding NoData}" Style="{StaticResource AlertTitle}"/>
+                    <controls:CustomNoData HorizontalOptions="Center" VerticalOptions="Center" Margin="0,15,0,0"
                                            IsVisible="{Binding NoData}"/>
                 </VerticalStackLayout>
+                <BoxView HeightRequest="1" HorizontalOptions="Fill" Grid.Row="1" VerticalOptions="Start" Margin="15,0"/>
                 <!--row 2 : details-->
-                <Grid HorizontalOptions="Fill" RowSpacing="0" ColumnSpacing="10" VerticalOptions="Fill" Margin="15"
+                <Grid HorizontalOptions="Fill" RowSpacing="5" ColumnSpacing="10" VerticalOptions="Fill" Margin="15"
                       ColumnDefinitions="0.65*,0.35*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" Grid.Row="1">
                     <!--#region column 1-->
                     <Label Text="Min Level" HorizontalOptions="Start" HorizontalTextAlignment="Start" VerticalOptions="Center"

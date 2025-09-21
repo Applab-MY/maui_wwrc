@@ -102,9 +102,10 @@ namespace wwrc_maui.Content.Viewmodels.Sales.StockAlert
         public async void GetStockDetails()
         {
             IsBusy = true; IsRefreshing = true;
+            await Task.Delay(300);
             try
             {
-                string _qItem = "SELECT * FROM DB_StockAlert WHERE ItemCode = '" + ItemCode + "'";
+                string _qItem = "SELECT * FROM DB_StockAlert WHERE ItemCode = '" + itemCode + "'";
                 var data = AppDatabase.Instance.SqlConnection.Query<DB_StockAlert>(_qItem);
                 if (data.Count > 0)
                 {
@@ -132,11 +133,13 @@ namespace wwrc_maui.Content.Viewmodels.Sales.StockAlert
                 var items = AppDatabase.Instance.SqlConnection.Query<DB_WarehouseItem>(query);
                 if (items.Count > 0)
                 {
+                    var _list = new List<DB_WarehouseItem>();
                     foreach (var _item in items)
                     {
                         _item.TotalCommited = double.Parse(_item.TotalCommited).ToString();
-                        ListDetails.Add(_item);
+                        _list.Add(_item);
                     }
+                    ListDetails = _list;
                 }
                 IsBusy = false; IsRefreshing = false;
             }

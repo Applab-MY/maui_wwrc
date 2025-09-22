@@ -2,10 +2,11 @@
 using Android.Content;
 using Android.Content.PM;
 using Android.OS;
+using Android.Runtime;
 using Android.Views;
-using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Identity.Client;
 using RGPopup.Maui.Droid;
-using static wwrc_maui.Content.Helper.ReferenceMessenger;
+using wwrc_maui.Content.MsalClient;
 
 namespace wwrc_maui
 {
@@ -24,16 +25,30 @@ namespace wwrc_maui
             string DB_fullpath = Path.Combine(fileLocation, fileName);
             App.DatabasePath = DB_fullpath;
             base.OnCreate(bundle);
+
+            if (PublicClientSingleton.Instance.MSALClientHelper != null)
+            {
+                PlatformConfig.Instance.RedirectUri = $"msal{PublicClientSingleton.Instance.MSALClientHelper.AzureConfig?.ClientId}://auth";
+                PlatformConfig.Instance.ParentWindow = this;
+                // Initialize MSAL and platformConfig is set
+                IAccount? existinguser = Task.Run(PublicClientSingleton.Instance.MSALClientHelper.InitializePublicClientAppAsync).Result;
+            }
         }
 
         public override void OnBackPressed()
         { Popup.SendBackPressed(base.OnBackPressed); }
 
-        protected override void OnActivityResult(int requestCode, Result resultCode, Intent? data)
+        /// <summary>
+        /// This is a callback to continue with the authentication
+        /// Info about redirect URI: https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-client-application-configuration#redirect-uri
+        /// </summary>
+        /// <param name="requestCode">request code </param>
+        /// <param name="resultCode">result code</param>
+        /// <param name="data">intent of the activity</param>
+        protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent? data)
         {
-            //2001:usercancel, 2003:success => send back to Login.cs
-            WeakReferenceMessenger.Default.Send(new KeyValueNotify(new KeyValue
-            { Key = "O365login", Value = resultCode.ToString() }));
+            base.OnActivityResult(requestCode, resultCode, data);
+            AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(requestCode, resultCode, data);
         }
     }
 }

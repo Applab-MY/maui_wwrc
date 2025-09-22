@@ -6,6 +6,7 @@ using System.Diagnostics;
 using wwrc_maui.Content.CustomControls;
 using wwrc_maui.Content.CustomControls.Base;
 using wwrc_maui.Content.Interfaces;
+using wwrc_maui.Content.MsalClient;
 using wwrc_maui.Content.RestApi;
 using wwrc_maui.Content.Views.Auth;
 
@@ -21,12 +22,19 @@ namespace wwrc_maui
         public static IRestService? AppClient;
         public static IPublicClientApplication? OClient = null;
         public static string ClientId = "aeb29272-0767-4ba2-ab45-4e231cc40d3a";
-        //public static string ClientId = "9be06a28-806c-430f-93d5-49cdb62fdc50";
         public static string[] OClientScopes = { "User.Read" };
 
         public App()
         {
             InitializeComponent();
+            if (PublicClientSingleton.Instance.MSALClientHelper == null &&
+                PublicClientSingleton.Instance.MSALClientHelper?.AzureConfig == null)
+            {
+                // configure redirect URI for your application
+                PlatformConfig.Instance.RedirectUri = PublicClientSingleton.Instance.MSALClientHelper.AzureConfig.RedirectUri;
+                // Initialize MSAL
+                IAccount? existinguser = Task.Run(PublicClientSingleton.Instance.MSALClientHelper.InitializePublicClientAppAsync).Result;
+            }
 
             #region custom controls handler
             EntryHandler.Mapper.AppendToMapping(nameof(BorderlessEntry), (handler, view) =>
@@ -60,7 +68,7 @@ namespace wwrc_maui
 
             OClient = PublicClientApplicationBuilder.Create(ClientId).WithRedirectUri($"msal{ClientId}://auth")
 #if Android
-                .WithParentActivityOrWindow(() => Platform.CurrentActivity)
+                .WithParentActivityOrWindow(() => PlatformConfig.Instance.ParentWindow)
 #endif
                 .WithIosKeychainSecurityGroup("com.microsoft.adalcache").Build();
             //ServiceCollection services = new();

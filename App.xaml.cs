@@ -27,8 +27,8 @@ namespace wwrc_maui
         public App()
         {
             InitializeComponent();
-            if (PublicClientSingleton.Instance.MSALClientHelper == null &&
-                PublicClientSingleton.Instance.MSALClientHelper?.AzureConfig == null)
+            if (PublicClientSingleton.Instance.MSALClientHelper != null &&
+                PublicClientSingleton.Instance.MSALClientHelper?.AzureConfig != null)
             {
                 // configure redirect URI for your application
                 PlatformConfig.Instance.RedirectUri = PublicClientSingleton.Instance.MSALClientHelper.AzureConfig.RedirectUri;

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using AndroidX.Browser.Trusted.Sharing;
+using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
@@ -6,6 +7,7 @@ using System.Text;
 using wwrc_maui.Content.Model;
 using wwrc_maui.Content.Model.Common;
 using static wwrc_maui.Content.Model.Auth.LoginModel;
+using static wwrc_maui.Content.Model.CountryModel;
 using static wwrc_maui.Content.Model.CurrencyModel;
 using static wwrc_maui.Content.Model.CustomerAgingModel;
 using static wwrc_maui.Content.Model.CustomerVisitModel;
@@ -39,6 +41,7 @@ namespace wwrc_maui.Content.RestApi
             var json = JsonConvert.SerializeObject(model);
             var contentJson = new StringContent(json, Encoding.UTF8, "application/json");
             var result = new RequestResult<ObservableCollection<ChangePasswordModel>>();
+
             try
             {
                 var response = await client.PostAsync(uri, contentJson);
@@ -79,9 +82,36 @@ namespace wwrc_maui.Content.RestApi
             return result;
         }
 
-        Task<RequestResult<ObservableCollection<CountryModel.CountryMainModel>>> IRestService.GetCountry()
+        async Task<RequestResult<ObservableCollection<CountryMainModel>>> IRestService.GetCountry()
         {
-            throw new NotImplementedException();
+            if (client.DefaultRequestHeaders.Authorization == null)
+            {
+                client.DefaultRequestHeaders.Clear();
+                var token = Preferences.Default.Get("login_token", "");
+                if (!string.IsNullOrEmpty(token))
+                { client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", token); }
+            }
+
+            var uri = new Uri(string.Format("{0}/api/Country/Get", WSurl));
+            var model = new API_CountryModel { DBase = DbaseValue };
+            var json = JsonConvert.SerializeObject(model);
+            var contentJson = new StringContent(json, Encoding.UTF8, "application/json");
+            var result = new RequestResult<ObservableCollection<CountryMainModel>>();
+
+            try
+            {
+                var response = await client.PostAsync(uri, contentJson);
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    result = JsonConvert.DeserializeObject<RequestResult<ObservableCollection<CountryMainModel>>>(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error", ex.Message, "Login");
+            }
+            return result;
         }
 
         async Task<RequestResult<CurrencyMainModel>> IRestService.GetCurrency(API_Currency model)

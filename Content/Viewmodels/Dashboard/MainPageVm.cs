@@ -200,7 +200,6 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
                         await App.DisplayAlert("Relogin", "Please login again", null, "Okay");
                         Application.Current?.Dispatcher.Dispatch(() =>
                         { Application.Current.Windows[0].Page = new Login(); });
-                        return;
                     }
                     else if (_res.SystemCode == 200 && _res.items != null && _res.items.Count > 0)
                     {
@@ -257,7 +256,7 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
                 };
                 var _res = await App.AppClient.GetCurrency(model);
                 if (_res.SystemCode == 401) { }
-                if (_res.SystemCode == 200 && _res.items != null)
+                else if (_res.SystemCode == 200 && _res.items != null)
                 {
                     foreach (var item in _res.items.ExchangeRate)
                     {
@@ -269,6 +268,7 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
                         }
                     }
                 }
+                else return;
             }
         }
 

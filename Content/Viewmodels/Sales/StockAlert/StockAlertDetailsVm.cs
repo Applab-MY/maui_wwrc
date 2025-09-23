@@ -10,6 +10,7 @@ namespace wwrc_maui.Content.Viewmodels.Sales.StockAlert
         #region beans
         string _itemCode = "";
         string _itemName = "";
+        string _whsname = "";
         string _manufacture = "";
         string _itemGroup = "";
         string _minLevel = "";
@@ -19,8 +20,11 @@ namespace wwrc_maui.Content.Viewmodels.Sales.StockAlert
         string _lastSellPrice = "";
         string _lastSellCurrency = "";
         string _lastSellDate = "";
+        string _committed = "";
         List<DB_WarehouseItem> _listDetails = [];
+        List<DB_IsCommitedPW_Customer> _listCommitted = [];
         bool _nodata = false;
+        bool _nodatacomited = false;
         #endregion
         #region props
         public string ItemCode
@@ -32,6 +36,11 @@ namespace wwrc_maui.Content.Viewmodels.Sales.StockAlert
         {
             get { return _itemName; }
             set { SetProperty(ref _itemName, value); }
+        }
+        public string WhsName
+        {
+            get { return _whsname; }
+            set { SetProperty(ref _whsname, value); }
         }
         public string Manufacture
         {
@@ -87,15 +96,35 @@ namespace wwrc_maui.Content.Viewmodels.Sales.StockAlert
                 NoData = value.Count == 0;
             }
         }
+        public List<DB_IsCommitedPW_Customer> ListCommitted
+        {
+            get { return _listCommitted; }
+            set
+            {
+                SetProperty(ref _listCommitted, value);
+                NoDataCommited = value.Count == 0;
+            }
+        }
+        public string Committed
+        {
+            get { return _committed; }
+            set { SetProperty(ref _committed, value); }
+        }
         public bool NoData
         {
             get { return _nodata; }
             set { SetProperty(ref _nodata, value); }
         }
+        public bool NoDataCommited
+        {
+            get { return _nodatacomited; }
+            set { SetProperty(ref _nodatacomited, value); }
+        }
         #endregion
         #endregion
 
         public string itemCode = "";
+        public string whsName = "";
 
         public StockAlertDetailsVm() { }
 
@@ -140,6 +169,49 @@ namespace wwrc_maui.Content.Viewmodels.Sales.StockAlert
                         _list.Add(_item);
                     }
                     ListDetails = _list;
+                }
+                IsBusy = false; IsRefreshing = false;
+            }
+            catch (Exception ex)
+            {
+                var error = ex.Message;
+                IsBusy = false; IsRefreshing = false;
+                await App.DisplayAlert("Exception", error, null, "Okay");
+            }
+            IsBusy = false; IsRefreshing = false;
+        }
+
+        public async void GetCommittedPw()
+        {
+            IsBusy = true; IsRefreshing = true;
+            try
+            {
+                string _cmtd = "SELECT * FROM DB_IsCommitedPW WHERE ItemCode = '" + itemCode
+                    + "' AND Warehouse = '" + whsName + "'";
+                var items = AppDatabase.Instance.SqlConnection.Query<DB_WarehouseItem>(_cmtd);
+                if (items.Count > 0) { WhsName = items[0].Warehouse; }
+
+                ListCommitted = [];
+                string _qCmtd = "SELECT * FROM DB_IsCommitedPW WHERE ItemCode = '" + itemCode
+                    + "' AND Warehouse = '" + whsName + "'";
+                var data = AppDatabase.Instance.SqlConnection.Query<DB_IsCommitedPW>(_qCmtd);
+                if (data.Count > 0) { Committed = data[0].TotalCommited; }
+
+                string _qCmtDetail = "SELECT * FROM DB_IsCommitedPW_Customer WHERE ItemCode = '"
+                    + itemCode + "' AND Warehouse = '" + whsName + "'";
+                var details = AppDatabase.Instance.SqlConnection.Query<DB_IsCommitedPW_Customer>(_qCmtDetail);
+                if (details.Count > 0)
+                {
+                    var _list = new List<DB_IsCommitedPW_Customer>();
+                    foreach (var item in details)
+                    {
+                        if (item.Commited != null)
+                        { item.Commited = double.Parse(item.Commited).ToString(); }
+                        if (item.TotalCommited != null)
+                        { item.TotalCommited = double.Parse(item.TotalCommited).ToString(); }
+                        _list.Add(item);
+                    }
+                    ListCommitted = _list;
                 }
                 IsBusy = false; IsRefreshing = false;
             }

@@ -104,11 +104,11 @@ public partial class MainPage : ContentPage
         }
         if (tabNo == 2)
         {
-            //navbar.Title = "Staff"; navbar.BarImage = "";
-            //navbar.IconRight = ""; navbar.IconLeft = "";
-            //var view = new StaffOptionPage();
-            //grid_tabcontent.Children.Add(view);
-            //grid_tabcontent.IsVisible = true;
+            navbar.Title = "Staff"; navbar.BarImage = "";
+            navbar.IconRight = ""; navbar.IconLeft = "";
+            var view = new StaffOptionPage();
+            grid_tabcontent.Children.Add(view);
+            grid_tabcontent.IsVisible = true;
         }
         if (tabNo == 3)
         {

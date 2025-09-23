@@ -1,16 +1,16 @@
 using wwrc_maui.Content.Viewmodels.Sales.StockAlert;
-using static wwrc_maui.Content.Model.StockModel;
 
 namespace wwrc_maui.Content.Views.Sales.StockAlert;
 
-public partial class StockAlertDetails : ContentPage
+public partial class StockAlertDetailsMore : ContentPage
 {
     StockAlertDetailsVm viewmodel = new();
 
-    public StockAlertDetails(string itemCode)
+    public StockAlertDetailsMore(string itemCode, string whsName)
     {
         InitializeComponent();
         viewmodel.itemCode = itemCode;
+        viewmodel.whsName = whsName;
         BindingContext = viewmodel;
         navbar.OnLeftIconTapped += async () => { await Navigation.PopAsync(); };
         Initialize();
@@ -19,14 +19,12 @@ public partial class StockAlertDetails : ContentPage
     public async void Initialize()
     {
         await Task.Delay(300);
-        viewmodel.GetStockDetails();
+        viewmodel.GetCommittedPw();
     }
 
-    private async void ListView_ItemTapped(object sender, ItemTappedEventArgs e)
+    private void ListView_ItemTapped(object sender, ItemTappedEventArgs e)
     {
         if (sender is not ListView lv) return;
         lv.SelectedItem = null;
-        var data = (DB_WarehouseItem)e.Item;
-        await Navigation.PushAsync(new StockAlertDetailsMore(data.ItemCode, data.Warehouse));
     }
 }

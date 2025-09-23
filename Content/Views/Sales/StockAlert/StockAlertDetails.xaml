@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="wwrc_maui.Content.Views.Sales.StockAlert.StockAlertDetails"
              xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
-             xmlns:cell="clr-namespace:wwrc_maui.Content.Viewmodels.Sales.StockAlert"
+             xmlns:cell="clr-namespace:wwrc_maui.Content.Views.Sales.StockAlert"
              xmlns:helper="clr-namespace:wwrc_maui.Content.Helper"
              xmlns:vm="clr-namespace:wwrc_maui.Content.Viewmodels.Sales.StockAlert"
              NavigationPage.HasNavigationBar="False">
@@ -16,7 +16,7 @@
     </ContentPage.Resources>
     <AbsoluteLayout HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
         <Grid HorizontalOptions="Fill" VerticalOptions="Fill" AbsoluteLayout.LayoutFlags="All"
-              AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*,Auto" ColumnDefinitions="*"
+              AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*" ColumnDefinitions="*"
               RowSpacing="0" x:DataType="vm:StockAlertDetailsVm">
             <!--nav bar-->
             <controls:CustomNavigationBar IconLeft="ic_back" x:Name="navbar" Title="Stock Alert Details"/>
@@ -44,7 +44,7 @@
                             IsVisible="{Binding NoData, Converter={StaticResource InverseBool}}"
                             Stroke="LightGray" VerticalOptions="Start">
                         <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" VerticalOptions="Fill">
-                            <Grid HorizontalOptions="Fill" ColumnDefinitions="0.25*,0.2*,0.15*,0.2*,0.2*" RowDefinitions="Auto"
+                            <Grid HorizontalOptions="Fill" ColumnDefinitions="0.2*,0.2*,0.2*,0.2*,0.2*" RowDefinitions="Auto"
                                   ColumnSpacing="8" BackgroundColor="LightGray" Padding="8">
                                 <Label Text="Whouse" FontAttributes="Bold" HorizontalOptions="Start" TextColor="Black"
                                        HorizontalTextAlignment="Start" VerticalOptions="Center" FontSize="12"

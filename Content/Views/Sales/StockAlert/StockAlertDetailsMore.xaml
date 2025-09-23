@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="wwrc_maui.Content.Views.Sales.StockAlert.StockAlertDetailsMore"
+             xmlns:helper="clr-namespace:wwrc_maui.Content.Helper"
+             xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
+             xmlns:cell="clr-namespace:wwrc_maui.Content.Views.Sales.StockAlert"
+             xmlns:vm="clr-namespace:wwrc_maui.Content.Viewmodels.Sales.StockAlert"
+             NavigationPage.HasNavigationBar="False">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <helper:InverseBoolConverter x:Key="InverseBool"/>
+            <helper:StringNullConverter x:Key="StringNull"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <AbsoluteLayout HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
+        <Grid HorizontalOptions="Fill" VerticalOptions="Fill" AbsoluteLayout.LayoutFlags="All"
+              AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*" ColumnDefinitions="*"
+              RowSpacing="0" x:DataType="vm:StockAlertDetailsVm">
+            <!--nav bar-->
+            <controls:CustomNavigationBar IconLeft="ic_back" x:Name="navbar" Title="Stock Alert Details"/>
+            <BoxView HorizontalOptions="Fill" Margin="0" Style="{StaticResource BoxviewNavbar}"
+                     VerticalOptions="End"/>
+            <!--content-->
+            <Grid HorizontalOptions="Fill" VerticalOptions="Fill" ColumnDefinitions="*" Grid.Row="1"
+                  RowDefinitions="Auto,*" RowSpacing="0">
+                <!--row 1 : header-->
+                <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" VerticalOptions="Start" Padding="15,15,15,25">
+                    <!--whs name-->
+                    <Label HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="WordWrap"
+                           Text="{Binding WhsName, Converter={StaticResource StringNull}}" Style="{StaticResource AlertTitle}"/>
+                    <!--total cmtd-->
+                    <Label Text="{Binding Committed, StringFormat='Total Committed : {0}', Converter={StaticResource StringNull}}"
+                           HorizontalOptions="Start" HorizontalTextAlignment="Start"/>
+                    <!--stock details-->
+                    <Border HorizontalOptions="Fill" Padding="0" StrokeShape="RoundRectangle 10" Margin="0,15,0,0"
+                            IsVisible="{Binding NoDataCommited, Converter={StaticResource InverseBool}}"
+                            Stroke="LightGray" VerticalOptions="Start">
+                        <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" VerticalOptions="Fill">
+                            <Grid HorizontalOptions="Fill" ColumnDefinitions="0.6*,0.4*" RowDefinitions="Auto"
+                                  ColumnSpacing="10" BackgroundColor="LightGray" Padding="15,10">
+                                <Label Text="CUSTOMER" FontAttributes="Bold" HorizontalOptions="Start" TextColor="Black"
+                                       HorizontalTextAlignment="Start" VerticalOptions="Center"
+                                       VerticalTextAlignment="Center"/>
+                                <Label Text="COMMITTED" FontAttributes="Bold" HorizontalOptions="End" TextColor="Black"
+                                       HorizontalTextAlignment="End" VerticalOptions="Center"
+                                       VerticalTextAlignment="Center" Grid.Column="1"/>
+                            </Grid>
+                            <ListView HorizontalOptions="Fill" ItemsSource="{Binding ListCommitted}" SeparatorVisibility="None"
+                                      HasUnevenRows="True" VerticalOptions="Fill" ItemTapped="ListView_ItemTapped">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <cell:StockAlertDetailsMoreCell/>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </VerticalStackLayout>
+                    </Border>
+                    <!--no data-->
+                    <Label Text="Stock Committed" HorizontalOptions="Center" HorizontalTextAlignment="Center" Margin="0,15,0,0"
+                           IsVisible="{Binding NoDataCommited}" Style="{StaticResource AlertTitle}"/>
+                    <controls:CustomNoData HorizontalOptions="Center" VerticalOptions="Center" Margin="0,15,0,0"
+                                           IsVisible="{Binding NoDataCommited}"/>
+                </VerticalStackLayout>
+            </Grid>
+        </Grid>
+        <!--loading overlay-->
+        <controls:CustomLoading AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                x:Name="UiLoad" IsVisible="{Binding IsBusy}" IsAnimate="{Binding IsBusy}"/>
+    </AbsoluteLayout>
+
+</ContentPage>

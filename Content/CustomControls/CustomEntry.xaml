@@ -3,6 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
       x:Class="wwrc_maui.Content.CustomControls.CustomEntry"
       xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls.Base"
+      xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
       HorizontalOptions="Fill" RowDefinitions="Auto">
     <!--base-->
     <Border x:Name="border_">
@@ -17,9 +18,24 @@
                 </StackLayout.GestureRecognizers>
             </StackLayout>
             <!--entry-->
-            <controls:BorderlessEntry x:Name="entry_" VerticalOptions="Center" TextChanged="OnEntry_TextChanged"
+            <controls:BorderlessEntry x:Name="entry_" VerticalOptions="Center" ClearButtonVisibility="Never"
                     TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
-                    PlaceholderColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}"/>
+                    PlaceholderColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}"
+                    TextChanged="OnEntry_TextChanged">
+                <controls:BorderlessEntry.Behaviors>
+                    <toolkit:UserStoppedTypingBehavior StoppedTypingTimeThreshold="1000" MinimumLengthThreshold="3"
+                            BindingContext="{Binding Path=BindingContext, Source={x:Reference entry_}, x:DataType=Entry}"
+                            Command="{Binding SearchCommand}" ShouldDismissKeyboardAutomatically="True"/>
+                </controls:BorderlessEntry.Behaviors>
+            </controls:BorderlessEntry>
+            <!--btn : clear entry-->
+            <StackLayout x:Name="stack_clear" HorizontalOptions="End" VerticalOptions="Center" Padding="5" IsVisible="False">
+                <Image Source="{AppThemeBinding Light=ic_close, Dark=ic_close_light}" HorizontalOptions="End"
+                       VerticalOptions="Center" WidthRequest="30" HeightRequest="30" Aspect="AspectFit"/>
+                <StackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnTextClear_Tapped" NumberOfTapsRequired="1"/>
+                </StackLayout.GestureRecognizers>
+            </StackLayout>
             <!--img right-side-->
             <StackLayout x:Name="stack_right" HorizontalOptions="End" VerticalOptions="Center"
                          Padding="10,5,15,5" IsVisible="False" Spacing="0">

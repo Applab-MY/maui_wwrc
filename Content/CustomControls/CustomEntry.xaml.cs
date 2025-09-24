@@ -20,8 +20,7 @@ public partial class CustomEntry : Grid
     #region bindable properties
     public static BindableProperty SetTextProperty =
         BindableProperty.Create(nameof(SetText), typeof(string), typeof(CustomEntry), defaultValue: "",
-            BindingMode.TwoWay, propertyChanged: (bindable, oldVal, newVal) =>
-            { ((CustomEntry)bindable).UpdateBindingText((string)newVal); });
+            propertyChanged: (bindable, oldVal, newVal) => { ((CustomEntry)bindable).UpdateBindingText((string)newVal); });
     public static BindableProperty PlaceholderProperty =
         BindableProperty.Create(nameof(Placeholder), typeof(string), typeof(CustomEntry), defaultValue: "",
             propertyChanged: (bindable, oldVal, newVal) => { ((CustomEntry)bindable).UpdatePlaceholder((string)newVal); });
@@ -50,10 +49,7 @@ public partial class CustomEntry : Grid
     #endregion
     #region binding implementation
     public void UpdateBindingText(string data)
-    {
-        entry_.Text = data;
-        //entry_.SetBinding(Entry.TextProperty, new Binding() { Path = data, Mode = BindingMode.TwoWay });
-    }
+    { entry_.SetBinding(Entry.TextProperty, new Binding() { Path = data, Mode = BindingMode.TwoWay }); }
     public void UpdatePlaceholder(string data) { entry_.Placeholder = data; }
     public void UpdateEntryIcon(string data)
     {
@@ -90,28 +86,28 @@ public partial class CustomEntry : Grid
         if (!Ispassword && string.IsNullOrEmpty(EntryIcon))
         { // no left or right icon
             entry_.Margin = new Thickness(15, 0);
-            entry_.WidthRequest = SetWidth - 30;
+            entry_.WidthRequest = SetWidth - 70;
         }
         if (!Ispassword && !string.IsNullOrEmpty(EntryIcon))
         { // no right icon
             entry_.Margin = new Thickness(0, 0, 15, 0);
-            entry_.WidthRequest = SetWidth - 70;
+            entry_.WidthRequest = SetWidth - 110;
         }
         if (Ispassword && string.IsNullOrEmpty(EntryIcon))
         { // no left icon
             entry_.Margin = new Thickness(15, 0, 0, 0);
-            entry_.WidthRequest = SetWidth - 70;
+            entry_.WidthRequest = SetWidth - 110;
         }
         if (Ispassword & !string.IsNullOrEmpty(EntryIcon))
         { // have left & right icon
             entry_.Margin = new Thickness(0);
-            entry_.WidthRequest = SetWidth - 110;
+            entry_.WidthRequest = SetWidth - 140;
         }
     }
     #endregion
     #endregion
 
-    public Action<string>? OnTextChanged = null;
+    public Action? OnTextCleared = null;
     bool _isPwdTapped = true;
 
     public CustomEntry() { InitializeComponent(); }
@@ -123,6 +119,16 @@ public partial class CustomEntry : Grid
         await view.ScaleTo(0.9, 100);
         view.Scale = 1;
         entry_.Focus();
+    }
+
+    private async void OnTextClear_Tapped(object? sender, EventArgs e)
+    {
+        if (sender is not StackLayout || entry_ is null) return;
+        var view = (StackLayout)sender;
+        await view.ScaleTo(0.9, 100);
+        view.Scale = 1;
+        entry_.Text = "";
+        OnTextCleared?.Invoke();
     }
 
     private async void OnImgRight_Tapped(object? sender, EventArgs e)
@@ -139,9 +145,5 @@ public partial class CustomEntry : Grid
     }
 
     private void OnEntry_TextChanged(object sender, TextChangedEventArgs e)
-    {
-        if (sender is not Entry) return;
-        SetText = e.NewTextValue; //to send back to binding vm
-        OnTextChanged?.Invoke(e.NewTextValue);
-    }
+    { stack_clear.IsVisible = !string.IsNullOrEmpty(e.NewTextValue); }
 }

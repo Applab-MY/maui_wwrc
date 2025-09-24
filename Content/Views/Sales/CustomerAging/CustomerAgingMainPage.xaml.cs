@@ -12,9 +12,13 @@ public partial class CustomerAgingMainPage : ContentPage
     {
         InitializeComponent();
         navbar.OnLeftIconTapped += async () => { await Navigation.PopAsync(); };
-        navbar.OnRightIconTapped += () => { viewmodel.IsSearchVisible = !viewmodel.IsSearchVisible; };
+        navbar.OnRightIconTapped += () =>
+        {
+            viewmodel.IsSearchVisible = !viewmodel.IsSearchVisible;
+            viewmodel.SearchTxt = ""; viewmodel.SearchCustomerAging();
+        };
         viewmodel.OnFinishLoad += (data) => { salesView.Itemsource = viewmodel.SalesList; };
-        entry_search.OnTextChanged += viewmodel.SearchCustomerAging;
+        entry_search.OnTextCleared += () => { viewmodel.SearchTxt = ""; viewmodel.SearchCustomerAging(); };
         BindingContext = viewmodel;
         Initialize();
     }

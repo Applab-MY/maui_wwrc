@@ -28,8 +28,8 @@
                   RowDefinitions="Auto,*,Auto">
                 <!--row 1 : search bar-->
                 <controls:CustomEntry HorizontalOptions="Fill" Placeholder="search stock..." VerticalOptions="Start"
-                                      x:Name="entry_search" Margin="20,10" SetWidth="{Binding EntryWidth}"
-                                      IsVisible="{Binding IsSearchVisible}"/>
+                        x:Name="entry_search" Margin="20,10" SetWidth="{Binding EntryWidth}"
+                        IsVisible="{Binding IsSearchVisible}" SetText="SearchTxt"/>
                 <!--row 2 : listview-->
                 <ListView HorizontalOptions="Fill" ItemsSource="{Binding StockList}" SeparatorVisibility="None"
                       HasUnevenRows="True" VerticalOptions="Fill" ItemTapped="ListView_ItemTapped" Grid.Row="1"

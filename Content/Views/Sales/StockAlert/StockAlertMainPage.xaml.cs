@@ -12,8 +12,12 @@ public partial class StockAlertMainPage : ContentPage
         InitializeComponent();
         BindingContext = viewmodel;
         navbar.OnLeftIconTapped += async () => { await Navigation.PopAsync(); };
-        navbar.OnRightIconTapped += () => { viewmodel.IsSearchVisible = !viewmodel.IsSearchVisible; };
-        entry_search.OnTextChanged += viewmodel.SearchStockList;
+        navbar.OnRightIconTapped += () =>
+        {
+            viewmodel.IsSearchVisible = !viewmodel.IsSearchVisible;
+            viewmodel.SearchTxt = ""; viewmodel.SearchStockList();
+        };
+        entry_search.OnTextCleared += () => { viewmodel.SearchTxt = ""; viewmodel.SearchStockList(); };
         BindingContext = viewmodel;
         Initialize();
     }

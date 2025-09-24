@@ -13,6 +13,12 @@ public partial class StaffDirectoryMainPage : ContentPage
     {
         InitializeComponent();
         navbar.OnLeftIconTapped += async () => { await Navigation.PopAsync(); };
+        navbar.OnRightIconTapped += () =>
+        {
+            viewmodel.IsSearchVisible = !viewmodel.IsSearchVisible;
+            viewmodel.SearchTxt = ""; viewmodel.DoSearch();
+        };
+        entry_search.OnTextCleared += () => { viewmodel.SearchTxt = ""; viewmodel.DoSearch(); };
         BindingContext = viewmodel;
         Initialize();
 
@@ -51,12 +57,14 @@ public partial class StaffDirectoryMainPage : ContentPage
         {
             content_tab1.IsVisible = true;
             content_tab2.IsVisible = false;
+            entry_search.Placeholder = "search staff...";
             if (!viewmodel.isOfficeLoad) viewmodel.GetOfficeStaffList();
         }
         else if (tabId == 2)
         {
             content_tab1.IsVisible = false;
             content_tab2.IsVisible = true;
+            entry_search.Placeholder = "search country...";
             if (!viewmodel.isOtherLoad) viewmodel.GetCountryList();
         }
     }

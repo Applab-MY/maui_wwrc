@@ -11,8 +11,12 @@ public partial class NewsMainPage : ContentPage
     {
         InitializeComponent();
         navbar.OnLeftIconTapped += async () => { await Navigation.PopAsync(); };
-        navbar.OnRightIconTapped += () => { viewmodel.IsSearchVisible = !viewmodel.IsSearchVisible; };
-        entry_search.OnTextChanged += viewmodel.SearchNews;
+        navbar.OnRightIconTapped += () =>
+        {
+            viewmodel.IsSearchVisible = !viewmodel.IsSearchVisible;
+            viewmodel.SearchTxt = ""; viewmodel.SearchNews();
+        };
+        entry_search.OnTextCleared += () => { viewmodel.SearchTxt = ""; viewmodel.SearchNews(); };
         BindingContext = viewmodel;
         Initialize();
     }

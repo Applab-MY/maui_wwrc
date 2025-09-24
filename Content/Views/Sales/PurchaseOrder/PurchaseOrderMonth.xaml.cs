@@ -14,9 +14,13 @@ public partial class PurchaseOrderMonth : ContentPage
         InitializeComponent();
         viewmodel.selectedDate = selectedDate;
         navbar.OnLeftIconTapped += async () => { await Navigation.PopAsync(); };
-        navbar.OnRightIconTapped += () => { viewmodel.IsSearchVisible = !viewmodel.IsSearchVisible; };
+        navbar.OnRightIconTapped += () =>
+        {
+            viewmodel.IsSearchVisible = !viewmodel.IsSearchVisible;
+            viewmodel.SearchTxt = ""; viewmodel.SearchPurchaseOrder();
+        };
         viewmodel.OnFinishLoad += (data) => { salesView.Itemsource = viewmodel.SalesList; };
-        entry_search.OnTextChanged += viewmodel.SearchPurchaseOrder;
+        entry_search.OnTextCleared += () => { viewmodel.SearchTxt = ""; viewmodel.SearchPurchaseOrder(); };
         BindingContext = viewmodel;
         Initialize();
     }

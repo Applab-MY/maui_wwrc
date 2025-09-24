@@ -1,4 +1,3 @@
-using Microsoft.Graph.Models.Security;
 using wwrc_maui.Content.Viewmodels.Sales.SalesOrder;
 using wwrc_maui.Content.Views.Dashboard;
 using static wwrc_maui.Content.Model.SOModel;
@@ -11,11 +10,15 @@ public partial class SalesOrderMainPage : ContentPage
     FilterSalesPersonView salesView = new();
 
     public SalesOrderMainPage()
-	{
-		InitializeComponent();
-		navbar.OnLeftIconTapped += async () => { await Navigation.PopAsync(); };
-        navbar.OnRightIconTapped += () => { viewmodel.IsSearchVisible = !viewmodel.IsSearchVisible; };
-        entry_search.OnTextChanged += viewmodel.SearchSalesOrder;
+    {
+        InitializeComponent();
+        navbar.OnLeftIconTapped += async () => { await Navigation.PopAsync(); };
+        navbar.OnRightIconTapped += () =>
+        {
+            viewmodel.IsSearchVisible = !viewmodel.IsSearchVisible;
+            viewmodel.SearchTxt = ""; viewmodel.SearchSalesOrder();
+        };
+        entry_search.OnTextCleared += () => { viewmodel.SearchTxt = ""; viewmodel.SearchSalesOrder(); };
         BindingContext = viewmodel;
         Initialize();
     }

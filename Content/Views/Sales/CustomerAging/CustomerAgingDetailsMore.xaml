@@ -71,14 +71,16 @@
                         <Border HorizontalOptions="Fill" Padding="0" StrokeShape="RoundRectangle 10"
                                 Stroke="LightGray" VerticalOptions="Start">
                             <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" VerticalOptions="Fill">
-                                <Grid HorizontalOptions="Fill" ColumnDefinitions="0.25*,0.25*,0.5*" RowDefinitions="Auto"
+                                <Grid HorizontalOptions="Fill" ColumnDefinitions="0.25*,0.35*,0.4*" RowDefinitions="Auto"
                                       ColumnSpacing="10" BackgroundColor="LightGray" Padding="15,8">
                                     <Label Text="DOC No." FontAttributes="Bold" HorizontalOptions="Start" TextColor="Black"
-                                           HorizontalTextAlignment="Start" VerticalOptions="Center"/>
+                                           HorizontalTextAlignment="Start" VerticalOptions="Center" FontSize="12"/>
                                     <Label Text="DOC DATE" FontAttributes="Bold" HorizontalOptions="Center" TextColor="Black"
-                                           HorizontalTextAlignment="Center" VerticalOptions="Center" Grid.Column="1"/>
+                                           HorizontalTextAlignment="Center" VerticalOptions="Center"
+                                           FontSize="12" Grid.Column="1"/>
                                     <Label Text="OUTSTANDING" FontAttributes="Bold" HorizontalOptions="End" TextColor="Black"
-                                           HorizontalTextAlignment="End" VerticalOptions="Center" Grid.Column="2"/>
+                                           HorizontalTextAlignment="End" VerticalOptions="Center"
+                                           FontSize="12" Grid.Column="2"/>
                                 </Grid>
                                 <ListView HorizontalOptions="Fill" ItemsSource="{Binding AgingDetailList}" SeparatorVisibility="None"
                                           HasUnevenRows="True" VerticalOptions="Fill" Grid.Row="1"

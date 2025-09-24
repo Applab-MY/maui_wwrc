@@ -9,6 +9,7 @@ public partial class FilterSalesPersonView : ContentView, INotifyPropertyChanged
     #region bindables properties
     #region beans
     private List<SalesPersonList> _list = [];
+    string _searchTxt = "";
     #endregion
     #region props
     public List<SalesPersonList> Itemsource
@@ -16,6 +17,12 @@ public partial class FilterSalesPersonView : ContentView, INotifyPropertyChanged
         get { return _list; }
         set { _list = value; NotifyPropertyChanged(); }
     }
+    public string SearchTxt
+    {
+        get { return _searchTxt; }
+        set { _searchTxt = value; NotifyPropertyChanged(); }
+    }
+
     public new event PropertyChangedEventHandler? PropertyChanged = null;
     private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
     { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)); }
@@ -24,19 +31,21 @@ public partial class FilterSalesPersonView : ContentView, INotifyPropertyChanged
 
     public SalesPersonList? Selected { get; set; } = null;
 
+    public Command? SearchCommand { get; set; } = null;
+
     public FilterSalesPersonView()
 	{
 		InitializeComponent();
         BindingContext = this;
-        entry_search.OnTextChanged += OnTextChanged;
+        SearchCommand = new Command(OnTextChanged);
     }
 
-    void OnTextChanged(string? txt)
+    void OnTextChanged()
     {
-        if (!string.IsNullOrEmpty(txt))
+        if (!string.IsNullOrEmpty(SearchTxt))
         {
-            var filter = Itemsource.Where(x => x.Id.ToLower().Contains(txt.ToLower()) ||
-                x.Title.ToLower().Contains(txt.ToLower())).ToList();
+            var filter = Itemsource.Where(x => x.Id.ToLower().Contains(SearchTxt.ToLower()) ||
+                x.Title.ToLower().Contains(SearchTxt.ToLower())).ToList();
             listview.ItemsSource = filter;
         }
         else listview.ItemsSource = Itemsource;

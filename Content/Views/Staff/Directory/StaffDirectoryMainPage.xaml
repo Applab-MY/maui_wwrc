@@ -25,13 +25,17 @@
                      VerticalOptions="End"/>
             <!--row 1 : content-->
             <Grid HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1" ColumnDefinitions="*"
-                  RowDefinitions="Auto,*">
-                <!--row 1 : tab bar-->
+                  RowDefinitions="Auto,Auto,*">
+                <!--row 1 : search bar-->
+                <controls:CustomEntry HorizontalOptions="Fill" VerticalOptions="Start"
+                        x:Name="entry_search" Margin="20,10" SetText="SearchTxt"
+                        IsVisible="{Binding IsSearchVisible}" SetWidth="{Binding EntryWidth}"/>
+                <!--row 2 : tab bar-->
                 <Grid x:Name="tabbar" HorizontalOptions="Fill" ColumnSpacing="0" RowDefinitions="Auto"
-                      Margin="15,0"/>
-                <!--row 2 : tab office staff-->
+                      Margin="15,0" Grid.Row="1"/>
+                <!--row 3 : tab office staff-->
                 <ListView HorizontalOptions="Fill" ItemsSource="{Binding StaffList}" HasUnevenRows="True"
-                          IsPullToRefreshEnabled="True" IsRefreshing="{Binding IsRefreshing}" Grid.Row="1"
+                          IsPullToRefreshEnabled="True" IsRefreshing="{Binding IsRefreshing}" Grid.Row="2"
                           RefreshCommand="{Binding RefreshCommand}" IsGroupingEnabled="False"
                           IsVisible="{Binding NoData, Converter={StaticResource InverseBool}}"
                           VerticalOptions="Fill" ItemTapped="OfficeList_ItemTapped" Margin="15,5"
@@ -49,7 +53,7 @@
                 </ListView>
                 <ListView HorizontalOptions="Fill" ItemsSource="{Binding Countries}" SeparatorVisibility="None"
                           HasUnevenRows="True" VerticalOptions="Fill" ItemTapped="OtherList_ItemTapped"
-                          IsPullToRefreshEnabled="true" RefreshCommand="{Binding RefreshCommand}" Grid.Row="1"
+                          IsPullToRefreshEnabled="true" RefreshCommand="{Binding RefreshCommand}" Grid.Row="2"
                           IsVisible="{Binding NoData, Converter={StaticResource InverseBool}}" Margin="15,5"
                           IsRefreshing="{Binding IsRefreshing}" x:Name="content_tab2">
                     <ListView.ItemTemplate>
@@ -60,7 +64,7 @@
                 </ListView>
                 <!--no data-->
                 <controls:CustomNoData HorizontalOptions="Center" VerticalOptions="Center" Margin="0,30"
-                                       IsVisible="{Binding NoData}" Grid.Row="1"/>
+                                       IsVisible="{Binding NoData}" Grid.Row="2"/>
             </Grid>
         </Grid>
         <!--loading overlay-->

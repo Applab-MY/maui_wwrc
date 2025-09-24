@@ -3,7 +3,7 @@
           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
           x:Class="wwrc_maui.Content.Views.Sales.CustomerAging.MonthListCellMore"
           xmlns:helper="clr-namespace:wwrc_maui.Content.Helper">
-    <Grid HorizontalOptions="Fill" ColumnDefinitions="0.25*,0.25*,0.5*" RowDefinitions="Auto"
+    <Grid HorizontalOptions="Fill" ColumnDefinitions="0.25*,0.35*,0.4*" RowDefinitions="Auto"
           ColumnSpacing="10">
         <Grid.Resources>
             <ResourceDictionary>
@@ -11,12 +11,13 @@
             </ResourceDictionary>
         </Grid.Resources>
         <Label Text="{Binding Doc}" HorizontalOptions="Fill" MaxLines="1" LineBreakMode="TailTruncation"
-               Margin="15,10,0,10" VerticalOptions="Center" HorizontalTextAlignment="Start"/>
+               Margin="15,10,0,10" VerticalOptions="Center" HorizontalTextAlignment="Start" FontSize="12"/>
         <Label Text="{Binding Date}" HorizontalOptions="Center" MaxLines="1" LineBreakMode="TailTruncation"
-               Margin="0,10" VerticalOptions="Center" HorizontalTextAlignment="Center" Grid.Column="1"/>
+               Margin="0,10" VerticalOptions="Center" HorizontalTextAlignment="Center"
+               Grid.Column="1" FontSize="12"/>
         <Label Text="{Binding Outstanding, StringFormat='{0:0,000.00}'}" HorizontalOptions="End" MaxLines="1"
                LineBreakMode="TailTruncation" Margin="0,10,15,10" VerticalOptions="Center"
-               HorizontalTextAlignment="End" Grid.Column="2"/>
+               HorizontalTextAlignment="End" Grid.Column="2" FontSize="12"/>
         <BoxView HeightRequest="1" HorizontalOptions="Fill" VerticalOptions="End" Grid.ColumnSpan="3"/>
     </Grid>
 </ViewCell>

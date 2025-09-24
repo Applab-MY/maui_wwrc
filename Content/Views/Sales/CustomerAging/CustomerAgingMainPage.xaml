@@ -29,7 +29,7 @@
                 <!--row 1 : search bar-->
                 <controls:CustomEntry HorizontalOptions="Fill" Placeholder="search customer..." VerticalOptions="Start"
                                       x:Name="entry_search" Margin="20,10" SetWidth="{Binding EntryWidth}"
-                                      IsVisible="{Binding IsSearchVisible}"/>
+                                      IsVisible="{Binding IsSearchVisible}" SetText="SearchTxt"/>
                 <!--row 2 : filter bar-->
                 <Grid ColumnSpacing="10" HorizontalOptions="Fill" VerticalOptions="Start" Margin="10,8"
                       RowDefinitions="Auto" Grid.Row="1" ColumnDefinitions="Auto,2,0.45*,2,0.55*,Auto">

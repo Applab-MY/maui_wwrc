@@ -16,10 +16,10 @@
                     <Image Source="logo" Aspect="AspectFit" Margin="20" HorizontalOptions="Center"/>
                     <Label Text="User Login" HorizontalOptions="Center" Style="{StaticResource AlertTitle}"
                            VerticalOptions="Center"/>
-                    <controls:CustomEntry SetText="{Binding Email}" Placeholder="Username" KeyboardType="Email"
+                    <controls:CustomEntry SetText="Email" Placeholder="Username" KeyboardType="Email"
                                           VerticalOptions="Center" Margin="20,20,20,0" EntryIcon="ic_username"
                                           SetWidth="{Binding EntryWidth}"/>
-                    <controls:CustomEntry SetText="{Binding Password}" Placeholder="Password" Ispassword="True"
+                    <controls:CustomEntry SetText="Password" Placeholder="Password" Ispassword="True"
                                           VerticalOptions="Center" Margin="20,10,20,0" EntryIcon="ic_password"
                                           SetWidth="{Binding EntryWidth}"/>
                     <Button Text="LOGIN" Command="{Binding LoginCommand}" VerticalOptions="Center" Margin="20,30,20,0"/>

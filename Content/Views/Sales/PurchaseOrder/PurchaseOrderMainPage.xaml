@@ -28,7 +28,7 @@
                   RowDefinitions="Auto,Auto,*">
                 <!--row 1 : search bar-->
                 <controls:CustomEntry HorizontalOptions="Fill" Placeholder="search purchase order..." VerticalOptions="Start"
-                      x:Name="entry_search" Margin="20,10" SetWidth="{Binding EntryWidth}"
+                      x:Name="entry_search" Margin="20,10" SetWidth="{Binding EntryWidth}" SetText="SearchTxt"
                       IsVisible="{Binding IsSearchVisible}"/>
                 <!--row 2 : filter bar-->
                 <Grid ColumnSpacing="10" HorizontalOptions="Fill" VerticalOptions="Start" Margin="10,8"

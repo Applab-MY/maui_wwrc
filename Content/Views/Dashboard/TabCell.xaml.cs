@@ -68,6 +68,7 @@ public partial class TabCell : ContentView
                     IsSelected = false;
                     img_icon.Source = ImgDefault;
                     lbl_title.Style = default;
+                    await Task.Delay(300);
                     await img_icon.ScaleTo(1, 250);
                 }
                 if (_tab == TabId)

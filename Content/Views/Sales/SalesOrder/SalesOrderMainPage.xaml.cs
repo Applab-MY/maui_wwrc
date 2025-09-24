@@ -1,3 +1,4 @@
+using Microsoft.Graph.Models.Security;
 using wwrc_maui.Content.Viewmodels.Sales.SalesOrder;
 using wwrc_maui.Content.Views.Dashboard;
 using static wwrc_maui.Content.Model.SOModel;
@@ -59,6 +60,13 @@ public partial class SalesOrderMainPage : ContentPage
         if (sender is not ListView lv) return;
         lv.SelectedItem = null;
         var data = (SalesOrderMainModel)e.Item;
-        await Navigation.PushAsync(new SalesOrderMonth(data.Date));
+        if (!string.IsNullOrEmpty(data.Records))
+        {
+            int total = 0;
+            var _record = data.Records.Split(" ");
+            if (_record.Length > 0) total = Convert.ToInt32(_record.First());
+            if (total > 0) { await Navigation.PushAsync(new SalesOrderMonth(data.Date)); return; }
+        }
+        await App.DisplayAlert("Empty", "No record found for the selected month.", null, "Okay");
     }
 }

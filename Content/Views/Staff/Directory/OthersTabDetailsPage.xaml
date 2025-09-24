@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="wwrc_maui.Content.Views.Staff.Directory.OthersTabDetailsPage"
+             xmlns:vm="clr-namespace:wwrc_maui.Content.Viewmodels.Staff"
+             xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
+             xmlns:cell="clr-namespace:wwrc_maui.Content.Views.Staff.Directory"
+             xmlns:helper="clr-namespace:wwrc_maui.Content.Helper"
+             NavigationPage.HasNavigationBar="False">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <helper:InverseBoolConverter x:Key="InverseBool"/>
+            <helper:StringNullConverter x:Key="StringNull"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <AbsoluteLayout HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
+        <Grid HorizontalOptions="Fill" VerticalOptions="Fill" AbsoluteLayout.LayoutFlags="All"
+              AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*" ColumnDefinitions="*"
+              RowSpacing="0" x:DataType="vm:StaffDetailsVm" >
+            <!--nav bar-->
+            <controls:CustomNavigationBar IconLeft="ic_back" IconRight="ic_search" x:Name="navbar"/>
+            <BoxView HorizontalOptions="Fill" Margin="0" Style="{StaticResource BoxviewNavbar}"
+                     VerticalOptions="End"/>
+            <!--row 1 : content-->
+            <Grid HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1" ColumnDefinitions="*"
+                  RowDefinitions="Auto,*">
+                <!--row 1 : search bar-->
+                <!--<controls:CustomEntry HorizontalOptions="Fill" Placeholder="search sales order..."
+                                      VerticalOptions="Start" x:Name="entry_search" Margin="20,10"
+                                      SetWidth="{Binding EntryWidth}" IsVisible="{Binding IsSearchVisible}"/>-->
+                <!--row 1 : country picker-->
+                
+                <!--row 2 : tab content-->
+                <ListView HorizontalOptions="Fill" ItemsSource="{Binding StaffListMain}" HasUnevenRows="True"
+                          IsPullToRefreshEnabled="True" IsRefreshing="{Binding IsRefreshing}" Grid.Row="1"
+                          RefreshCommand="{Binding RefreshCommand}" IsGroupingEnabled="True"
+                          VerticalOptions="Fill" ItemTapped="ListView_ItemTapped">
+                    <ListView.GroupHeaderTemplate>
+                        <DataTemplate>
+                            <cell:OfficeTabCellGroup/>
+                        </DataTemplate>
+                    </ListView.GroupHeaderTemplate>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <cell:OfficeTabCell/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <!--no data-->
+                <controls:CustomNoData Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center"
+                                       IsVisible="{Binding NoData}"/>
+            </Grid>
+        </Grid>
+        <!--loading overlay-->
+        <controls:CustomLoading AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1"
+                        x:Name="UiLoad" IsVisible="{Binding IsBusy}" IsAnimate="{Binding IsBusy}"/>
+    </AbsoluteLayout>
+
+</ContentPage>

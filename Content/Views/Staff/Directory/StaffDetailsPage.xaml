@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="wwrc_maui.Content.Views.Staff.Directory.StaffDetailsPage"
+             xmlns:vm="clr-namespace:wwrc_maui.Content.Viewmodels.Staff"
+             xmlns:helper="clr-namespace:wwrc_maui.Content.Helper"
+             xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
+             NavigationPage.HasNavigationBar="False">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <helper:StringNullConverter x:Key="StringNullConvert"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <AbsoluteLayout HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
+        <Grid HorizontalOptions="Fill" VerticalOptions="Fill" AbsoluteLayout.LayoutFlags="All"
+              AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*" ColumnDefinitions="*"
+              RowSpacing="0" x:DataType="vm:StaffDetailsVm" >
+            <!--nav bar-->
+            <controls:CustomNavigationBar IconLeft="ic_back" x:Name="navbar" BarBackgroundColorHex="{Binding PrimaryColor}"/>
+            <BoxView HorizontalOptions="Fill" Margin="0" Style="{StaticResource BoxviewNavbar}" VerticalOptions="End"/>
+            <!--content-->
+            <Grid HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1" ColumnDefinitions="*"
+                  RowDefinitions="Auto,*">
+                <!--row 1 : header-->
+                <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="Start" Spacing="0"
+                                     Padding="15,0,15,20" BackgroundColor="{StaticResource Primary}">
+                    <Label Text="{Binding Name, Converter={StaticResource StringNullConvert}}"
+                           HorizontalOptions="Center" LineBreakMode="WordWrap" HorizontalTextAlignment="Center"
+                           FontSize="Large" Style="{StaticResource AlertTitle}"/>
+                    <Label Text="{Binding Position, Converter={StaticResource StringNullConvert}}"
+                           HorizontalOptions="Center" LineBreakMode="WordWrap" Margin="0,5,0,15"
+                           HorizontalTextAlignment="Center"/>
+                    <!--phone, pic & email-->
+                    <Grid HorizontalOptions="Fill" ColumnSpacing="15" RowDefinitions="Auto" ColumnDefinitions="*,*,*">
+                        <!--btn : call-->
+                        <StackLayout HorizontalOptions="Center" Padding="10" VerticalOptions="Center">
+                            <Image Source="ic_call" HeightRequest="80" Aspect="AspectFit"/>
+                            <StackLayout.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnCall_Tapped" NumberOfTapsRequired="1"/>
+                            </StackLayout.GestureRecognizers>
+                        </StackLayout>
+                        <!--picture-->
+                        <controls:CustomCircleImg HorizontalOptions="Center" VerticalOptions="Start" Grid.Column="1"
+                                                  ImgFromString="{Binding Picture}" SetSize="100" ImgAspect="AspectFill"/>
+                        <!--btn : email-->
+                        <StackLayout HorizontalOptions="Center" Padding="10" VerticalOptions="Center" Grid.Column="2">
+                            <Image Source="ic_send_email" HeightRequest="80" Aspect="AspectFit"/>
+                            <StackLayout.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnEmail_Tapped" NumberOfTapsRequired="1"/>
+                            </StackLayout.GestureRecognizers>
+                        </StackLayout>
+                    </Grid>
+                </VerticalStackLayout>
+                <!--row 2 : details-->
+                <Grid HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1" RowSpacing="10"
+                      ColumnDefinitions="*" RowDefinitions="*,Auto" Margin="15,15,15,20">
+                    <ScrollView HorizontalOptions="Fill" VerticalOptions="Fill">
+                        <Grid HorizontalOptions="Fill" VerticalOptions="Start" ColumnDefinitions="*,*"
+                              RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                              RowSpacing="5" ColumnSpacing="15">
+                            <!--#region titles-->
+                            <Label Text="Employee No" HorizontalOptions="Start" Style="{StaticResource AlertTitle}"
+                                   MaxLines="1" LineBreakMode="TailTruncation" Grid.Row="0" Grid.Column="0"/>
+                            <Label Text="Department" HorizontalOptions="Start" Style="{StaticResource AlertTitle}"
+                                   MaxLines="1" LineBreakMode="TailTruncation" Grid.Row="0" Grid.Column="1"/>
+                            <Label Text="HP No." HorizontalOptions="Start" Style="{StaticResource AlertTitle}"
+                                   MaxLines="1" LineBreakMode="TailTruncation" Grid.Row="2" Grid.Column="0"
+                                   Margin="0,15,0,0"/>
+                            <Label Text="Date Of Birth" HorizontalOptions="Start" Style="{StaticResource AlertTitle}"
+                                   MaxLines="1" LineBreakMode="TailTruncation" Grid.Row="2" Grid.Column="1"
+                                   Margin="0,15,0,0"/>
+                            <Label Text="Office Tel" HorizontalOptions="Start" Style="{StaticResource AlertTitle}"
+                                   MaxLines="1" LineBreakMode="TailTruncation" Grid.Row="4" Grid.Column="0"
+                                   Margin="0,15,0,0" Grid.ColumnSpan="2"/>
+                            <Label Text="Email" HorizontalOptions="Start" Style="{StaticResource AlertTitle}"
+                                   MaxLines="1" LineBreakMode="TailTruncation" Grid.Row="6" Grid.Column="0"
+                                   Margin="0,15,0,0" Grid.ColumnSpan="2"/>
+                            <!--#endregion-->
+                            <!--#region datas-->
+                            <Label Text="{Binding EmpNo, Converter={StaticResource StringNullConvert}}"
+                                   HorizontalOptions="Start" LineBreakMode="WordWrap"
+                                   Grid.Row="1" Grid.Column="0"/>
+                            <Label Text="{Binding Department, Converter={StaticResource StringNullConvert}}"
+                                   HorizontalOptions="Start" LineBreakMode="WordWrap"
+                                   Grid.Row="1" Grid.Column="1"/>
+                            <Label Text="{Binding HpNo, Converter={StaticResource StringNullConvert}}"
+                                   HorizontalOptions="Start" LineBreakMode="WordWrap"
+                                   Grid.Row="3" Grid.Column="0"/>
+                            <Label Text="{Binding Dob, Converter={StaticResource StringNullConvert}}" HorizontalOptions="Start"
+                                   LineBreakMode="WordWrap" Grid.Row="3" Grid.Column="1"/>
+                            <Label Text="{Binding OfficeNo, Converter={StaticResource StringNullConvert}}"
+                                   HorizontalOptions="Start" LineBreakMode="WordWrap"
+                                   Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"/>
+                            <Label Text="{Binding Email, Converter={StaticResource StringNullConvert}}"
+                                   HorizontalOptions="Start" LineBreakMode="WordWrap" Margin="0,0,0,10"
+                                   Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2"/>
+                            <!--#endregion-->
+                        </Grid>
+                    </ScrollView>
+                </Grid>
+            </Grid>
+        </Grid>
+        <!--loading overlay-->
+        <controls:CustomLoading AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1"
+                    x:Name="UiLoad" IsVisible="{Binding IsBusy}" IsAnimate="{Binding IsBusy}"/>
+    </AbsoluteLayout>
+
+</ContentPage>

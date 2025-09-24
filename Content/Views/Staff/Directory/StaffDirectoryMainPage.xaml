@@ -4,21 +4,63 @@
              x:Class="wwrc_maui.Content.Views.Staff.Directory.StaffDirectoryMainPage"
              xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
              xmlns:vm="clr-namespace:wwrc_maui.Content.Viewmodels.Staff"
+             xmlns:cell="clr-namespace:wwrc_maui.Content.Views.Staff.Directory"
+             xmlns:helper="clr-namespace:wwrc_maui.Content.Helper"
              NavigationPage.HasNavigationBar="False">
-    
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <helper:InverseBoolConverter x:Key="InverseBool"/>
+            <helper:StringNullConverter x:Key="StringNull"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <AbsoluteLayout HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
         <Grid HorizontalOptions="Fill" VerticalOptions="Fill" AbsoluteLayout.LayoutFlags="All"
-              AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*,Auto" ColumnDefinitions="*"
+              AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*" ColumnDefinitions="*"
               RowSpacing="0" x:DataType="vm:StaffDirectoryVm">
             <!--nav bar-->
-            <controls:CustomNavigationBar IconLeft="ic_back" IconRight="ic_search" x:Name="navbar"/>
+            <controls:CustomNavigationBar IconLeft="ic_back" IconRight="ic_search" x:Name="navbar"
+                                          Title="Staff Directory"/>
             <BoxView HorizontalOptions="Fill" Margin="0" Style="{StaticResource BoxviewNavbar}"
                      VerticalOptions="End"/>
-            <!--content-->
+            <!--row 1 : content-->
             <Grid HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1" ColumnDefinitions="*"
                   RowDefinitions="Auto,*">
                 <!--row 1 : tab bar-->
-                <!--row 2 : listview-->
+                <Grid x:Name="tabbar" HorizontalOptions="Fill" ColumnSpacing="0" RowDefinitions="Auto"
+                      Margin="15,0"/>
+                <!--row 2 : tab office staff-->
+                <ListView HorizontalOptions="Fill" ItemsSource="{Binding StaffList}" HasUnevenRows="True"
+                          IsPullToRefreshEnabled="True" IsRefreshing="{Binding IsRefreshing}" Grid.Row="1"
+                          RefreshCommand="{Binding RefreshCommand}" IsGroupingEnabled="False"
+                          IsVisible="{Binding NoData, Converter={StaticResource InverseBool}}"
+                          VerticalOptions="Fill" ItemTapped="OfficeList_ItemTapped" Margin="15,5"
+                          ItemAppearing="OfficeList_ItemAppearing" x:Name="content_tab1">
+                    <!--<ListView.GroupHeaderTemplate>
+                        <DataTemplate>
+                            <cell:OfficeTabCellGroup/>
+                        </DataTemplate>
+                    </ListView.GroupHeaderTemplate>-->
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <cell:OfficeTabCell/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <ListView HorizontalOptions="Fill" ItemsSource="{Binding Countries}" SeparatorVisibility="None"
+                          HasUnevenRows="True" VerticalOptions="Fill" ItemTapped="OtherList_ItemTapped"
+                          IsPullToRefreshEnabled="true" RefreshCommand="{Binding RefreshCommand}" Grid.Row="1"
+                          IsVisible="{Binding NoData, Converter={StaticResource InverseBool}}" Margin="15,5"
+                          IsRefreshing="{Binding IsRefreshing}" x:Name="content_tab2">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <cell:OthersTabCell/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <!--no data-->
+                <controls:CustomNoData HorizontalOptions="Center" VerticalOptions="Center" Margin="0,30"
+                                       IsVisible="{Binding NoData}" Grid.Row="1"/>
             </Grid>
         </Grid>
         <!--loading overlay-->

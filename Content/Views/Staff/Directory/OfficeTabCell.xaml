@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ViewCell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="wwrc_maui.Content.Views.Staff.Directory.OfficeTabCell"
+             xmlns:helper="clr-namespace:wwrc_maui.Content.Helper"
+             xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls">
+    
+    <Grid HorizontalOptions="Fill" ColumnSpacing="10" RowDefinitions="Auto" ColumnDefinitions="Auto,*">
+        <Grid.Resources>
+            <ResourceDictionary>
+                <helper:InverseBoolConverter x:Key="InverseBool"/>
+                <helper:StringNullConverter x:Key="StringNull"/>
+            </ResourceDictionary>
+        </Grid.Resources>
+        <controls:CustomCircleImg ImgFromString="{Binding ProfileImage}" SetSize="60" Margin="0,8"
+                                  ImgAspect="AspectFill" HorizontalOptions="Start" VerticalOptions="Center"/>
+        <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" Margin="0,10" Grid.Column="1"
+                             VerticalOptions="Center">
+            <Label Text="{Binding Name, Converter={StaticResource StringNull}}" HorizontalOptions="Start"
+                   HorizontalTextAlignment="Start" MaxLines="1" LineBreakMode="TailTruncation"
+                   Style="{StaticResource PopupPromptButton}"/>
+            <Label Text="{Binding Position, Converter={StaticResource StringNull}}" HorizontalOptions="Start"
+                   HorizontalTextAlignment="Start" MaxLines="1" LineBreakMode="TailTruncation"/>
+        </VerticalStackLayout>
+    </Grid>
+    
+</ViewCell>

@@ -20,6 +20,7 @@ namespace wwrc_maui.Content.Viewmodels.Sales.SalesOrder
         List<Db_SOList> _salesorder = [];
         List<Db_SOItemList> _soItems = [];
         bool _nodata = false;
+        string _searchTxt = "";
         private double _entryWidth = 0.0;
         #endregion
         #region props
@@ -72,6 +73,11 @@ namespace wwrc_maui.Content.Viewmodels.Sales.SalesOrder
             get { return _nodata; }
             set { SetProperty(ref _nodata, value); }
         }
+        public string SearchTxt
+        {
+            get { return _searchTxt; }
+            set { SetProperty(ref _searchTxt, value); }
+        }
         public double EntryWidth
         {
             get { return _entryWidth; }
@@ -81,6 +87,8 @@ namespace wwrc_maui.Content.Viewmodels.Sales.SalesOrder
         #endregion
 
         public Command? RefreshCommand { get; set; } = null;
+        public Command? SearchCommand { get; set; } = null;
+
         public DashboardMainModel? DashboardData = null;
         public List<SalesOrderMainModel> SoMainCache = [];
         public Action<bool>? OnFinishLoad = null;
@@ -94,6 +102,7 @@ namespace wwrc_maui.Content.Viewmodels.Sales.SalesOrder
             SalesPerson = Preferences.Default.Get("userId", "");
             EntryWidth = App.ScreenWidth - 40;
             RefreshCommand = new Command(GetSalesOrderList);
+            SearchCommand = new Command(SearchSalesOrder);
         }
 
         public async void GetSalesOrderList()
@@ -196,11 +205,10 @@ namespace wwrc_maui.Content.Viewmodels.Sales.SalesOrder
             IsBusy = false; IsRefreshing = false;
         }
 
-        public void SearchSalesOrder(string? txt = null)
+        public void SearchSalesOrder()
         {
             var _cache = new List<SalesOrderMainModel>();
-            if (string.IsNullOrEmpty(txt)) 
-            { SoMain = SoMainCache; }
+            if (string.IsNullOrEmpty(SearchTxt)) { SoMain = SoMainCache; }
             else
             {
                 var numberList = new List<int>();
@@ -214,8 +222,8 @@ namespace wwrc_maui.Content.Viewmodels.Sales.SalesOrder
                         if (SoMainCache[i].Data != null)
                         {
                             var Data = SoMainCache[i].Data;
-                            result = Data.ToList().FindAll(item => item.CardName.ToUpper().Contains(txt)
-                                || item.SONO.ToLower().Contains(txt));
+                            result = Data.ToList().FindAll(item => item.CardName.ToUpper().Contains(SearchTxt)
+                                || item.SONO.ToLower().Contains(SearchTxt));
                             if (result.Count > 0) numberList.Add(i);
                             if (monthHash.ContainsKey(SoMainCache[i].Date))
                             {

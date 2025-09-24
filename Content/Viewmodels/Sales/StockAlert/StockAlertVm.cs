@@ -12,6 +12,7 @@ namespace wwrc_maui.Content.Viewmodels.Sales.StockAlert
         bool _isSearch = false;
         List<DB_StockAlert> _stocklist = [];
         bool _nodata = false;
+        string _searchTxt = "";
         private double _entryWidth = 0.0;
         #endregion
         #region props
@@ -34,6 +35,11 @@ namespace wwrc_maui.Content.Viewmodels.Sales.StockAlert
             get { return _nodata; }
             set { SetProperty(ref _nodata, value); }
         }
+        public string SearchTxt
+        {
+            get { return _searchTxt; }
+            set { SetProperty(ref _searchTxt, value); }
+        }
         public double EntryWidth
         {
             get { return _entryWidth; }
@@ -43,6 +49,8 @@ namespace wwrc_maui.Content.Viewmodels.Sales.StockAlert
         #endregion
 
         public Command? RefreshCommand { get; set; } = null;
+        public Command? SearchCommand { get; set; } = null;
+
         List<DB_StockAlert> stockListCache = [];
         List<DB_IsCommitedPW> committedList = [];
         List<DB_IsCommitedPW_Customer> committedCustomer = [];
@@ -53,6 +61,7 @@ namespace wwrc_maui.Content.Viewmodels.Sales.StockAlert
             IsBusy = false;
             EntryWidth = App.ScreenWidth - 40;
             RefreshCommand = new Command(GetStockAlertList);
+            SearchCommand = new Command(SearchStockList);
         }
 
         public async void GetStockAlertList()
@@ -188,15 +197,15 @@ namespace wwrc_maui.Content.Viewmodels.Sales.StockAlert
             IsBusy = false; IsRefreshing = false;
         }
 
-        public void SearchStockList(string? txt = null)
+        public void SearchStockList()
         {
-            if (string.IsNullOrEmpty(txt))
+            if (string.IsNullOrEmpty(SearchTxt))
             { StockList = stockListCache; }
             else
             {
-                StockList = stockListCache.FindAll(item => item.ItemCode.ToLower().Contains(txt) ||
-                    item.ItemCode.ToUpper().Contains(txt) || item.ItemName.ToLower().Contains(txt) ||
-                    item.ItemName.ToUpper().Contains(txt));
+                StockList = stockListCache.FindAll(item => item.ItemCode.ToLower().Contains(SearchTxt) ||
+                    item.ItemCode.ToUpper().Contains(SearchTxt) || item.ItemName.ToLower().Contains(SearchTxt) ||
+                    item.ItemName.ToUpper().Contains(SearchTxt));
             }
         }
     }

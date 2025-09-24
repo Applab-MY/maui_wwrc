@@ -20,6 +20,7 @@ namespace wwrc_maui.Content.Viewmodels.Sales.CustomerAging
         List<DB_MonthsModel> _monthList = [];
         List<DB_DocListModel> _doclist = [];
         bool _nodata = false;
+        string _searchTxt = "";
         private double _entryWidth = 0.0;
         #endregion
         #region props
@@ -77,6 +78,11 @@ namespace wwrc_maui.Content.Viewmodels.Sales.CustomerAging
             get { return _nodata; }
             set { SetProperty(ref _nodata, value); }
         }
+        public string SearchTxt
+        {
+            get { return _searchTxt; }
+            set { SetProperty(ref _searchTxt, value); }
+        }
         public double EntryWidth
         {
             get { return _entryWidth; }
@@ -86,6 +92,8 @@ namespace wwrc_maui.Content.Viewmodels.Sales.CustomerAging
         #endregion
 
         public Command? RefreshCommand { get; set; } = null;
+        public Command? SearchCommand { get; set; } = null;
+
         public DashboardMainModel? DashboardData = null;
         public Action<bool>? OnFinishLoad = null;
         public List<SalesPersonList> SalesList = [];
@@ -101,6 +109,7 @@ namespace wwrc_maui.Content.Viewmodels.Sales.CustomerAging
             SalesPerson = Preferences.Default.Get("userId", "");
             EntryWidth = App.ScreenWidth - 40;
             RefreshCommand = new Command(GetCustomerAgingData);
+            SearchCommand = new Command(SearchCustomerAging);
         }
 
         public void GetPastMonth()
@@ -227,14 +236,14 @@ namespace wwrc_maui.Content.Viewmodels.Sales.CustomerAging
             IsBusy = false; IsRefreshing = false;
         }
 
-        public void SearchCustomerAging(string? txt = null)
+        public void SearchCustomerAging()
         {
-            if (string.IsNullOrEmpty(txt)) CustAgings = CustAgingList;
+            if (string.IsNullOrEmpty(SearchTxt)) CustAgings = CustAgingList;
             else
             {
-                var result = CustAgingList.FindAll(item => item.Id.ToLower().Contains(txt) ||
-                    item.CardName.ToLower().Contains(txt) || item.CardName.ToUpper().Contains(txt) ||
-                    item.CardCode.ToLower().Contains(txt) || item.CardName.ToUpper().Contains(txt));
+                var result = CustAgingList.FindAll(item => item.Id.ToLower().Contains(SearchTxt) ||
+                    item.CardName.ToLower().Contains(SearchTxt) || item.CardName.ToUpper().Contains(SearchTxt) ||
+                    item.CardCode.ToLower().Contains(SearchTxt) || item.CardName.ToUpper().Contains(SearchTxt));
                 CustAgings = result;
             }
             GetPastMonth();

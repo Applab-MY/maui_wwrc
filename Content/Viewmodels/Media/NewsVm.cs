@@ -17,6 +17,7 @@ namespace wwrc_maui.Content.Viewmodels.Media
         private string? _imgSource = "";
         private string? _attachTitle = "";
         private bool _hasAttachment = false;
+        private string _searchTxt = "";
         #endregion
         #region properties
         public bool IsSearchVisible
@@ -67,10 +68,17 @@ namespace wwrc_maui.Content.Viewmodels.Media
             get { return _hasAttachment; }
             set { SetProperty(ref _hasAttachment, value); }
         }
+        public string SearchTxt
+        {
+            get { return _searchTxt; }
+            set { SetProperty(ref _searchTxt, value); }
+        }
         #endregion
         #endregion
 
         public Command? RefreshCommand { get; set; } = null;
+        public Command? SearchCommand { get; set; } = null;
+
         List<NewsTable> newsCache = [];
 
         public NewsVm()
@@ -78,6 +86,7 @@ namespace wwrc_maui.Content.Viewmodels.Media
             IsSearchVisible = false;
             EntryWidth = App.ScreenWidth - 40;
             RefreshCommand = new Command(GetNewsList);
+            SearchCommand = new Command(SearchNews);
         }
 
         public async void GetNewsList()
@@ -210,10 +219,10 @@ namespace wwrc_maui.Content.Viewmodels.Media
             }
         }
 
-        public void SearchNews(string? text = null)
+        public void SearchNews()
         {
-            if (!string.IsNullOrEmpty(text))
-                NewsList = newsCache.FindAll(item => item.Title.ToLower().Contains(text.ToLower()));
+            if (!string.IsNullOrEmpty(SearchTxt))
+                NewsList = newsCache.FindAll(item => item.Title.ToLower().Contains(SearchTxt.ToLower()));
             else NewsList = newsCache;
         }
 

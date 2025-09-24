@@ -15,6 +15,7 @@ namespace wwrc_maui.Content.Viewmodels.Sales.SalesOrder
         string _salesperson = "";
         List<Db_SOList> _soMain = [];
         bool _nodata = false;
+        string _searchTxt = "";
         private double _entryWidth = 0.0;
         string _pagetitle = "";
         #endregion
@@ -53,6 +54,11 @@ namespace wwrc_maui.Content.Viewmodels.Sales.SalesOrder
             get { return _nodata; }
             set { SetProperty(ref _nodata, value); }
         }
+        public string SearchTxt
+        {
+            get { return _searchTxt; }
+            set { SetProperty(ref _searchTxt, value); }
+        }
         public double EntryWidth
         {
             get { return _entryWidth; }
@@ -67,6 +73,8 @@ namespace wwrc_maui.Content.Viewmodels.Sales.SalesOrder
         #endregion
 
         public Command? RefreshCommand { get; set; } = null;
+        public Command? SearchCommand { get; set; } = null;
+
         public DashboardMainModel? DashboardData = null;
         public List<Db_SOList> SoMainCache = [];
         public Action<bool>? OnFinishLoad = null;
@@ -81,6 +89,7 @@ namespace wwrc_maui.Content.Viewmodels.Sales.SalesOrder
             SalesPerson = Preferences.Default.Get("userId", "");
             EntryWidth = App.ScreenWidth - 40;
             RefreshCommand = new Command(GetSalesOrderByMonth);
+            SearchCommand = new Command(SearchSalesOrder);
         }
 
         public async void GetSalesOrderByMonth()
@@ -130,16 +139,16 @@ namespace wwrc_maui.Content.Viewmodels.Sales.SalesOrder
             }
         }
 
-        public void SearchSalesOrder(string? txt = null)
+        public void SearchSalesOrder()
         {
-            if (string.IsNullOrEmpty(txt))
+            if (string.IsNullOrEmpty(SearchTxt))
             { SoMain = SoMainCache; }
             else
             {
-                var result = SoMainCache.FindAll(item => item.CardName.ToLower().Contains(txt)
-                    || item.CardName.ToUpper().Contains(txt) || item.SONO.ToLower().Contains(txt)
-                    || item.SONO.ToUpper().Contains(txt) || item.CardCode.ToUpper().Contains(txt)
-                    || item.CardCode.ToLower().Contains(txt));
+                var result = SoMainCache.FindAll(item => item.CardName.ToLower().Contains(SearchTxt)
+                    || item.CardName.ToUpper().Contains(SearchTxt) || item.SONO.ToLower().Contains(SearchTxt)
+                    || item.SONO.ToUpper().Contains(SearchTxt) || item.CardCode.ToUpper().Contains(SearchTxt)
+                    || item.CardCode.ToLower().Contains(SearchTxt));
                 SoMain = result;
             }
         }

@@ -15,6 +15,7 @@ namespace wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder
         string _salesperson = "";
         List<PurchaseItem> _poMain = [];
         bool _nodata = false;
+        string _searchTxt = "";
         private double _entryWidth = 0.0;
         string _pagetitle = "";
         #endregion
@@ -53,6 +54,11 @@ namespace wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder
             get { return _nodata; }
             set { SetProperty(ref _nodata, value); }
         }
+        public string SearchTxt
+        {
+            get { return _searchTxt; }
+            set { SetProperty(ref _searchTxt, value); }
+        }
         public double EntryWidth
         {
             get { return _entryWidth; }
@@ -67,6 +73,8 @@ namespace wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder
         #endregion
 
         public Command? RefreshCommand { get; set; } = null;
+        public Command? SearchCommand { get; set; } = null;
+
         public DashboardMainModel? DashboardData = null;
         public List<PurchaseItem> PoMainCache = [];
         public Action<bool>? OnFinishLoad = null;
@@ -81,6 +89,7 @@ namespace wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder
             SalesPerson = Preferences.Default.Get("userId", "");
             EntryWidth = App.ScreenWidth - 40;
             RefreshCommand = new Command(GetPurchaseByMonth);
+            SearchCommand = new Command(SearchPurchaseOrder);
         }
 
         public async void GetPurchaseByMonth()
@@ -107,13 +116,13 @@ namespace wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder
             }
         }
 
-        public void SearchPurchaseOrder(string? txt = null)
+        public void SearchPurchaseOrder()
         {
-            if (string.IsNullOrEmpty(txt)) PoMain = PoMainCache;
+            if (string.IsNullOrEmpty(SearchTxt)) PoMain = PoMainCache;
             else
             {
-                var result = PoMainCache.FindAll(item => item.CardName.ToLower().Contains(txt) ||
-                    item.CardName.ToUpper().Contains(txt) || item.PONO.ToLower().Contains(txt));
+                var result = PoMainCache.FindAll(item => item.CardName.ToLower().Contains(SearchTxt) ||
+                    item.CardName.ToUpper().Contains(SearchTxt) || item.PONO.ToLower().Contains(SearchTxt));
                 PoMain = result;
             }
         }

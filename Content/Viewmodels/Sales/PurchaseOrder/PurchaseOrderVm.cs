@@ -19,6 +19,7 @@ namespace wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder
         List<DB_Purchase> _purchase = [];
         List<DB_POItem> _poItems = [];
         bool _nodata = false;
+        string _searchTxt = "";
         private double _entryWidth = 0.0;
         #endregion
         #region props
@@ -71,6 +72,11 @@ namespace wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder
             get { return _nodata; }
             set { SetProperty(ref _nodata, value); }
         }
+        public string SearchTxt
+        {
+            get { return _searchTxt; }
+            set { SetProperty(ref _searchTxt, value); }
+        }
         public double EntryWidth
         {
             get { return _entryWidth; }
@@ -80,6 +86,8 @@ namespace wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder
         #endregion
 
         public Command? RefreshCommand { get; set; } = null;
+        public Command? SearchCommand { get; set; } = null;
+
         public DashboardMainModel? DashboardData = null;
         public List<POMainModel> PoMainCache = [];
         public Action<bool>? OnFinishLoad = null;
@@ -93,6 +101,7 @@ namespace wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder
             SalesPerson = Preferences.Default.Get("userId", "");
             EntryWidth = App.ScreenWidth - 40;
             RefreshCommand = new Command(GetPurchaseOrderList);
+            SearchCommand = new Command(SearchPurchaseOrder);
         }
 
         public async void GetPurchaseOrderList()
@@ -196,10 +205,10 @@ namespace wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder
             IsBusy = false; IsRefreshing = false;
         }
 
-        public void SearchPurchaseOrder(string? txt = null)
+        public void SearchPurchaseOrder()
         {
             var _cache = new List<POMainModel>();
-            if (string.IsNullOrEmpty(txt)) { PoMain = PoMainCache; }
+            if (string.IsNullOrEmpty(SearchTxt)) { PoMain = PoMainCache; }
             else
             {
                 var numberList = new List<int>();
@@ -212,8 +221,8 @@ namespace wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder
                     {
                         if (PoMainCache[i].Data != null)
                         {
-                            result = PoMainCache[i].Data.FindAll(item => item.CardName.ToLower().Contains(txt) ||
-                                item.CardName.ToUpper().Contains(txt) || item.PONO.ToLower().Contains(txt));
+                            result = PoMainCache[i].Data.FindAll(item => item.CardName.ToLower().Contains(SearchTxt) ||
+                                item.CardName.ToUpper().Contains(SearchTxt) || item.PONO.ToLower().Contains(SearchTxt));
                             if (result.Count > 0) numberList.Add(i);
                             if (monthHash.ContainsKey(PoMainCache[i].Date))
                             {

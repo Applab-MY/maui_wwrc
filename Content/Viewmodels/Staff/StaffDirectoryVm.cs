@@ -15,8 +15,9 @@ namespace wwrc_maui.Content.Viewmodels.Staff
         bool _isSearch = false;
         ObservableCollection<StaffMainModel> _stafflist = [];
         List<ObservableGroupCollection<string, StaffMainModel>> _groupstaffs = [];
-        List<CountryMainModel> _countries = [];
+        ObservableCollection<CountryMainModel> _countries = [];
         bool _nodata = false;
+        string _searchTxt = "";
         private double _entryWidth = 0.0;
         #endregion
         #region props
@@ -43,7 +44,7 @@ namespace wwrc_maui.Content.Viewmodels.Staff
                 NoData = value.Count == 0;
             }
         }
-        public List<CountryMainModel> Countries
+        public ObservableCollection<CountryMainModel> Countries
         {
             get { return _countries; }
             set
@@ -57,6 +58,11 @@ namespace wwrc_maui.Content.Viewmodels.Staff
             get { return _nodata; }
             set { SetProperty(ref _nodata, value); }
         }
+        public string SearchTxt
+        {
+            get { return _searchTxt; }
+            set { SetProperty(ref _searchTxt, value); }
+        }
         public double EntryWidth
         {
             get { return _entryWidth; }
@@ -66,8 +72,12 @@ namespace wwrc_maui.Content.Viewmodels.Staff
         #endregion
 
         public Command? RefreshCommand { get; set; } = null;
+        public Command? SearchCommand { get; set; } = null;
+
         public List<string> tabList = [];
         public IList<StaffMainModel> allStaffCache = [];
+        public ObservableCollection<StaffMainModel> lastState = []; //for pagination
+        public List<CountryMainModel> allCountryCache = [];
         public string selectedTab = "";
         public bool isOfficeLoad = false;
         public bool isOtherLoad = false;
@@ -81,6 +91,7 @@ namespace wwrc_maui.Content.Viewmodels.Staff
             tabList = ["Office", "Others"];
             EntryWidth = App.ScreenWidth - 40;
             RefreshCommand = new Command(RefreshContent);
+            SearchCommand = new Command(DoSearch);
         }
 
         public void RefreshContent()
@@ -99,9 +110,10 @@ namespace wwrc_maui.Content.Viewmodels.Staff
             {
                 try
                 {
-                    GroupedStaffList = []; StaffList = []; allStaffCache = [];
+                    GroupedStaffList = []; StaffList = []; allStaffCache = []; lastState = [];
                     var model = new API_StaffModel { Country = Preferences.Default.Get("country", "") };
                     var _res = await App.AppClient.Staff(model);
+                    //_res.items = []; //for demo
                     if (_res.SystemCode == 401)
                     {
                         AppDatabase.Instance.DeleteAllData();
@@ -160,6 +172,7 @@ namespace wwrc_maui.Content.Viewmodels.Staff
                         else StaffList = new ObservableCollection<StaffMainModel>(_list);
                         //GroupedStaffList = [.. allStaffCache.OrderBy(p => p.Name).GroupBy(p => p.GetStaffGroup())
                         //    .Select(p => new ObservableGroupCollection<string, StaffMainModel>(p))];
+                        lastState = StaffList;
                         isOfficeLoad = true;
                     }
                     else if (_res.SystemCode == 200 && _res.items != null && _res.items.Count == 0)
@@ -181,7 +194,7 @@ namespace wwrc_maui.Content.Viewmodels.Staff
 
         public async void GetStaffListNextPage()
         {
-            if (allStaffCache.Count > 0)
+            if (allStaffCache.Count > 0 && !IsSearchVisible)
             {
                 IsBusy = true; IsRefreshing = true;
                 await Task.Delay(300);
@@ -194,6 +207,7 @@ namespace wwrc_maui.Content.Viewmodels.Staff
                         StaffList.Add(allStaffCache[a]);
                     else break;
                 }
+                lastState = StaffList;
                 IsBusy = false; IsRefreshing = false;
             }
         }
@@ -207,8 +221,9 @@ namespace wwrc_maui.Content.Viewmodels.Staff
             {
                 try
                 {
-                    Countries = [];
+                    Countries = []; allCountryCache = [];
                     var _res = await App.AppClient.GetCountry();
+                    //_res.items = []; //for demo
                     if (_res.SystemCode == 401)
                     {
                         AppDatabase.Instance.DeleteAllData();
@@ -219,14 +234,13 @@ namespace wwrc_maui.Content.Viewmodels.Staff
                     }
                     else if (_res.SystemCode == 200 && _res.items != null && _res.items.Count > 0)
                     {
-                        var _list = new List<CountryMainModel>();
                         AppDatabase.Instance.SqlConnection.DeleteAll<CountryMainModel>();
                         foreach (var data in _res.items)
                         {
                             if (string.IsNullOrEmpty(data.CountryImage))
                                 data.CountryImage = "ic_calendar.png";
 
-                            _list.Add(data);
+                            allCountryCache.Add(data);
                             var country_db = new CountryMainModel()
                             {
                                 Id = data.Id,
@@ -236,7 +250,7 @@ namespace wwrc_maui.Content.Viewmodels.Staff
                             };
                             AppDatabase.Instance.SqlConnection.Insert(country_db);
                         }
-                        Countries = _list;
+                        Countries = new ObservableCollection<CountryMainModel>(allCountryCache);
                         isOtherLoad = true;
                     }
                     else if (_res.SystemCode == 200 && _res.items != null && _res.items.Count == 0)
@@ -255,5 +269,36 @@ namespace wwrc_maui.Content.Viewmodels.Staff
             else await App.DisplayAlert("No Internet", "Please check your internet connection.", null, "Okay");
             IsBusy = false; IsRefreshing = false;
         }
+
+        #region search
+        public void DoSearch()
+        {
+            if (selectedTab.Equals(tabList[0])) SearchStaff();
+            else if (selectedTab.Equals(tabList[1])) SearchCountry();
+        }
+
+        public void SearchStaff()
+        {
+            if (string.IsNullOrEmpty(SearchTxt)) { StaffList = lastState; }
+            else
+            {
+                var result = allStaffCache.ToList().FindAll(item => item.Id.ToLower().Contains(SearchTxt)
+                        || item.Name.ToLower().Contains(SearchTxt));
+                StaffList = new ObservableCollection<StaffMainModel>(result);
+            }
+        }
+
+        public void SearchCountry()
+        {
+            if (string.IsNullOrEmpty(SearchTxt))
+            { Countries = new ObservableCollection<CountryMainModel>(allCountryCache); }
+            else
+            {
+                var result = allCountryCache.ToList().FindAll(item => item.CountryCode.ToLower().Contains(SearchTxt)
+                        || item.CountryName.ToLower().Contains(SearchTxt));
+                Countries = new ObservableCollection<CountryMainModel>(result);
+            }
+        }
+        #endregion
     }
 }

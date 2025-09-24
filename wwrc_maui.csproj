@@ -133,7 +133,10 @@
 	  <MauiXaml Update="Content\CustomControls\ShowAlert.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Content\Viewmodels\Sales\StockAlert\StockDetailsCell.xaml">
+	  <MauiXaml Update="Content\Views\Sales\StockAlert\StockAlertDetailsMoreCell.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Sales\StockAlert\StockDetailsCell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Auth\ForgotPassword.xaml">
@@ -304,6 +307,9 @@
 	  <MauiXaml Update="Content\Views\Sales\StockAlert\StockAlertDetails.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Sales\StockAlert\StockAlertDetailsMore.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Sales\StockAlert\StockAlertMainCell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -313,10 +319,28 @@
 	  <MauiXaml Update="Content\Views\Staff\CustomerVisit\CustomerVisitMainPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Staff\Directory\OfficeTabCell.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Staff\Directory\OfficeTabCellGroup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Staff\Directory\OthersTabCell.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Staff\Directory\OthersTabDetailsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Staff\Directory\StaffDetailsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Staff\Directory\StaffDirectoryMainPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Staff\StaffOptionPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Staff\Directory\TabCell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

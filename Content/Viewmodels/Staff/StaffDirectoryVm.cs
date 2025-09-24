@@ -1,4 +1,5 @@
-﻿using wwrc_maui.Content.Model;
+﻿using System.Collections.ObjectModel;
+using wwrc_maui.Content.Model;
 using wwrc_maui.Content.Viewmodels.Common;
 using wwrc_maui.Content.Views.Auth;
 using static wwrc_maui.Content.Model.CountryModel;
@@ -12,11 +13,10 @@ namespace wwrc_maui.Content.Viewmodels.Staff
         #region bindable properties
         #region beans
         bool _isSearch = false;
-        List<StaffMainModel> _staffs = [];
+        ObservableCollection<StaffMainModel> _stafflist = [];
         List<ObservableGroupCollection<string, StaffMainModel>> _groupstaffs = [];
         List<CountryMainModel> _countries = [];
         bool _nodata = false;
-        bool _nocountry = false;
         private double _entryWidth = 0.0;
         #endregion
         #region props
@@ -25,12 +25,12 @@ namespace wwrc_maui.Content.Viewmodels.Staff
             get { return _isSearch; }
             set { SetProperty(ref _isSearch, value); }
         }
-        public List<StaffMainModel> StaffList
+        public ObservableCollection<StaffMainModel> StaffList
         {
-            get { return _staffs; }
+            get { return _stafflist; }
             set
             {
-                SetProperty(ref _staffs, value);
+                SetProperty(ref _stafflist, value);
                 NoData = value.Count == 0;
             }
         }
@@ -67,7 +67,13 @@ namespace wwrc_maui.Content.Viewmodels.Staff
 
         public Command? RefreshCommand { get; set; } = null;
         public List<string> tabList = [];
+        public IList<StaffMainModel> allStaffCache = [];
         public string selectedTab = "";
+        public bool isOfficeLoad = false;
+        public bool isOtherLoad = false;
+        public int pageIndex = 0;
+        public int pageTotal = 0;
+        public int pageSize = 20;
 
         public StaffDirectoryVm()
         {
@@ -79,21 +85,22 @@ namespace wwrc_maui.Content.Viewmodels.Staff
 
         public void RefreshContent()
         {
-            if (selectedTab.Equals("Office")) GetStaffList();
+            if (selectedTab.Equals("Office")) GetOfficeStaffList();
             else if (selectedTab.Equals("Others")) GetCountryList();
         }
 
-        public async void GetStaffList()
+        public async void GetOfficeStaffList()
         {
+            isOfficeLoad = false;
             IsBusy = true; IsRefreshing = true;
+            pageIndex = 0; pageTotal = 0;
             NetworkAccess accessType = Connectivity.Current.NetworkAccess;
             if (accessType == NetworkAccess.Internet && App.AppClient != null)
             {
                 try
                 {
-                    StaffList = []; GroupedStaffList = [];
-                    var model = new API_StaffModel
-                    { Country = Preferences.Default.Get("country", "") };
+                    GroupedStaffList = []; StaffList = []; allStaffCache = [];
+                    var model = new API_StaffModel { Country = Preferences.Default.Get("country", "") };
                     var _res = await App.AppClient.Staff(model);
                     if (_res.SystemCode == 401)
                     {
@@ -142,9 +149,18 @@ namespace wwrc_maui.Content.Viewmodels.Staff
                             AppDatabase.Instance.SqlConnection.Insert(staff_db);
                         }
 
-                        StaffList = [.. _list.OrderBy(c => c.Name)];
-                        //GroupedStaffList = [.. StaffList.OrderBy(p => p.Name).GroupBy(p => p.GetStaffGroup()).
-                        //    Select(p => new ObservableGroupCollection<string, StaffMainModel>(p))];
+                        allStaffCache = _list;
+                        pageTotal = _list.Count / pageSize;
+                        if (pageTotal > 0)
+                        {
+                            var _cache = new List<StaffMainModel>();
+                            for (int a = 0; a < pageSize; a++) _cache.Add(_list[a]);
+                            StaffList = new ObservableCollection<StaffMainModel>(_cache);
+                        }
+                        else StaffList = new ObservableCollection<StaffMainModel>(_list);
+                        //GroupedStaffList = [.. allStaffCache.OrderBy(p => p.Name).GroupBy(p => p.GetStaffGroup())
+                        //    .Select(p => new ObservableGroupCollection<string, StaffMainModel>(p))];
+                        isOfficeLoad = true;
                     }
                     else if (_res.SystemCode == 200 && _res.items != null && _res.items.Count == 0)
                     { } //bugfix :: sometimes api success but return null items
@@ -163,8 +179,28 @@ namespace wwrc_maui.Content.Viewmodels.Staff
             IsBusy = false; IsRefreshing = false;
         }
 
+        public async void GetStaffListNextPage()
+        {
+            if (allStaffCache.Count > 0)
+            {
+                IsBusy = true; IsRefreshing = true;
+                await Task.Delay(300);
+                pageIndex++;
+                var _start = pageIndex * pageSize;
+                var _end = _start + pageSize;
+                for (int a = _start; a < _end; a++)
+                {
+                    if (a < allStaffCache.Count)
+                        StaffList.Add(allStaffCache[a]);
+                    else break;
+                }
+                IsBusy = false; IsRefreshing = false;
+            }
+        }
+
         public async void GetCountryList()
         {
+            isOtherLoad = false;
             IsBusy = true; IsRefreshing = true;
             NetworkAccess accessType = Connectivity.Current.NetworkAccess;
             if (accessType == NetworkAccess.Internet && App.AppClient != null)
@@ -201,6 +237,7 @@ namespace wwrc_maui.Content.Viewmodels.Staff
                             AppDatabase.Instance.SqlConnection.Insert(country_db);
                         }
                         Countries = _list;
+                        isOtherLoad = true;
                     }
                     else if (_res.SystemCode == 200 && _res.items != null && _res.items.Count == 0)
                     { } //bugfix :: sometimes api success but return null items

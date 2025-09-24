@@ -21,7 +21,7 @@ namespace wwrc_maui.Content.Viewmodels.Staff
         string _officeNo = "";
         string _email = "";
         string _dob = "";
-        List<StaffMainModel> _staffListMain = [];
+        List<ObservableGroupCollection<string, StaffMainModel>> _staffListMain = [];
         List<string> _countries = [];
         bool _noData = false;
         double _entryWidth = 0.0;
@@ -87,7 +87,7 @@ namespace wwrc_maui.Content.Viewmodels.Staff
             get { return _countries; }
             set { SetProperty(ref _countries, value); }
         }
-        public List<StaffMainModel> StaffListMain
+        public List<ObservableGroupCollection<string, StaffMainModel>> StaffListMain
         {
             get { return _staffListMain; }
             set
@@ -109,7 +109,9 @@ namespace wwrc_maui.Content.Viewmodels.Staff
         #endregion
         #endregion
 
+        public Command? RefreshCommand { get; set; } = null;
         public string staffId = "";
+        public string countryCode = "";
         public List<CountryMainModel> countryList = [];
         public List<StaffMainModel> staffList = [];
         public List<DB_StaffModel> staffListDb = [];
@@ -118,6 +120,7 @@ namespace wwrc_maui.Content.Viewmodels.Staff
         {
             var _clr = Application.Current?.Resources["Primary"] as Color;
             if (_clr != null) { PrimaryColor = _clr.ToArgbHex(); }
+            RefreshCommand = new Command(GetStaffList);
         }
 
         public async void GetStaffDetails()
@@ -188,14 +191,15 @@ namespace wwrc_maui.Content.Viewmodels.Staff
             }
         }
 
-        public async void StaffList(string countryCode)
+        public async void GetStaffList()
         {
             IsBusy = true; IsRefreshing = true;
             NetworkAccess accessType = Connectivity.Current.NetworkAccess;
             if (accessType == NetworkAccess.Internet && App.AppClient != null)
             {
                 StaffListMain = []; staffList = []; staffListDb = [];
-                var _res = await App.AppClient.Staff("", countryCode);
+                var model = new API_StaffModel { Country = countryCode };
+                var _res = await App.AppClient.Staff(model);
                 if (_res.SystemCode == 401)
                 {
                     AppDatabase.Instance.DeleteAllData();
@@ -244,7 +248,8 @@ namespace wwrc_maui.Content.Viewmodels.Staff
                     }
                     AppDatabase.Instance.SqlConnection.InsertAll(staffListDb);
                     var result = staffList.OrderBy(c => c.Name).ToList();
-                    StaffListMain = result.OrderBy(p => p.Name).GroupBy(p => p.GetStaffGroup()).Select(p => new ObservableGroupCollection<string, StaffMainModel>(p)).ToList();
+                    StaffListMain = [.. result.OrderBy(p => p.Name).GroupBy(p => p.GetStaffGroup())
+                        .Select(p => new ObservableGroupCollection<string, StaffMainModel>(p))];
                 }
                 else if (_res.SystemCode == 200 && _res.items != null && _res.items.Count == 0)
                 { } //bugfix :: sometimes api success but return null items

@@ -54,13 +54,12 @@ public partial class DashboardFilter : ContentPage
             {
                 BuildSubsidiaryList(viewmodel.FilterModel.Subsidiary);
                 viewmodel.SetupSalesList(viewmodel.FilterModel.Country, viewmodel.FilterModel.Subsidiary);
+                salesView.Itemsource = viewmodel.SalesList;
                 if (!string.IsNullOrEmpty(viewmodel.SalesPerson))
                 {
-                    salesView = new FilterSalesPersonView { Itemsource = viewmodel.SalesList };
                     var selected = viewmodel.SalesList.Where(x => x.Id.Equals(viewmodel.FilterModel.UserId)).FirstOrDefault();
                     if (selected != null) { salesView.Selected = selected; }
                 }
-                else salesView = new FilterSalesPersonView { Itemsource = viewmodel.SalesList };
             }
             else BuildSubsidiaryList();
         }
@@ -262,7 +261,7 @@ public partial class DashboardFilter : ContentPage
                 {
                     viewmodel.FilterModel.Subsidiary = txt.Text;
                     viewmodel.SetupSalesList(viewmodel.FilterModel.Country, viewmodel.FilterModel.Subsidiary);
-                    salesView = new FilterSalesPersonView { Itemsource = viewmodel.SalesList };
+                    salesView.Itemsource = viewmodel.SalesList;
                 }
             }
         }

@@ -18,6 +18,7 @@ public partial class SalesOrderMainPage : ContentPage
             viewmodel.IsSearchVisible = !viewmodel.IsSearchVisible;
             viewmodel.SearchTxt = ""; viewmodel.SearchSalesOrder();
         };
+        viewmodel.OnFinishLoad += (data) => { salesView.Itemsource = viewmodel.SalesList; };
         entry_search.OnTextCleared += () => { viewmodel.SearchTxt = ""; viewmodel.SearchSalesOrder(); };
         BindingContext = viewmodel;
         Initialize();

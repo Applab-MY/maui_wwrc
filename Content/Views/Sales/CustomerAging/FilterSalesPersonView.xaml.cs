@@ -9,18 +9,12 @@ public partial class FilterSalesPersonView : ContentView, INotifyPropertyChanged
     #region bindables properties
     #region beans
     private List<SalesPersonList> _list = [];
-    string _searchTxt = "";
     #endregion
     #region props
     public List<SalesPersonList> Itemsource
     {
         get { return _list; }
         set { _list = value; NotifyPropertyChanged(); }
-    }
-    public string SearchTxt
-    {
-        get { return _searchTxt; }
-        set { _searchTxt = value; NotifyPropertyChanged(); }
     }
 
     public new event PropertyChangedEventHandler? PropertyChanged = null;
@@ -31,24 +25,10 @@ public partial class FilterSalesPersonView : ContentView, INotifyPropertyChanged
 
     public SalesPersonList? Selected { get; set; } = null;
 
-    public Command? SearchCommand { get; set; } = null;
-
     public FilterSalesPersonView()
-	{
-		InitializeComponent();
-        BindingContext = this;
-        SearchCommand = new Command(OnTextChanged);
-    }
-
-    void OnTextChanged()
     {
-        if (!string.IsNullOrEmpty(SearchTxt))
-        {
-            var filter = Itemsource.Where(x => x.Id.ToLower().Contains(SearchTxt.ToLower()) ||
-                x.Title.ToLower().Contains(SearchTxt.ToLower())).ToList();
-            listview.ItemsSource = filter;
-        }
-        else listview.ItemsSource = Itemsource;
+        InitializeComponent();
+        BindingContext = this;
     }
 
     private void listview_ItemTapped(object sender, ItemTappedEventArgs e)
@@ -62,5 +42,17 @@ public partial class FilterSalesPersonView : ContentView, INotifyPropertyChanged
         //else UserId = item.Id;
         //UserName = item.Title;
         lv.SelectedItem = null;
+    }
+
+    private void OnEntry_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        if (sender is not Entry view) return;
+        if (!string.IsNullOrEmpty(e.NewTextValue))
+        {
+            var filter = Itemsource.Where(x => x.Id.ToLower().Contains(e.NewTextValue.ToLower()) ||
+                x.Title.ToLower().Contains(e.NewTextValue.ToLower())).ToList();
+            listview.ItemsSource = filter;
+        }
+        else listview.ItemsSource = Itemsource;
     }
 }

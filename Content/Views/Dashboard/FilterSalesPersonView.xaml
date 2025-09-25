@@ -2,12 +2,15 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="wwrc_maui.Content.Views.Dashboard.FilterSalesPersonView"
-             xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls">
+             xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
+             xmlns:base="clr-namespace:wwrc_maui.Content.CustomControls.Base">
+    
     <Grid HorizontalOptions="Fill" RowDefinitions="Auto,*" ColumnDefinitions="*"
           RowSpacing="10" VerticalOptions="Fill">
-        <controls:CustomEntry x:Name="entry_search" Placeholder="Search Sales Person"
-                VerticalOptions="Center" Margin="0" EntryIcon="ic_search" Grid.Row="0"
-                SetText="SearchTxt"/>
+        <Border StrokeShape="RoundRectangle 20" HorizontalOptions="Fill" Padding="15,0">
+            <base:BorderlessEntry x:Name="entry_" HorizontalOptions="Fill" VerticalOptions="Center"
+                    Placeholder="search sales person..." TextChanged="OnEntry_TextChanged"/>
+        </Border>
         <ListView HorizontalOptions="Fill" VerticalOptions="Start" HasUnevenRows="True" Grid.Row="1"
                   SeparatorVisibility="None" ItemsSource="{Binding Itemsource}"
                   x:Name="listview" ItemTapped="listview_ItemTapped">
@@ -34,11 +37,12 @@
                                     </Image.Triggers>
                                 </Image>
                             </Grid>
-                            <BoxView HeightRequest="1" HorizontalOptions="Fill"/>
+                            <BoxView HeightRequest="1" HorizontalOptions="Fill" Margin="10,0"/>
                         </VerticalStackLayout>
                     </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
     </Grid>
+    
 </ContentView>

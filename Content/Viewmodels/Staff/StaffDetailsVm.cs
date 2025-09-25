@@ -3,6 +3,7 @@ using wwrc_maui.Content.Viewmodels.Common;
 using wwrc_maui.Content.Views.Auth;
 using static wwrc_maui.Content.Model.CountryModel;
 using static wwrc_maui.Content.Model.StaffModel;
+using Application = Microsoft.Maui.Controls.Application;
 
 namespace wwrc_maui.Content.Viewmodels.Staff
 {
@@ -10,6 +11,7 @@ namespace wwrc_maui.Content.Viewmodels.Staff
     {
         #region bindable properties
         #region beans
+        CountryMainModel? _selectedCountry = null;
         string _primary = "";
         bool _isSearch = false;
         string _picture = "";
@@ -21,12 +23,18 @@ namespace wwrc_maui.Content.Viewmodels.Staff
         string _officeNo = "";
         string _email = "";
         string _dob = "";
-        List<ObservableGroupCollection<string, StaffMainModel>> _staffListMain = [];
+        List<StaffMainModel> _staffListMain = [];
         List<string> _countries = [];
         bool _noData = false;
+        string _searchTxt = "";
         double _entryWidth = 0.0;
         #endregion
         #region props
+        public CountryMainModel? SelectedCountry
+        {
+            get { return _selectedCountry; }
+            set { SetProperty(ref _selectedCountry, value); }
+        }
         public string PrimaryColor
         {
             get { return _primary; }
@@ -87,7 +95,7 @@ namespace wwrc_maui.Content.Viewmodels.Staff
             get { return _countries; }
             set { SetProperty(ref _countries, value); }
         }
-        public List<ObservableGroupCollection<string, StaffMainModel>> StaffListMain
+        public List<StaffMainModel> StaffListMain
         {
             get { return _staffListMain; }
             set
@@ -101,6 +109,11 @@ namespace wwrc_maui.Content.Viewmodels.Staff
             get { return _noData; }
             set { SetProperty(ref _noData, value); }
         }
+        public string SearchTxt
+        {
+            get { return _searchTxt; }
+            set { SetProperty(ref _searchTxt, value); }
+        }
         public double EntryWidth
         {
             get { return _entryWidth; }
@@ -110,17 +123,22 @@ namespace wwrc_maui.Content.Viewmodels.Staff
         #endregion
 
         public Command? RefreshCommand { get; set; } = null;
+        public Command? SearchCommand { get; set; } = null;
+
         public string staffId = "";
         public string countryCode = "";
+        public Action<bool>? OnFinishLoad = null;
         public List<CountryMainModel> countryList = [];
-        public List<StaffMainModel> staffList = [];
+        public List<StaffMainModel> staffListCache = [];
         public List<DB_StaffModel> staffListDb = [];
 
         public StaffDetailsVm()
         {
             var _clr = Application.Current?.Resources["Primary"] as Color;
             if (_clr != null) { PrimaryColor = _clr.ToArgbHex(); }
+            EntryWidth = App.ScreenWidth - 40;
             RefreshCommand = new Command(GetStaffList);
+            SearchCommand = new Command(SearchStaff);
         }
 
         public async void GetStaffDetails()
@@ -172,21 +190,25 @@ namespace wwrc_maui.Content.Viewmodels.Staff
         {
             try
             {
+                IsBusy = true; IsRefreshing = true;
+                await Task.Delay(300);
                 Countries = []; countryList = [];
                 string _qCountry = "SELECT * FROM CountryMainModel";
-                var _list = AppDatabase.Instance.SqlConnection.Query<CountryMainModel>(_qCountry);
-                countryList = _list;
-
+                countryList = AppDatabase.Instance.SqlConnection.Query<CountryMainModel>(_qCountry);
                 if (countryList.Count > 0)
                 {
+                    SelectedCountry = countryList.Where(x => x.CountryCode.Equals(countryCode)).FirstOrDefault();
                     var _data = new List<string>();
                     foreach (var item in countryList) _data.Add(item.CountryName);
                     Countries = _data;
+                    OnFinishLoad?.Invoke(true);
                 }
+                IsBusy = false; IsRefreshing = false;
             }
             catch (Exception ex)
             {
                 var error = ex.Message;
+                IsBusy = false; IsRefreshing = false;
                 await App.DisplayAlert("Exception", error, null, "Okay");
             }
         }
@@ -197,67 +219,82 @@ namespace wwrc_maui.Content.Viewmodels.Staff
             NetworkAccess accessType = Connectivity.Current.NetworkAccess;
             if (accessType == NetworkAccess.Internet && App.AppClient != null)
             {
-                StaffListMain = []; staffList = []; staffListDb = [];
-                var model = new API_StaffModel { Country = countryCode };
-                var _res = await App.AppClient.Staff(model);
-                if (_res.SystemCode == 401)
+                try
                 {
-                    AppDatabase.Instance.DeleteAllData();
-                    Preferences.Default.Clear();
-                    await App.DisplayAlert("Relogin", "Please login again", null, "Okay");
-                    Application.Current?.Dispatcher.Dispatch(() =>
-                    { Application.Current.Windows[0].Page = new Login(); });
-                }
-                else if (_res.SystemCode == 200 && _res.items != null && _res.items.Count > 0)
-                {
-                    AppDatabase.Instance.SqlConnection.DeleteAll<DB_StaffModel>();
-                    foreach (var data in _res.items)
+                    StaffListMain = []; staffListCache = []; staffListDb = [];
+                    var model = new API_StaffModel { Country = countryCode };
+                    var _res = await App.AppClient.Staff(model);
+                    if (_res.SystemCode == 401)
                     {
-                        if (string.IsNullOrEmpty(data.ProfileImage))
-                        { data.ProfileImage = "ic_user_empty.png"; }
-                        staffList.Add(data);
-
-                        var staff_db = new DB_StaffModel()
-                        {
-                            Image = data.Image,
-                            Id = data.Id,
-                            AccessCode = data.AccessCode,
-                            UserID = data.UserID,
-                            Email = data.Email,
-                            EmployeeNo = data.EmployeeNo,
-                            Name = data.Name,
-                            Gender = data.Gender,
-                            DOB = data.DOB,
-                            DefaultBranchId = data.DefaultBranchName,
-                            DefaultBranchName = data.DefaultBranchName,
-                            CountryId = data.CountryId,
-                            CountryCode = data.CountryCode,
-                            CountryName = data.CountryName,
-                            Department = data.Department,
-                            Position = data.Position,
-                            HODId = data.HODId,
-                            HODName = data.HODName,
-                            ContactNo = data.ContactNo,
-                            OfficeNo = data.OfficeNo,
-                            ProfileImage = data.ProfileImage,
-                            DefaultSalesTeamId = data.DefaultSalesTeamId,
-                            DefaultSalesTeamName = data.DefaultSalesTeamName,
-                            IsOfficeCredential = data.IsOfficeCredential
-                        };
-                        staffListDb.Add(staff_db);
+                        AppDatabase.Instance.DeleteAllData();
+                        Preferences.Default.Clear();
+                        await App.DisplayAlert("Relogin", "Please login again", null, "Okay");
+                        Application.Current?.Dispatcher.Dispatch(() =>
+                        { Application.Current.Windows[0].Page = new Login(); });
                     }
-                    AppDatabase.Instance.SqlConnection.InsertAll(staffListDb);
-                    var result = staffList.OrderBy(c => c.Name).ToList();
-                    StaffListMain = [.. result.OrderBy(p => p.Name).GroupBy(p => p.GetStaffGroup())
-                        .Select(p => new ObservableGroupCollection<string, StaffMainModel>(p))];
+                    else if (_res.SystemCode == 200 && _res.items != null && _res.items.Count > 0)
+                    {
+                        AppDatabase.Instance.SqlConnection.DeleteAll<DB_StaffModel>();
+                        foreach (var data in _res.items)
+                        {
+                            if (string.IsNullOrEmpty(data.ProfileImage))
+                            { data.ProfileImage = "ic_user_empty.png"; }
+                            staffListCache.Add(data);
+
+                            var staff_db = new DB_StaffModel()
+                            {
+                                Image = data.Image,
+                                Id = data.Id,
+                                AccessCode = data.AccessCode,
+                                UserID = data.UserID,
+                                Email = data.Email,
+                                EmployeeNo = data.EmployeeNo,
+                                Name = data.Name,
+                                Gender = data.Gender,
+                                DOB = data.DOB,
+                                DefaultBranchId = data.DefaultBranchName,
+                                DefaultBranchName = data.DefaultBranchName,
+                                CountryId = data.CountryId,
+                                CountryCode = data.CountryCode,
+                                CountryName = data.CountryName,
+                                Department = data.Department,
+                                Position = data.Position,
+                                HODId = data.HODId,
+                                HODName = data.HODName,
+                                ContactNo = data.ContactNo,
+                                OfficeNo = data.OfficeNo,
+                                ProfileImage = data.ProfileImage,
+                                DefaultSalesTeamId = data.DefaultSalesTeamId,
+                                DefaultSalesTeamName = data.DefaultSalesTeamName,
+                                IsOfficeCredential = data.IsOfficeCredential
+                            };
+                            staffListDb.Add(staff_db);
+                        }
+                        AppDatabase.Instance.SqlConnection.InsertAll(staffListDb);
+                        StaffListMain = [.. staffListCache.OrderBy(c => c.Name)];
+                        //StaffListMain = [.. result.OrderBy(p => p.Name).GroupBy(p => p.GetStaffGroup())
+                        //    .Select(p => new ObservableGroupCollection<string, StaffMainModel>(p))];
+                    }
+                    else if (_res.SystemCode == 200 && _res.items != null && _res.items.Count == 0)
+                    { } //bugfix :: sometimes api success but return null items
+                    else await App.DisplayAlert("Error: " + _res.SystemCode.ToString(), _res.SystemDebugMessage
+                            + ". " + _res.SystemMessage, null, "Okay");
+                    IsBusy = false; IsRefreshing = false;
                 }
-                else if (_res.SystemCode == 200 && _res.items != null && _res.items.Count == 0)
-                { } //bugfix :: sometimes api success but return null items
-                else await App.DisplayAlert("Error: " + _res.SystemCode.ToString(), _res.SystemDebugMessage
-                        + ". " + _res.SystemMessage, null, "Okay");
-                IsBusy = false; IsRefreshing = false;
+                catch (Exception ex)
+                {
+                    var error = ex.Message;
+                    IsBusy = false; IsRefreshing = false;
+                    await App.DisplayAlert("Exception", error, null, "Okay");
+                }
             }
             else await App.DisplayAlert("No Internet", "Please check your internet connection.", null, "Okay");
+        }
+
+        public void SearchStaff()
+        {
+            if (string.IsNullOrEmpty(SearchTxt)) { StaffListMain = staffListCache; }
+            else { StaffListMain = staffListCache.FindAll(item => item.Name.ToLower().Contains(SearchTxt)); }
         }
     }
 }

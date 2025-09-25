@@ -86,22 +86,22 @@ public partial class CustomEntry : Grid
         if (!Ispassword && string.IsNullOrEmpty(EntryIcon))
         { // no left or right icon
             entry_.Margin = new Thickness(15, 0);
-            entry_.WidthRequest = SetWidth - 70;
+            entry_.WidthRequest = SetWidth - 30;
         }
         if (!Ispassword && !string.IsNullOrEmpty(EntryIcon))
         { // no right icon
             entry_.Margin = new Thickness(0, 0, 15, 0);
-            entry_.WidthRequest = SetWidth - 110;
+            entry_.WidthRequest = SetWidth - 70;
         }
         if (Ispassword && string.IsNullOrEmpty(EntryIcon))
         { // no left icon
             entry_.Margin = new Thickness(15, 0, 0, 0);
-            entry_.WidthRequest = SetWidth - 110;
+            entry_.WidthRequest = SetWidth - 70;
         }
         if (Ispassword & !string.IsNullOrEmpty(EntryIcon))
         { // have left & right icon
             entry_.Margin = new Thickness(0);
-            entry_.WidthRequest = SetWidth - 140;
+            entry_.WidthRequest = SetWidth - 115;
         }
     }
     #endregion

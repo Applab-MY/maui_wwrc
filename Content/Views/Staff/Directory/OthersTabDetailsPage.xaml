@@ -17,30 +17,45 @@
     <AbsoluteLayout HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
         <Grid HorizontalOptions="Fill" VerticalOptions="Fill" AbsoluteLayout.LayoutFlags="All"
               AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*" ColumnDefinitions="*"
-              RowSpacing="0" x:DataType="vm:StaffDetailsVm" >
+              RowSpacing="0" x:DataType="vm:StaffDetailsVm">
             <!--nav bar-->
             <controls:CustomNavigationBar IconLeft="ic_back" IconRight="ic_search" x:Name="navbar"/>
+            <!--country picker-->
+            <Grid HorizontalOptions="Center" RowDefinitions="Auto" ColumnDefinitions="Auto" Margin="20,5"
+                  VerticalOptions="Center">
+                <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="5">
+                    <Image Source="{Binding SelectedCountry.CountryImage}" HeightRequest="30" Aspect="AspectFit"
+                               VerticalOptions="Center" HorizontalOptions="Start" Margin="0,0,5,0"/>
+                    <Label Text="{Binding SelectedCountry.CountryName, Converter={StaticResource StringNull}}"
+                               HorizontalOptions="Center" MaxLines="1" LineBreakMode="TailTruncation"
+                               Style="{StaticResource PopupPromptButton}" VerticalOptions="Center"
+                               VerticalTextAlignment="Center"/>
+                    <Image Source="{AppThemeBinding Light=ic_dropdown, Dark=ic_dropdown_light}" HeightRequest="30"
+                           Aspect="AspectFit" VerticalOptions="Center" HorizontalOptions="End"/>
+                    <HorizontalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnPickCountry_Tapped" NumberOfTapsRequired="1"/>
+                    </HorizontalStackLayout.GestureRecognizers>
+                </HorizontalStackLayout>
+            </Grid>
             <BoxView HorizontalOptions="Fill" Margin="0" Style="{StaticResource BoxviewNavbar}"
                      VerticalOptions="End"/>
             <!--row 1 : content-->
             <Grid HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1" ColumnDefinitions="*"
                   RowDefinitions="Auto,*">
                 <!--row 1 : search bar-->
-                <!--<controls:CustomEntry HorizontalOptions="Fill" Placeholder="search sales order..."
-                                      VerticalOptions="Start" x:Name="entry_search" Margin="20,10"
-                                      SetWidth="{Binding EntryWidth}" IsVisible="{Binding IsSearchVisible}"/>-->
-                <!--row 1 : country picker-->
-                
-                <!--row 2 : tab content-->
+                <controls:CustomEntry HorizontalOptions="Fill" Placeholder="search staff..."
+                        VerticalOptions="Start" x:Name="entry_search" Margin="20,10" SetText="SearchTxt"
+                        SetWidth="{Binding EntryWidth}" IsVisible="{Binding IsSearchVisible}"/>
+                <!--row 3 : tab content-->
                 <ListView HorizontalOptions="Fill" ItemsSource="{Binding StaffListMain}" HasUnevenRows="True"
                           IsPullToRefreshEnabled="True" IsRefreshing="{Binding IsRefreshing}" Grid.Row="1"
-                          RefreshCommand="{Binding RefreshCommand}" IsGroupingEnabled="True"
-                          VerticalOptions="Fill" ItemTapped="ListView_ItemTapped">
-                    <ListView.GroupHeaderTemplate>
+                          RefreshCommand="{Binding RefreshCommand}" IsGroupingEnabled="False"
+                          VerticalOptions="Fill" ItemTapped="ListView_ItemTapped" Margin="15,0">
+                    <!--<ListView.GroupHeaderTemplate>
                         <DataTemplate>
                             <cell:OfficeTabCellGroup/>
                         </DataTemplate>
-                    </ListView.GroupHeaderTemplate>
+                    </ListView.GroupHeaderTemplate>-->
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <cell:OfficeTabCell/>

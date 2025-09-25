@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.Messaging;
 using wwrc_maui.Content.Viewmodels.Staff;
 using static wwrc_maui.Content.Helper.ReferenceMessenger;
+using static wwrc_maui.Content.Model.CountryModel;
 using static wwrc_maui.Content.Model.StaffModel;
 
 namespace wwrc_maui.Content.Views.Staff.Directory;
@@ -87,9 +88,11 @@ public partial class StaffDirectoryMainPage : ContentPage
         }
     }
 
-    private void OtherList_ItemTapped(object sender, ItemTappedEventArgs e)
+    private async void OtherList_ItemTapped(object sender, ItemTappedEventArgs e)
     {
         if (sender is not ListView lv) return;
-        lv.SelectedItem = null;
+        lv.SelectedItem = null; //OthersTabDetailsPage
+        var data = (CountryMainModel)e.Item;
+        await Navigation.PushAsync(new OthersTabDetailsPage(data.CountryCode));
     }
 }

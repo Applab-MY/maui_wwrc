@@ -83,33 +83,41 @@ public partial class CustomEntry : Grid
     public void UpdateSetWidth(double data) { SetEntrySize(); }
     private void SetEntrySize()
     {
-        if (!Ispassword && string.IsNullOrEmpty(EntryIcon))
-        { // no left or right icon
-            entry_.Margin = new Thickness(15, 0);
-            entry_.WidthRequest = SetWidth - 30;
-            stack_clear.Padding = new Thickness(10, 5, 15, 5);
-            if (stack_clear.IsVisible) entry_.WidthRequest = SetWidth - 70;
+        if (!Ispassword)
+        {
+            stack_clear.Padding = new Thickness(10,5,15,5);
+            if (string.IsNullOrEmpty(EntryIcon)) // no left or right icon
+            {
+                if (stack_clear.IsVisible)
+                { entry_.WidthRequest = SetWidth - 70; entry_.Margin = new Thickness(15,0,0,0); }
+                if (!stack_clear.IsVisible)
+                { entry_.WidthRequest = SetWidth - 30; entry_.Margin = new Thickness(15,0); }
+            }
+            else if (!string.IsNullOrEmpty(EntryIcon)) // no right icon
+            {
+                if (stack_clear.IsVisible)
+                { entry_.WidthRequest = SetWidth - 110; entry_.Margin = new Thickness(0); }
+                if (!stack_clear.IsVisible)
+                { entry_.WidthRequest = SetWidth - 70; entry_.Margin = new Thickness(0,0,15,0); }
+            }
         }
-        if (!Ispassword && !string.IsNullOrEmpty(EntryIcon))
-        { // no right icon
-            entry_.Margin = new Thickness(0, 0, 15, 0);
-            entry_.WidthRequest = SetWidth - 70;
-            stack_clear.Padding = new Thickness(10, 5, 15, 5);
-            if (stack_clear.IsVisible) entry_.WidthRequest = SetWidth - 110;
-        }
-        if (Ispassword && string.IsNullOrEmpty(EntryIcon))
-        { // no left icon
-            entry_.Margin = new Thickness(15, 0, 0, 0);
-            entry_.WidthRequest = SetWidth - 70;
-            stack_clear.Padding = new Thickness(10, 5, 0, 5);
-            if (stack_clear.IsVisible) entry_.WidthRequest = SetWidth - 110;
-        }
-        if (Ispassword & !string.IsNullOrEmpty(EntryIcon))
-        { // have left & right icon
-            entry_.Margin = new Thickness(0);
-            entry_.WidthRequest = SetWidth - 115;
-            stack_clear.Padding = new Thickness(10, 5, 0, 5);
-            if (stack_clear.IsVisible) entry_.WidthRequest = SetWidth - 155;
+        else if (Ispassword)
+        {
+            stack_clear.Padding = new Thickness(10,5,0,5);
+            if (string.IsNullOrEmpty(EntryIcon)) // no left icon
+            {
+                if (stack_clear.IsVisible) 
+                { entry_.WidthRequest = SetWidth - 110; entry_.Margin = new Thickness(15,0,0,0); }
+                if (!stack_clear.IsVisible)
+                { entry_.WidthRequest = SetWidth - 70; entry_.Margin = new Thickness(15,0,0,0); }
+            }
+            else if (!string.IsNullOrEmpty(EntryIcon)) // have left & right icon
+            {
+                if (stack_clear.IsVisible)
+                { entry_.WidthRequest = SetWidth - 150; entry_.Margin = new Thickness(0); }
+                if (!stack_clear.IsVisible)
+                { entry_.WidthRequest = SetWidth - 110; entry_.Margin = new Thickness(0); }
+            }
         }
     }
     #endregion

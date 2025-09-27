@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
+using wwrc_maui.Content.MsalClient;
 
 namespace wwrc_maui
 {
@@ -19,7 +20,7 @@ namespace wwrc_maui
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
-
+            builder.Services.AddSingleton<PublicClientSingleton>();
             return builder.Build();
         }
     }

@@ -1,11 +1,9 @@
-﻿using Microsoft.Identity.Client;
-using Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;
+﻿using Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;
 using Microsoft.Maui.Handlers;
 using RGPopup.Maui.Extensions;
 using System.Diagnostics;
 using wwrc_maui.Content.CustomControls;
 using wwrc_maui.Content.CustomControls.Base;
-using wwrc_maui.Content.Interfaces;
 using wwrc_maui.Content.MsalClient;
 using wwrc_maui.Content.RestApi;
 using wwrc_maui.Content.Views.Auth;
@@ -20,21 +18,13 @@ namespace wwrc_maui
         public static double ScreenHeight;
         public static Window? AppPage;
         public static IRestService? AppClient;
-        public static IPublicClientApplication? OClient = null;
-        public static string ClientId = "aeb29272-0767-4ba2-ab45-4e231cc40d3a";
-        public static string[] OClientScopes = { "User.Read" };
+        //public static string ClientId = "aeb29272-0767-4ba2-ab45-4e231cc40d3a"; //old id
+        public static PublicClientSingleton? MsalClient = null;
 
         public App()
         {
             InitializeComponent();
-            if (PublicClientSingleton.Instance.MSALClientHelper != null &&
-                PublicClientSingleton.Instance.MSALClientHelper?.AzureConfig != null)
-            {
-                // configure redirect URI for your application
-                PlatformConfig.Instance.RedirectUri = PublicClientSingleton.Instance.MSALClientHelper.AzureConfig.RedirectUri;
-                // Initialize MSAL
-                IAccount? existinguser = Task.Run(PublicClientSingleton.Instance.MSALClientHelper.InitializePublicClientAppAsync).Result;
-            }
+            MsalClient = new PublicClientSingleton();
 
             #region custom controls handler
             EntryHandler.Mapper.AppendToMapping(nameof(BorderlessEntry), (handler, view) =>
@@ -66,11 +56,6 @@ namespace wwrc_maui
             AppPage = CreateWindow(null);
             AppClient = new RestService();
 
-            OClient = PublicClientApplicationBuilder.Create(ClientId).WithRedirectUri($"msal{ClientId}://auth")
-#if Android
-                .WithParentActivityOrWindow(() => PlatformConfig.Instance.ParentWindow)
-#endif
-                .WithIosKeychainSecurityGroup("com.microsoft.adalcache").Build();
             //ServiceCollection services = new();
             //services.AddSingleton<IMicrosoftClient, Platform.Android.AndroidMicrosoftClient>();
             //using ServiceProvider provider = services.BuildServiceProvider();

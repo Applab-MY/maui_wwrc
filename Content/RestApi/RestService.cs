@@ -1,8 +1,6 @@
-﻿using AndroidX.Browser.Trusted.Sharing;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Diagnostics.Metrics;
 using System.Text;
 using wwrc_maui.Content.Model;
 using wwrc_maui.Content.Model.Common;
@@ -592,14 +590,6 @@ namespace wwrc_maui.Content.RestApi
 
         async Task<bool> IRestService.ProfileUpdate(MultipartFormDataContent content)
         {
-            if (client.DefaultRequestHeaders.Authorization == null)
-            {
-                client.DefaultRequestHeaders.Clear();
-                var token = Preferences.Default.Get("login_token", "");
-                if (!string.IsNullOrEmpty(token))
-                { client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", token); }
-            }
-
             var uri = new Uri(string.Format("{0}/api/Profile/Update", WSurl));
             var dBase = new StringContent(DbaseValue);
             content.Add(dBase, "dBase");

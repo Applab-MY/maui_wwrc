@@ -4,13 +4,13 @@
 		<provider android:name="androidx.core.content.FileProvider" android:grantUriPermissions="true" android:authorities="com.applab.wwrc.fileprovider" android:exported="false">
 			<meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths"></meta-data>
 		</provider>
-		<activity android:name="microsoft.identity.client.BrowserTabActivity"
+		<activity android:name="microsoft.identity.client.BrowserTabActivity" android:launchMode="singleTask"
 				  android:configChanges="orientation|screenSize" android:exported="true">
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
 				<category android:name="android.intent.category.DEFAULT" />
 				<category android:name="android.intent.category.BROWSABLE" />
-				<data android:scheme="aeb29272-0767-4ba2-ab45-4e231cc40d3a" android:host="auth" />
+				<data android:scheme="msal9be06a28-806c-430f-93d5-49cdb62fdc50" android:host="auth" />
 			</intent-filter>
 		</activity>
 	</application>

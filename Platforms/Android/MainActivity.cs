@@ -26,13 +26,8 @@ namespace wwrc_maui
             App.DatabasePath = DB_fullpath;
             base.OnCreate(bundle);
 
-            if (PublicClientSingleton.Instance.MSALClientHelper != null)
-            {
-                PlatformConfig.Instance.RedirectUri = $"msal{PublicClientSingleton.Instance.MSALClientHelper.AzureConfig?.ClientId}://auth";
-                PlatformConfig.Instance.ParentWindow = this;
-                // Initialize MSAL and platformConfig is set
-                IAccount? existinguser = Task.Run(PublicClientSingleton.Instance.MSALClientHelper.InitializePublicClientAppAsync).Result;
-            }
+            PlatformConfig.Instance.RedirectUri = $"msal{PublicClientSingleton.Instance.MSALClientHelper?.AzureConfig?.ClientId}://auth";
+            PlatformConfig.Instance.ParentWindow = this;
         }
 
         public override void OnBackPressed()

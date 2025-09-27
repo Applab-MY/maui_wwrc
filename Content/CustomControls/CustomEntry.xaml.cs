@@ -87,21 +87,29 @@ public partial class CustomEntry : Grid
         { // no left or right icon
             entry_.Margin = new Thickness(15, 0);
             entry_.WidthRequest = SetWidth - 30;
+            stack_clear.Padding = new Thickness(10, 5, 15, 5);
+            if (stack_clear.IsVisible) entry_.WidthRequest = SetWidth - 70;
         }
         if (!Ispassword && !string.IsNullOrEmpty(EntryIcon))
         { // no right icon
             entry_.Margin = new Thickness(0, 0, 15, 0);
             entry_.WidthRequest = SetWidth - 70;
+            stack_clear.Padding = new Thickness(10, 5, 15, 5);
+            if (stack_clear.IsVisible) entry_.WidthRequest = SetWidth - 110;
         }
         if (Ispassword && string.IsNullOrEmpty(EntryIcon))
         { // no left icon
             entry_.Margin = new Thickness(15, 0, 0, 0);
             entry_.WidthRequest = SetWidth - 70;
+            stack_clear.Padding = new Thickness(10, 5, 0, 5);
+            if (stack_clear.IsVisible) entry_.WidthRequest = SetWidth - 110;
         }
         if (Ispassword & !string.IsNullOrEmpty(EntryIcon))
         { // have left & right icon
             entry_.Margin = new Thickness(0);
             entry_.WidthRequest = SetWidth - 115;
+            stack_clear.Padding = new Thickness(10, 5, 0, 5);
+            if (stack_clear.IsVisible) entry_.WidthRequest = SetWidth - 155;
         }
     }
     #endregion
@@ -145,5 +153,8 @@ public partial class CustomEntry : Grid
     }
 
     private void OnEntry_TextChanged(object sender, TextChangedEventArgs e)
-    { stack_clear.IsVisible = !string.IsNullOrEmpty(e.NewTextValue); }
+    { 
+        stack_clear.IsVisible = !string.IsNullOrEmpty(e.NewTextValue);
+        SetEntrySize();
+    }
 }

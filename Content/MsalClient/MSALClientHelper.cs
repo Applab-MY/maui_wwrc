@@ -12,26 +12,16 @@ namespace wwrc_maui.Content.MsalClient
         public bool UseEmbedded { get; set; } = false; // the Interactive Authentication should be Embedded or System view
         #endregion
 
-        public AzureConfig? AzureConfig = null;
+        public AzureConfig AzureConfig = new();
         private PublicClientApplicationBuilder? PublicClientApplicationBuilder = null;
 
-        public MSALClientHelper(AzureConfig azureADConfig)
+        public MSALClientHelper()
         {
-            AzureConfig = azureADConfig;
-            InitializePublicClientApplicationBuilder();
-        }
-
-        private void InitializePublicClientApplicationBuilder()
-        {
-            if (AzureConfig != null)
-            {
-                PublicClientApplicationBuilder = PublicClientApplicationBuilder.Create(AzureConfig.ClientId)
-                    .WithAuthority(string.Format(AzureConfig.Authority, AzureConfig.TenantId))
-                    //.WithExperimentalFeatures() // this is for upcoming logger
-                    //.WithLogging(new IdentityLogger(EventLogLevel.Warning), enablePiiLogging: false) // This is the currently recommended way to log MSAL message. For more info refer to https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/logging. Set Identity Logging level to Warning which is a middle ground
-                    //.WithClientCapabilities(new string[] { "cp1" }) // declare this client app capable of receiving CAE events- https://aka.ms/clientcae
-                    .WithIosKeychainSecurityGroup("com.microsoft.adalcache");
-            }
+            PublicClientApplicationBuilder = PublicClientApplicationBuilder.Create(AzureConfig.ClientId)
+                .WithTenantId(AzureConfig.TenantId)
+                .WithIosKeychainSecurityGroup("com.microsoft.adalcache");
+            PublicClientApplication = PublicClientApplicationBuilder
+                .WithRedirectUri(PlatformConfig.Instance.RedirectUri).Build();
         }
 
         public async Task<IAccount?> InitializePublicClientAppAsync()
@@ -46,20 +36,6 @@ namespace wwrc_maui.Content.MsalClient
                 return await FetchSignedInUserFromCache().ConfigureAwait(false);
             }
             else return null;
-        }
-
-        private async Task<IEnumerable<IAccount>?> AttachTokenCache()
-        //Attaches the token cache to the Public Client app. IAccount list of already signed-in users (if available)
-        {
-            if (DeviceInfo.Current.Platform != DevicePlatform.WinUI) return null;
-            // Cache configuration and hook-up to public application. Refer to https://github.com/AzureAD/microsoft-authentication-extensions-for-dotnet/wiki/Cross-platform-Token-Cache#configuring-the-token-cache
-            //var storageProperties = new StorageCreationPropertiesBuilder(AzureConfig.CacheFileName,
-            //    AzureConfig.CacheDir).Build();
-            //var msalcachehelper = await MsalCacheHelper.CreateAsync(storageProperties);
-            //msalcachehelper.RegisterCache(PublicClientApplication.UserTokenCache);
-
-            // If the cache file is being reused, we'd find some already-signed-in accounts
-            return await PublicClientApplication.GetAccountsAsync().ConfigureAwait(false);
         }
 
         public async Task<AuthenticationResult> SignInUserInteractivelyAsync(string[]? scopes,

@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Graph;
+using Microsoft.Graph.Models;
 using Microsoft.Identity.Client;
-using System.Reflection;
-using System.Runtime.CompilerServices;
+using System.Net.Http.Headers;
 using wwrc_maui.Content.MsalClient.MSGraph;
 
 namespace wwrc_maui.Content.MsalClient
@@ -14,44 +14,19 @@ namespace wwrc_maui.Content.MsalClient
 
         private static readonly Lazy<PublicClientSingleton> singleton = new(() => new PublicClientSingleton());
         public static PublicClientSingleton Instance { get { return singleton.Value; } }
+        public bool UseEmbedded { get; set; } = false; //the Interactive Authentication should be Embedded or System view
 
-        /// This is the configuration for the application found within the 'appsettings.json' file.
-        private static IConfiguration? AppConfiguration = null;
-
-        /// Gets the instance of MSALClientHelper.
-        public MSALClientHelper? MSALClientHelper { get; } = null;
-
-        /// Gets the MSGraphHelper instance.
-        public MSGraphHelper? MSGraphHelper { get; } = null;
-
-        /// This will determine if the Interactive Authentication should be Embedded or System view
-        public bool UseEmbedded { get; set; } = false;
+        public MSALClientHelper? MSALClientHelper = null;
+        public MSGraphHelper? MSGraphHelper = null;
+        public MSGraphApiConfig? msGraph = null;
+        public GraphServiceClient? _graphServiceClient = null;
         #endregion
 
-        /// Prevents a default instance of the <see cref="PublicClientSingleton"/> class
-        /// from being created. or a private constructor for singleton
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private PublicClientSingleton()
+        public PublicClientSingleton()
         {
-            // Load config
-            var assembly = Assembly.GetExecutingAssembly();
-            string _filename = $"{Assembly.GetCallingAssembly().GetName().Name}.appsettings.json";
-            using var stream = assembly.GetManifestResourceStream(_filename);
-            if (stream != null)
-            {
-                AppConfiguration = new ConfigurationBuilder().AddJsonStream(stream).Build();
-                if (AppConfiguration != null)
-                {
-                    var azureADConfig = AppConfiguration.GetSection("AzureAD").Get<AzureConfig>();
-                    if (azureADConfig != null)
-                    {
-                        MSALClientHelper = new MSALClientHelper(azureADConfig);
-                        var graphApiConfig = AppConfiguration.GetSection("MSGraphApi").Get<MSGraphApiConfig>();
-                        if (graphApiConfig != null)
-                            MSGraphHelper = new MSGraphHelper(graphApiConfig, MSALClientHelper);
-                    }
-                }
-            }
+            MSALClientHelper = new MSALClientHelper();
+            MSGraphHelper = new MSGraphHelper(MSALClientHelper);
+            msGraph = new MSGraphApiConfig();
         }
 
         public async Task<string?> AcquireTokenSilentAsync()
@@ -64,15 +39,47 @@ namespace wwrc_maui.Content.MsalClient
             else return "";
         }
 
-        internal async Task<AuthenticationResult?> AcquireTokenInteractiveAsync(string[] scopes)
+        public async Task<AuthenticationResult?> AcquireTokenInteractiveAsync()
         // Perform the interactive acquisition of the token for the given scope
         {
             if (MSALClientHelper != null)
             {
                 MSALClientHelper.UseEmbedded = UseEmbedded;
-                return await MSALClientHelper.SignInUserInteractivelyAsync(scopes).ConfigureAwait(false);
+                return await MSALClientHelper.SignInUserInteractivelyAsync(msGraph?.ScopesArray).ConfigureAwait(false);
             }
             else return null;
+        }
+
+        public async Task<User?> GetMeAsync()
+        {
+            if (_graphServiceClient == null)
+                await SignInAndInitializeGraphServiceClient();
+
+            User? graphUser = null;
+            if (_graphServiceClient != null)
+            {
+                try
+                {
+                    graphUser = await _graphServiceClient.Me.GetAsync();
+                }
+                catch (ServiceException ex)
+                {
+                    var error = ex.Message;
+                }
+            }
+            return graphUser;
+        }
+
+        private async Task<GraphServiceClient> SignInAndInitializeGraphServiceClient()
+        {
+            string token = "";
+            if (MSALClientHelper != null && msGraph != null)
+                token = await MSALClientHelper.SignInUserAndAcquireAccessToken(msGraph.ScopesArray);
+
+            HttpClient client = new();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _graphServiceClient = new GraphServiceClient(client);
+            return _graphServiceClient;
         }
 
         internal async Task SignOutAsync()
@@ -83,6 +90,6 @@ namespace wwrc_maui.Content.MsalClient
                 await MSALClientHelper.SignOutUserAsync().ConfigureAwait(false);
         }
 
-        internal string[]? GetScopes() { return MSGraphHelper?.MSGraphApiConfig.ScopesArray; }
+        internal string[]? GetScopes() { return MSGraphHelper?.GraphScopes; }
     }
 }

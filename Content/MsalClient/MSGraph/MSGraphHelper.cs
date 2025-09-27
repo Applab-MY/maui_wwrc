@@ -7,16 +7,14 @@ namespace wwrc_maui.Content.MsalClient.MSGraph
 {
     public class MSGraphHelper
     {
-        public MSALClientHelper MSALClient { get; }
-
+        public MSALClientHelper? MSALClient = null;
         public readonly MSGraphApiConfig MSGraphApiConfig = new();
-        private GraphServiceClient? _graphServiceClient = null;
-        private string[] GraphScopes = [];
+        public GraphServiceClient? _graphServiceClient = null;
+        public string[] GraphScopes = [];
 
-        public MSGraphHelper(MSGraphApiConfig graphApiConfig, MSALClientHelper msalClientHelper)
+        public MSGraphHelper(MSALClientHelper? msalClientHelper)
         {
             ArgumentNullException.ThrowIfNull(msalClientHelper);
-            MSGraphApiConfig = graphApiConfig;
             MSALClient = msalClientHelper;
             GraphScopes = MSGraphApiConfig.ScopesArray;
         }
@@ -47,9 +45,10 @@ namespace wwrc_maui.Content.MsalClient.MSGraph
         public void ResetGraphClientService() { _graphServiceClient = null; }
 
         private async Task<GraphServiceClient> SignInAndInitializeGraphServiceClient()
-        /// Sign in user using MSAL and obtain a token for MS Graph
         {
-            string token = await MSALClient.SignInUserAndAcquireAccessToken(GraphScopes);
+            string? token = "";
+            if (MSALClient != null)
+                token = await MSALClient.SignInUserAndAcquireAccessToken(GraphScopes);
             return InitializeGraphServiceClientAsync(token);
         }
 
@@ -60,7 +59,9 @@ namespace wwrc_maui.Content.MsalClient.MSGraph
             // Get challenge from response of Graph API
             var claimChallenge = WwwAuthenticateParameters.GetClaimChallengeFromResponseHeaders(ex.ResponseHeaders);
             //for windows
-            string? token = await MSALClient.SignInUserAndAcquireAccessToken(GraphScopes, claimChallenge);
+            string? token = "";
+            if (MSALClient != null)
+                token = await MSALClient.SignInUserAndAcquireAccessToken(GraphScopes, claimChallenge);
             return InitializeGraphServiceClientAsync(token);
         }
 

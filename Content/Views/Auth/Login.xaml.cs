@@ -1,5 +1,4 @@
 using CommunityToolkit.Mvvm.Messaging;
-using wwrc_maui.Content.Model;
 using wwrc_maui.Content.Viewmodels.Auth;
 using static wwrc_maui.Content.Helper.ReferenceMessenger;
 

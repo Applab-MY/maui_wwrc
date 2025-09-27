@@ -1,9 +1,13 @@
-﻿using Microsoft.Identity.Client;
-using wwrc_maui.Content.Interfaces;
+﻿using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
+using Microsoft.Identity.Client;
 using wwrc_maui.Content.Model;
 using wwrc_maui.Content.Viewmodels.Common;
 using wwrc_maui.Content.Views.Dashboard;
 using static wwrc_maui.Content.Model.Auth.LoginModel;
+using Application = Microsoft.Maui.Controls.Application;
+using DeviceInfo = Microsoft.Maui.Devices.DeviceInfo;
+using Font = Microsoft.Maui.Font;
 
 namespace wwrc_maui.Content.Viewmodels.Auth
 {
@@ -57,7 +61,7 @@ namespace wwrc_maui.Content.Viewmodels.Auth
             Version += "Ver." + AppInfo.VersionString;
             EntryWidth = App.ScreenWidth - 40;
             LoginCommand = new Command(ExecuteLogin);
-            Login365Command = new Command(Test365);
+            Login365Command = new Command(ExecuteLogin365);
         }
 
         public async void ExecuteLogin()
@@ -84,56 +88,53 @@ namespace wwrc_maui.Content.Viewmodels.Auth
                             Platform = Platform,
                         };
                         var _res = await App.AppClient.Login(model);
-                        if (_res.SystemCode == 200 && _res.items != null)
+                        if (_res.SystemCode == 200 && _res.items != null && _res.items.Count > 0)
                         {
-                            if (_res.items.Count > 0)
+                            AppDatabase.Instance.SqlConnection.DeleteAll<LoginMainModel>();
+                            AppDatabase.Instance.SqlConnection.DeleteAll<Userinfo>();
+                            AppDatabase.Instance.SqlConnection.DeleteAll<UserModules>();
+                            AppDatabase.Instance.SqlConnection.DeleteAll<ItemGroup>();
+                            AppDatabase.Instance.SqlConnection.DeleteAll<SalesTarget>();
+                            AppDatabase.Instance.SqlConnection.DeleteAll<Branch>();
+                            if (_res.items[0].Data != null)
                             {
-                                AppDatabase.Instance.SqlConnection.DeleteAll<LoginMainModel>();
-                                AppDatabase.Instance.SqlConnection.DeleteAll<Userinfo>();
-                                AppDatabase.Instance.SqlConnection.DeleteAll<UserModules>();
-                                AppDatabase.Instance.SqlConnection.DeleteAll<ItemGroup>();
-                                AppDatabase.Instance.SqlConnection.DeleteAll<SalesTarget>();
-                                AppDatabase.Instance.SqlConnection.DeleteAll<Branch>();
-                                if (_res.items[0].Data != null)
+                                AppDatabase.Instance.SqlConnection.Insert(_res.items[0].Data);
+                                AppDatabase.Instance.SqlConnection.Insert(_res.items[0].Data?.Modules);
+                                _res.items[0].Data?.SalesTarget.ForEach(b =>
                                 {
-                                    AppDatabase.Instance.SqlConnection.Insert(_res.items[0].Data);
-                                    AppDatabase.Instance.SqlConnection.Insert(_res.items[0].Data?.Modules);
-                                    _res.items[0].Data?.SalesTarget.ForEach(b =>
+                                    var model = new SalesTargetModule
                                     {
-                                        var model = new SalesTargetModule
-                                        {
-                                            StaffId = b.StaffId,
-                                            Subsidiary = b.Subsidiary,
-                                            Type = b.Type,
-                                            YTD = b.YTD,
-                                            MTD = b.MTD,
-                                            Default = b.Default,
-                                            Country = b.Country,
-                                        };
-                                        AppDatabase.Instance.SqlConnection.Insert(model);
-                                        Preferences.Default.Set("subsidiary", b.Subsidiary);
-                                        Preferences.Default.Set("userId", b.Type);
-                                        Preferences.Default.Set("userTitle", b.Type);
-                                        Preferences.Default.Set("country", b.Country);
-                                    });
-                                    _res.items[0].Data?.ItemGroup.ForEach(b =>
-                                    { AppDatabase.Instance.SqlConnection.Insert(new ItemGroup { item = b }); });
+                                        StaffId = b.StaffId,
+                                        Subsidiary = b.Subsidiary,
+                                        Type = b.Type,
+                                        YTD = b.YTD,
+                                        MTD = b.MTD,
+                                        Default = b.Default,
+                                        Country = b.Country,
+                                    };
+                                    AppDatabase.Instance.SqlConnection.Insert(model);
+                                    Preferences.Default.Set("subsidiary", b.Subsidiary);
+                                    Preferences.Default.Set("userId", b.Type);
+                                    Preferences.Default.Set("userTitle", b.Type);
+                                    Preferences.Default.Set("country", b.Country);
+                                });
+                                _res.items[0].Data?.ItemGroup.ForEach(b =>
+                                { AppDatabase.Instance.SqlConnection.Insert(new ItemGroup { item = b }); });
 
-                                    var _is365 = Convert.ToBoolean(_res.items[0].Data?.IsOfficeCredential);
-                                    if (!_is365) { Preferences.Default.Set("email", Email); }
-                                }
-
-                                var login = new LoginMainModel { Token = _res.items[0].Token };
-                                AppDatabase.Instance.SqlConnection.Insert(login);
-                                Preferences.Default.Set("login_token", _res.items[0].Token);
-
-                                //Post Token
-                                //await SendRegistrationToServer(LoginResult.items[0].Data.Id);
-                                //AppTheme appTheme = AppInfo.RequestedTheme;
-
-                                Application.Current?.Dispatcher.Dispatch(() =>
-                                { Application.Current.Windows[0].Page = new NavigationPage(new MainPage()); });
+                                var _is365 = Convert.ToBoolean(_res.items[0].Data?.IsOfficeCredential);
+                                if (!_is365) { Preferences.Default.Set("email", Email); }
                             }
+
+                            var login = new LoginMainModel { Token = _res.items[0].Token };
+                            AppDatabase.Instance.SqlConnection.Insert(login);
+                            Preferences.Default.Set("login_token", _res.items[0].Token);
+
+                            //Post Token
+                            //await SendRegistrationToServer(LoginResult.items[0].Data.Id);
+                            //AppTheme appTheme = AppInfo.RequestedTheme;
+
+                            Application.Current?.Dispatcher.Dispatch(() =>
+                            { Application.Current.Windows[0].Page = new NavigationPage(new MainPage()); });
                         }
                         else await App.DisplayAlert("Error: " + _res.SystemCode.ToString(), _res.SystemDebugMessage
                             + ". " + _res.SystemMessage, null, "Okay");
@@ -146,72 +147,122 @@ namespace wwrc_maui.Content.Viewmodels.Auth
             IsBusy = false;
         }
 
-        async void Test365()
-        {
-            //DependencyService.Get<IMicrosoftClient>().Authenticate();
-            //DependencyService.Get<IMicrosoftClient>().Initialize();
-            try
-            {
-                //var options = new WebAuthenticatorOptions
-                //{
-                //    Url = new Uri("https://login.microsoftonline.com"),
-                //    CallbackUrl = new Uri("myapp://"),
-                //    PrefersEphemeralWebBrowserSession = true
-                //};
-                //var authResult = await WebAuthenticator.Default.AuthenticateAsync(options);
-
-                WebAuthenticatorResult authResult = await WebAuthenticator.Default.AuthenticateAsync(
-                    new Uri("https://login.microsoftonline.com"), new Uri("myapp://"));
-                string accessToken = authResult?.AccessToken;
-            }
-            catch (TaskCanceledException e)
-            {
-                // Use stopped auth
-            }
-        }
-
         async void ExecuteLogin365()
         {
             IsBusy = true; IsRefreshing = true;
-            AuthenticationResult? authResult = null;
             NetworkAccess accessType = Connectivity.Current.NetworkAccess;
-            if (accessType == NetworkAccess.Internet && App.AppClient != null)
+            if (accessType == NetworkAccess.Internet && App.MsalClient != null && App.AppClient != null)
             {
                 try
                 {
-                    if (App.OClient != null)
+                    var _token = await App.MsalClient.AcquireTokenSilentAsync();
+                    if (!string.IsNullOrEmpty(_token) && App.MsalClient.MSGraphHelper != null)
                     {
-                        var accounts = await App.OClient.GetAccountsAsync();
-                        while (accounts.Any())
+                        var _clr = Application.Current?.Resources["Gray200"] as Color;
+                        var cancellationTokenSource = new CancellationTokenSource();
+                        var snackbarOptions = new SnackbarOptions
                         {
-                            await App.OClient.RemoveAsync(accounts.FirstOrDefault());
-                            accounts = await App.OClient.GetAccountsAsync();
-                        }
+                            BackgroundColor = _clr != null ? _clr : Colors.LightGray,
+                            TextColor = Colors.Black,
+                            CornerRadius = new CornerRadius(10),
+                            Font = Font.SystemFontOfSize(14),
+                        };
+                        string text = "User found. Signing in using Microsoft 365 account...";
+                        var duration = TimeSpan.FromSeconds(3);
+                        var snackbar = Snackbar.Make(text, null, "", duration, snackbarOptions);
+                        await snackbar.Show(cancellationTokenSource.Token);
 
-                        //20250919 : 365 auth not reach authResult, fix => use Android.MainActivity.OnActivityResult for now
-                        var firstAccount = accounts.FirstOrDefault();
-                        if (firstAccount != null)
-                            authResult = await App.OClient.AcquireTokenSilent(App.OClientScopes, firstAccount).ExecuteAsync();
-                        else
+                        var _res = await App.MsalClient.MSGraphHelper.GetMeAsync();
+                        if (_res != null && !string.IsNullOrEmpty(_res?.Id) && !string.IsNullOrEmpty(_res?.Mail))
                         {
-                            var systemWebViewOptions = new SystemWebViewOptions() { iOSHidePrivacyPrompt = true, };
-                            authResult = await App.OClient.AcquireTokenInteractive(App.OClientScopes)
-                                .WithPrompt(Prompt.ForceLogin).WithParentActivityOrWindow(App.AppPage)
-                                .WithSystemWebViewOptions(systemWebViewOptions).ExecuteAsync();
-                            await App.DisplayAlert("LoginVm", "success return to callback function", null, "Okay");
+                            var model = new API_MicrosoftLoginModel
+                            {
+                                Email = _res.Mail,
+                                MicrosoftId = _res.Id,
+                                Version = Version,
+                                Platform = Platform,
+                            };
+                            var _result = await App.AppClient.MicrosoftLogin(model);
+                            if (_result.SystemCode == 200 && _result.items != null && _result.items.Count > 0)
+                            {
+                                AppDatabase.Instance.SqlConnection.DeleteAll<LoginMainModel>();
+                                AppDatabase.Instance.SqlConnection.DeleteAll<Userinfo>();
+                                AppDatabase.Instance.SqlConnection.DeleteAll<UserModules>();
+                                AppDatabase.Instance.SqlConnection.DeleteAll<ItemGroup>();
+                                AppDatabase.Instance.SqlConnection.DeleteAll<SalesTarget>();
+                                AppDatabase.Instance.SqlConnection.DeleteAll<Branch>();
+
+                                if (_result.items[0].Data != null)
+                                {
+                                    Preferences.Default.Set("subsidiary", "PROD_WWRC");
+                                    Preferences.Default.Set("userId", "");
+                                    Preferences.Default.Set("userTitle", "");
+                                    Preferences.Default.Set("country", "MY");
+
+                                    AppDatabase.Instance.SqlConnection.Insert(_result.items[0].Data);
+                                    AppDatabase.Instance.SqlConnection.Insert(_result.items[0].Data?.Modules);
+                                    if (_result.items[0].Data?.SalesTarget.Count > 0)
+                                    {
+                                        _result.items[0].Data?.SalesTarget.ForEach(b =>
+                                        {
+                                            var model = new SalesTargetModule
+                                            {
+                                                StaffId = b.StaffId,
+                                                Subsidiary = b.Subsidiary,
+                                                Type = b.Type,
+                                                YTD = b.YTD,
+                                                MTD = b.MTD,
+                                                Default = b.Default,
+                                                Country = b.Country,
+                                            };
+                                            AppDatabase.Instance.SqlConnection.Insert(model);
+                                            Preferences.Default.Set("subsidiary", b.Subsidiary);
+                                            Preferences.Default.Set("userId", b.Type);
+                                            Preferences.Default.Set("userTitle", b.Type);
+                                            Preferences.Default.Set("country", b.Country);
+                                        });
+                                    }
+
+                                    if (_result.items[0].Data?.ItemGroup.Count > 0)
+                                    {
+                                        _result.items[0].Data?.ItemGroup.ForEach(b =>
+                                        { AppDatabase.Instance.SqlConnection.Insert(new ItemGroup { item = b }); });
+                                    }
+
+                                    var login = new LoginMainModel { Token = _result.items[0].Token };
+                                    AppDatabase.Instance.SqlConnection.Insert(login);
+                                    Preferences.Default.Set("login_token", _result.items[0].Token);
+
+                                    //Post Token
+                                    //await SendRegistrationToServer(LoginResult.items[0].Data.Id);
+
+                                    Application.Current?.Dispatcher.Dispatch(() =>
+                                    { Application.Current.Windows[0].Page = new NavigationPage(new MainPage()); });
+                                }
+                            }
+                            else
+                            {
+                                await App.DisplayAlert("Error: " + _result.SystemCode.ToString(), _result.SystemDebugMessage
+                                    + ". " + _result.SystemMessage, null, "Okay");
+                                await App.MsalClient.SignOutAsync();
+                                IsBusy = false; IsRefreshing = false;
+                            }
                         }
+                        IsBusy = false; IsRefreshing = false;
                     }
+                    else await App.DisplayAlert("Authentication failed", "Microsoft 365 empty token.", null, "Okay");
                     IsBusy = false; IsRefreshing = false;
                 }
                 catch (Exception ex)
                 {
                     var error = ex.Message;
+                    var _split = ex.Message.Split(". ");
+                    if (_split.Count() > 0) error = _split[0];
                     IsBusy = false; IsRefreshing = false;
-                    await App.DisplayAlert("Authentication failed: ", error, null, "Dismiss");
+                    await App.DisplayAlert("Authentication failed", error, null, "Okay");
                 }
             }
             else await App.DisplayAlert("No Internet", "Please check your internet connection.", null, "Okay");
-            IsBusy = false; IsRefreshing = false;
         }
 
         public void SendRegistrationToServer(string userId)

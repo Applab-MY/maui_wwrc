@@ -210,9 +210,36 @@ namespace wwrc_maui.Content.RestApi
             return result;
         }
 
-        Task<RequestResult<ObservableCollection<CustomerVisitMainModel>>> IRestService.GetCustomerVisit(API_CustomerVisitModel model)
+        async Task<RequestResult<ObservableCollection<CustomerVisitMainModel>>> IRestService.GetCustomerVisit(API_CustomerVisitModel model)
         {
-            throw new NotImplementedException();
+            if (client.DefaultRequestHeaders.Authorization == null)
+            {
+                client.DefaultRequestHeaders.Clear();
+                var token = Preferences.Default.Get("login_token", "");
+                if (!string.IsNullOrEmpty(token))
+                { client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", token); }
+            }
+
+            var uri = new Uri(string.Format("{0}/api/CustomerVisit/Get", WSurl));
+            model.DBase = DbaseValue;
+            var json = JsonConvert.SerializeObject(model);
+            var contentJson = new StringContent(json, Encoding.UTF8, "application/json");
+            var result = new RequestResult<ObservableCollection<CustomerVisitMainModel>>();
+
+            try
+            {
+                var response = await client.PostAsync(uri, contentJson);
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    result = JsonConvert.DeserializeObject<RequestResult<ObservableCollection<CustomerVisitMainModel>>>(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error", ex.Message, "Login");
+            }
+            return result;
         }
 
         async Task<RequestResult<ObservableCollection<DashboardMainModel>>> IRestService.GetDashBoard(API_DashBoard model)

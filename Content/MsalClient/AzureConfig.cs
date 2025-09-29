@@ -2,13 +2,13 @@
 {
     public class AzureConfig
     {
-        public string ClientId { get; set; } = "9be06a28-806c-430f-93d5-49cdb62fdc50";
-        public string RedirectUri { get; set; } = "msal9be06a28-806c-430f-93d5-49cdb62fdc50";
+        public string ClientId { get; set; } = "aeb29272-0767-4ba2-ab45-4e231cc40d3a";
+        public string RedirectUri { get; set; } = "msalaeb29272-0767-4ba2-ab45-4e231cc40d3a";
 
         /// The tenant identifier (tenant Id/directory id) of the Azure AD tenant
         /// where the app registration exists
         /// you can use a name as obtained from the azure portal, e.g. kko365.onmicrosoft.com
-        public string TenantId { get; set; } = "65656888-a7c0-4613-9dee-29d8556683b0";
+        public string TenantId { get; set; } = "0539903d-170b-4b82-a144-e9057d68117c";
 
         /// <value>
         /// The Azure AD authority URL.

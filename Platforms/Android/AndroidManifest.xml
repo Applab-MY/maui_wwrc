@@ -1,10 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="20" android:versionName="2.3" package="com.applab.wwrc" android:installLocation="preferExternal">
-	<application android:label="WWRC" android:allowBackup="true" android:icon="@drawable/launcher" android:supportsRtl="true">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+		  android:versionCode="20" android:versionName="2.3"
+		  package="com.applab.wwrc">
+	<application android:label="WWRC" android:allowBackup="true" android:icon="@drawable/launcher"
+				 android:supportsRtl="true">
 		<provider android:name="androidx.core.content.FileProvider" android:grantUriPermissions="true" android:authorities="com.applab.wwrc.fileprovider" android:exported="false">
 			<meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />
 		</provider>
-		<activity android:name="microsoft.identity.client.BrowserTabActivity" android:launchMode="singleTask" android:configChanges="orientation|screenSize" android:exported="true">
+		<activity android:name="microsoft.identity.client.BrowserTabActivity" android:configChanges="orientation|screenSize" android:exported="true">
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
 				<category android:name="android.intent.category.DEFAULT" />
@@ -28,7 +31,7 @@
 	<queries>
 		<intent>
 			<action android:name="android.media.action.IMAGE_CAPTURE" />
-			<action android:name="android.support.customtabs.action.CustomTabsService" />
+			<!--<action android:name="android.support.customtabs.action.CustomTabsService" />-->
 		</intent>
 	</queries>
 </manifest>

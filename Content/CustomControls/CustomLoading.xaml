@@ -16,6 +16,10 @@
         </RadialGradientBrush>
     </StackLayout.Background>-->
     </StackLayout>
+    <Image x:Name="img_purple" Source="ic_load_purple" HeightRequest="70" Aspect="AspectFit"
+           HorizontalOptions="Center" VerticalOptions="Center" Grid.Row="1" Grid.Column="1"/>
+    <Image x:Name="img_green" Source="ic_load_green" HeightRequest="90" Aspect="AspectFit"
+           HorizontalOptions="Center" VerticalOptions="Center" Grid.Row="1" Grid.Column="1"/>
     <Grid.GestureRecognizers>
         <TapGestureRecognizer Tapped="OnBg_Tapped" NumberOfTapsRequired="1"/>
     </Grid.GestureRecognizers>

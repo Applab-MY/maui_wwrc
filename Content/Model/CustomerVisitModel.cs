@@ -37,6 +37,7 @@
             public string EmployeeId { get; set; } = "";
             public string EmployeeName { get; set; } = "";
             public string Remarks { get; set; } = "";
+            public string Calendar { get; set; } = "";
         }
 
         public class API_CustomerVisitModel

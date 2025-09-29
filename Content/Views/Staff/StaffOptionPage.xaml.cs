@@ -28,7 +28,7 @@ public partial class StaffOptionPage : ContentView
         if (item != null)
         {
             if (item.Index == 0) await Navigation.PushAsync(new StaffDirectoryMainPage());
-            //if (item.Index == 1) await Navigation.PushAsync(new CustomerVisitMainPage());
+            if (item.Index == 1) await Navigation.PushAsync(new CustomerVisitMainPage());
         }
     }
 }

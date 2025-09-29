@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ViewCell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+          xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+          x:Class="wwrc_maui.Content.Views.Staff.CustomerVisit.CustomerVisitMainCell"
+          xmlns:helper="clr-namespace:wwrc_maui.Content.Helper">
+    <Grid HorizontalOptions="Fill" ColumnSpacing="10" RowDefinitions="Auto" Margin="15,5"
+          ColumnDefinitions="Auto,*,Auto">
+        <Grid.Resources>
+            <ResourceDictionary>
+                <helper:InverseBoolConverter x:Key="InverseBool"/>
+                <helper:StringNullConverter x:Key="StringNull"/>
+            </ResourceDictionary>
+        </Grid.Resources>
+        <Image Source="{Binding Calendar}" HeightRequest="40" Aspect="AspectFit" HorizontalOptions="Start"
+               VerticalOptions="Center"/>
+        <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" Margin="0,10" Grid.Column="1"
+                             VerticalOptions="Center">
+            <Label Text="{Binding CustomerName}" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                   LineBreakMode="CharacterWrap" Style="{StaticResource PopupPromptButton}"/>
+            <Label Text="{Binding EmployeeName}" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                   MaxLines="1" LineBreakMode="TailTruncation"/>
+        </VerticalStackLayout>
+        <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" Margin="0,10" Grid.Column="2"
+                             VerticalOptions="Center">
+            <Label Text="{Binding VisitDateDayFull, StringFormat='{0:dd MMM}'}" HorizontalOptions="End"
+                   HorizontalTextAlignment="End" MaxLines="1" LineBreakMode="TailTruncation"/>
+            <Label Text="{Binding VisitDateTimeFull, StringFormat='{0: hh:mm tt}'}" HorizontalOptions="End"
+                   HorizontalTextAlignment="End" MaxLines="1" LineBreakMode="TailTruncation"/>
+        </VerticalStackLayout>
+    </Grid>
+</ViewCell>

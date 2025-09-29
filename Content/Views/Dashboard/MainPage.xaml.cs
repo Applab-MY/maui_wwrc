@@ -17,6 +17,7 @@ using wwrc_maui.Content.Views.Sales.PurchaseOrder;
 using wwrc_maui.Content.Views.Sales.SalesOrder;
 using wwrc_maui.Content.Views.Sales.StockAlert;
 using wwrc_maui.Content.Views.Staff;
+using wwrc_maui.Content.Views.Staff.CustomerVisit;
 using wwrc_maui.Content.Views.Staff.Directory;
 using static wwrc_maui.Content.Helper.ReferenceMessenger;
 using static wwrc_maui.Content.Model.DashboardModel;
@@ -83,6 +84,7 @@ public partial class MainPage : ContentPage
         if (data.Type.Equals("CustomerAging")) await Navigation.PushAsync(new CustomerAgingMainPage());
         if (data.Type.Equals("SalesOrder")) await Navigation.PushAsync(new SalesOrderMainPage());
         if (data.Type.Equals("PurchaseOrder")) await Navigation.PushAsync(new PurchaseOrderMainPage());
+        if (data.Type.Equals("CustomerVisit")) await Navigation.PushAsync(new CustomerVisitMainPage());
         if (data.Type.Equals("StaffDirectory")) await Navigation.PushAsync(new StaffDirectoryMainPage());
         if (data.Type.Equals("News")) await Navigation.PushAsync(new NewsMainPage());
         if (data.Type.Equals("MediaGallery")) await Navigation.PushAsync(new GalleryMainPage());

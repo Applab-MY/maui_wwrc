@@ -85,7 +85,7 @@ public partial class FilterSalesPersonView : ContentView, INotifyPropertyChanged
     private void listview_ItemAppearing(object sender, ItemVisibilityEventArgs e)
     {
         if (sender is not ListView lv) return;
-        if (e.Item == MainSource.Last())
+        if (e.Item == MainSource.Last() && Itemsource.Count > MaxListSize)
         {
             int count = 0;
             var isExceed = (IndexAt + MaxListSize) > Itemsource.Count;

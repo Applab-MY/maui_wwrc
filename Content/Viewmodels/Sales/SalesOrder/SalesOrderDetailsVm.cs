@@ -145,7 +145,7 @@ namespace wwrc_maui.Content.Viewmodels.Sales.SalesOrder
         List<Db_DOList> doListCache = [];
 
         public SalesOrderDetailsVm()
-        { BtomIconSize = Math.Floor((App.ScreenWidth - 50)/3); }
+        { BtomIconSize = Math.Floor((App.ScreenWidth - 100)/3); }
 
         public void SetSOData()
         {
@@ -168,6 +168,7 @@ namespace wwrc_maui.Content.Viewmodels.Sales.SalesOrder
                 //SOItem
                 string query = "SELECT * FROM Db_SOItemList WHERE Id = '" + soData.SONO + "'";
                 SoItems = AppDatabase.Instance.SqlConnection.Query<Db_SOItemList>(query);
+                //SoItems = []; //for demo
             }
         }
 
@@ -177,6 +178,7 @@ namespace wwrc_maui.Content.Viewmodels.Sales.SalesOrder
             {
                 string query = "SELECT * FROM Db_DOItemsList WHERE Id = '" + doData.DONO + "'";
                 DoItems = AppDatabase.Instance.SqlConnection.Query<Db_DOItemsList>(query);
+                //DoItems = []; //for demo
 
                 CardName = doData.CardName;
                 CardCode = doData.CardCode;

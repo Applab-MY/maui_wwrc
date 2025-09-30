@@ -316,6 +316,9 @@
 	  <MauiXaml Update="Content\Views\Sales\StockAlert\StockAlertMainPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Staff\CustomerVisit\CustomerVisitDetailsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Staff\CustomerVisit\CustomerVisitMainCell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

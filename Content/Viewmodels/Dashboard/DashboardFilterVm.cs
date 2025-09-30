@@ -1,4 +1,5 @@
-﻿using wwrc_maui.Content.Viewmodels.Common;
+﻿using System.Collections.Generic;
+using wwrc_maui.Content.Viewmodels.Common;
 using static wwrc_maui.Content.Model.DashboardModel;
 
 namespace wwrc_maui.Content.Viewmodels.Dashboard
@@ -96,6 +97,7 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
                                 { if (sp.Id.Equals(FilterModel.UserId)) { sp.Checked = true; } }
                             }
                             SalesList = [.. _subs.SalesPersonList];
+                            SalesList = DemoSalesPerson(); //for demo
                         }
                     }
                 }
@@ -122,6 +124,17 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
             Preferences.Default.Set("userId", "");
             Preferences.Default.Set("userTitle", "");
             OnClearFilterTap?.Invoke();
+        }
+
+        List<SalesPersonList> DemoSalesPerson()
+        {
+            List<SalesPersonList> demo = [];
+            for (int a=0; a<50; a++)
+            {
+                var _txt = (a + 1).ToString();
+                demo.Add(new() { Id = _txt, Title = "test " + _txt, Position = "pos " + _txt });
+            }
+            return demo;
         }
     }
 }

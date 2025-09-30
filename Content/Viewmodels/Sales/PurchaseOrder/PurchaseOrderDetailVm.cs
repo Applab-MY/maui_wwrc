@@ -104,6 +104,7 @@ namespace wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder
                     foreach (var data in purchasedetail)
                     { poItemsCache.Add(data); }
                     PoItems = poItemsCache;
+                    //PoItems = []; //for demo
                 }
                 IsBusy = false; IsRefreshing = false;
             }

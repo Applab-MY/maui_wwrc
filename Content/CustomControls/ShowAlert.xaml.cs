@@ -41,7 +41,11 @@ public partial class ShowAlert : PopupPage
         lbl_desc.Text = data;
         lbl_desc.IsVisible = !string.IsNullOrEmpty(data);
     }
-    public void UpdateViewcell(ContentView data) { view_custom.Content = data; }
+    public void UpdateViewcell(ContentView data)
+    {
+        view_custom.MaximumHeightRequest = (App.ScreenHeight/2) - 120;
+        view_custom.Content = data;
+    }
     public void UpdateBtnOkay(string data)
     {
         lbl_ok.Text = data;

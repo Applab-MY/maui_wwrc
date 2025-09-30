@@ -57,9 +57,6 @@ public partial class CustomerVisitMainPage : ContentPage
         if (sender is not ListView lv) return;
         lv.SelectedItem = null;
         var data = (DB_CustomerVisit)e.Item;
-
-        //if (!string.IsNullOrEmpty(data.Records))
-        //{ await Navigation.PushAsync(new PurchaseOrderMonth(data.Date)); }
-        //await App.DisplayAlert("Empty", "No record found for the selected month.", null, "Okay");
+        await Navigation.PushAsync(new CustomerVisitDetailsPage(data.Id));
     }
 }

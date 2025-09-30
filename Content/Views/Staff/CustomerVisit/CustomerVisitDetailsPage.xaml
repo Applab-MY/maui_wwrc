@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="wwrc_maui.Content.Views.Staff.CustomerVisit.CustomerVisitDetailsPage"
+             xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
+             xmlns:cell="clr-namespace:wwrc_maui.Content.Views.Sales.SalesOrder"
+             xmlns:vm="clr-namespace:wwrc_maui.Content.Viewmodels.Staff"
+             xmlns:helper="clr-namespace:wwrc_maui.Content.Helper"
+             NavigationPage.HasNavigationBar="False">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <helper:InverseBoolConverter x:Key="InverseBool"/>
+            <helper:StringNullConverter x:Key="StringNull"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <AbsoluteLayout HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
+        <Grid HorizontalOptions="Fill" VerticalOptions="Fill" AbsoluteLayout.LayoutFlags="All"
+              AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*" ColumnDefinitions="*"
+              RowSpacing="0" x:DataType="vm:CustomerVisitDetailsVm">
+            <!--row 1 : nav bar-->
+            <controls:CustomNavigationBar IconLeft="ic_back" x:Name="navbar" Title="Customer Visit Details"/>
+            <BoxView HorizontalOptions="Fill" Margin="0" Style="{StaticResource BoxviewNavbar}"
+                     VerticalOptions="End"/>
+            <!--row 2 : content-->
+            <Grid HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1" ColumnDefinitions="*"
+                  RowDefinitions="Auto,*,Auto" RowSpacing="0">
+                <ScrollView HorizontalOptions="Fill" VerticalOptions="Fill" Padding="15,20">
+                    <VerticalStackLayout HorizontalOptions="Fill" Spacing="0">
+                        <!--customer-->
+                        <Grid HorizontalOptions="Fill" ColumnSpacing="10" ColumnDefinitions="Auto,*" RowDefinitions="Auto">
+                            <Image Source="ic_customer" HeightRequest="30" Aspect="AspectFit" HorizontalOptions="Start"
+                                   VerticalOptions="Center"/>
+                            <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" Grid.Column="1">
+                                <Label HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="TailTruncation"
+                                       Text="Customer" Style="{StaticResource AlertTitle}"/>
+                                <Label HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="WordWrap"
+                                       Text="{Binding Customer, Converter={StaticResource StringNull}}"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                        <!--visit date time-->
+                        <Grid HorizontalOptions="Fill" ColumnSpacing="10" ColumnDefinitions="Auto,*" RowDefinitions="Auto"
+                              Margin="0,15,0,0">
+                            <Image Source="ic_date_time" HeightRequest="30" Aspect="AspectFit" HorizontalOptions="Start"
+                                   VerticalOptions="Center"/>
+                            <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" Grid.Column="1">
+                                <Label HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="TailTruncation"
+                                       Text="Visit Date Time" Style="{StaticResource AlertTitle}"/>
+                                <Label HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="WordWrap"
+                                       Text="{Binding VisitDateTime, Converter={StaticResource StringNull}}"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                        <!--location-->
+                        <Grid HorizontalOptions="Fill" ColumnSpacing="10" ColumnDefinitions="Auto,*" RowDefinitions="Auto"
+                              Margin="0,15,0,0">
+                            <Image Source="ic_location" HeightRequest="30" Aspect="AspectFit" HorizontalOptions="Start"
+                                   VerticalOptions="Center"/>
+                            <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" Grid.Column="1">
+                                <Label HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="TailTruncation"
+                                       Text="Location" Style="{StaticResource AlertTitle}"/>
+                                <Label HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="WordWrap"
+                                       Text="{Binding Location, Converter={StaticResource StringNull}}"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                        <!--sales person-->
+                        <Grid HorizontalOptions="Fill" ColumnSpacing="10" ColumnDefinitions="Auto,*" RowDefinitions="Auto"
+                              Margin="0,15,0,0">
+                            <Image Source="ic_sales_person" HeightRequest="30" Aspect="AspectFit" HorizontalOptions="Start"
+                                   VerticalOptions="Center"/>
+                            <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" Grid.Column="1">
+                                <Label HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="TailTruncation"
+                                       Text="Sales Person" Style="{StaticResource AlertTitle}"/>
+                                <Label HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="WordWrap"
+                                       Text="{Binding SalesPerson, Converter={StaticResource StringNull}}"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                        <!--attendees-->
+                        <Grid HorizontalOptions="Fill" ColumnSpacing="10" ColumnDefinitions="Auto,*" RowDefinitions="Auto"
+                              Margin="0,15,0,0">
+                            <Image Source="ic_attendees" HeightRequest="30" Aspect="AspectFit" HorizontalOptions="Start"
+                                   VerticalOptions="Center"/>
+                            <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" Grid.Column="1">
+                                <Label HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="TailTruncation"
+                                       Text="Attendees" Style="{StaticResource AlertTitle}"/>
+                                <Label HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="WordWrap"
+                                       Text="{Binding Attendees, Converter={StaticResource StringNull}}"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                        <!--remarks-->
+                        <Grid HorizontalOptions="Fill" ColumnSpacing="10" ColumnDefinitions="Auto,*" RowDefinitions="Auto"
+                              Margin="0,15,0,0">
+                            <Image Source="ic_comment" HeightRequest="30" Aspect="AspectFit" HorizontalOptions="Start"
+                                   VerticalOptions="Center"/>
+                            <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" Grid.Column="1">
+                                <Label HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="TailTruncation"
+                                       Text="Remarks" Style="{StaticResource AlertTitle}"/>
+                                <Label HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="WordWrap"
+                                       Text="{Binding Remarks, Converter={StaticResource StringNull}}"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </VerticalStackLayout>
+                </ScrollView>
+            </Grid>
+        </Grid>
+        <!--loading overlay-->
+        <controls:CustomLoading AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                x:Name="UiLoad" IsVisible="{Binding IsBusy}" IsAnimate="{Binding IsBusy}"/>
+    </AbsoluteLayout>
+
+</ContentPage>

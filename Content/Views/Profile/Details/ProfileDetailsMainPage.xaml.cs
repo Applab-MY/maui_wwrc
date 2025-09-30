@@ -11,6 +11,13 @@ public partial class ProfileDetailsMainPage : ContentPage
         InitializeComponent();
         navbar.OnLeftIconTapped += async () => { await Navigation.PopAsync(); };
         BindingContext = viewmodel;
+        Initialize();
+    }
+
+    private async void Initialize()
+    {
+        await Task.Delay(300);
+        viewmodel.SetupData();
     }
 
     private async void OnOpenCamera_Tapped(object sender, EventArgs e)

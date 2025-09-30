@@ -1,8 +1,10 @@
-﻿using Plugin.Media;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using Plugin.Media;
 using Plugin.Media.Abstractions;
 using wwrc_maui.Content.Helper;
 using wwrc_maui.Content.Model;
 using wwrc_maui.Content.Viewmodels.Common;
+using static wwrc_maui.Content.Helper.ReferenceMessenger;
 using static wwrc_maui.Content.Model.Auth.LoginModel;
 using static wwrc_maui.Content.Model.StaffModel;
 
@@ -79,27 +81,37 @@ namespace wwrc_maui.Content.Viewmodels.Profile
             var _clr = Application.Current?.Resources["Primary"] as Color;
             if (_clr != null) { PrimaryColor = _clr.ToArgbHex(); }
             EntryWidth = (App.ScreenWidth - 45) / 2;
-            SetupData();
         }
 
-        public void SetupData()
+        public async void SetupData()
         {
-            ContactNoEdit = ""; OfficeNoEdit = ""; ImgSource = null;
-            LoginData = AppDatabase.Instance.SqlConnection.Query<LoginMainModel>
-                ("Select * from LoginMainModel").FirstOrDefault();
-            if (LoginData != null && LoginData.UserData != null)
+            try
             {
-                Picture = string.IsNullOrEmpty(LoginData.UserData.ProfileImage) ?
-                    "ic_user_empty" : LoginData.UserData.ProfileImage;
+                ContactNoEdit = ""; OfficeNoEdit = ""; ImgSource = null;
+                LoginData = AppDatabase.Instance.SqlConnection.Query<LoginMainModel>
+                    ("Select * from LoginMainModel").FirstOrDefault();
+                if (LoginData != null && LoginData.UserData != null)
+                {
+                    Picture = string.IsNullOrEmpty(LoginData.UserData.ProfileImage) ?
+                        "ic_user_empty" : LoginData.UserData.ProfileImage;
 
-                var _dt = Convert.ToDateTime(LoginData.UserData.DOB).ToLocalTime();
-                var dtConvert = _dt.Add(new TimeSpan(-8, 0, 0));
-                Dob = dtConvert.ToString("yyyy-MM-dd");
+                    if (!string.IsNullOrEmpty(LoginData.UserData.ContactNo))
+                        ContactNoEdit = LoginData.UserData.ContactNo;
+                    if (!string.IsNullOrEmpty(LoginData.UserData.OfficeNo))
+                        OfficeNoEdit = LoginData.UserData.OfficeNo;
 
-                if (!string.IsNullOrEmpty(LoginData.UserData.ContactNo))
-                    ContactNoEdit = LoginData.UserData.ContactNo;
-                if (!string.IsNullOrEmpty(LoginData.UserData.OfficeNo))
-                    OfficeNoEdit = LoginData.UserData.OfficeNo;
+                    var _dt = Convert.ToDateTime(LoginData.UserData.DOB).ToLocalTime();
+                    if (_dt.Year != 1 && _dt.Month != 1 && _dt.Day != 1)
+                    {
+                        var dtConvert = _dt.Add(new TimeSpan(-8, 0, 0));
+                        Dob = dtConvert.ToString("yyyy-MM-dd");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                var error = ex.Message;
+                await App.DisplayAlert("Exception", error, null, "Okay");
             }
         }
 
@@ -113,8 +125,8 @@ namespace wwrc_maui.Content.Viewmodels.Profile
                 ImgSource = null;
                 var model = new API_StaffModel
                 {
-                    Id = Preferences.Default.Get("userId", ""),
-                    Country = Preferences.Default.Get("country", ""),
+                    Id = "", //Preferences.Default.Get("userId", ""),
+                    Country = "", //Preferences.Default.Get("country", ""),
                 };
                 var _res = await App.AppClient.Staff(model);
                 if (_res.SystemCode == 401) { }
@@ -129,9 +141,12 @@ namespace wwrc_maui.Content.Viewmodels.Profile
                             + found.ContactNo + "', OfficeNo='" + found.OfficeNo + "' Where Id='"
                             + found.Id + "'";
                         AppDatabase.Instance.SqlConnection.Query<Userinfo>(query);
+                        WeakReferenceMessenger.Default.Send(new StringNotify("RefreshProfilePicture"));
                         SetupData();
                     }
                 }
+                else if (_res.SystemCode == 200 && _res.items != null && _res.items.Count == 0)
+                { } //bugfix :: sometimes api success but return null items
                 else await App.DisplayAlert("Error: " + _res.SystemCode.ToString(), _res.SystemDebugMessage
                     + ". " + _res.SystemMessage, null, "Okay");
             }

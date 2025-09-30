@@ -16,8 +16,8 @@
                  VerticalOptions="Start" Grid.Row="0"/>
         <!--header-->
         <HorizontalStackLayout HorizontalOptions="Fill" Spacing="10" Padding="15">
-            <controls:CustomCircleImg ImgFromString="ic_user_empty" SetSize="90" ImgAspect="AspectFit"
-                                      HorizontalOptions="Start" VerticalOptions="Center"/>
+            <controls:CustomCircleImg ImgFromString="{Binding Picture}" SetSize="90" ImgAspect="AspectFill"
+                        ImgSource="{Binding Picture}" HorizontalOptions="Start" VerticalOptions="Center"/>
             <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="Center">
                 <Label Text="{Binding Name, Converter={StaticResource StringNullConvert}}" Style="{StaticResource AlertTitle}"
                        LineBreakMode="WordWrap" HorizontalTextAlignment="Start"/>

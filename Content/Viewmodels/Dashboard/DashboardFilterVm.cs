@@ -97,7 +97,7 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
                                 { if (sp.Id.Equals(FilterModel.UserId)) { sp.Checked = true; } }
                             }
                             SalesList = [.. _subs.SalesPersonList];
-                            SalesList = DemoSalesPerson(); //for demo
+                            //SalesList = DemoSalesPerson(); //for demo
                         }
                     }
                 }

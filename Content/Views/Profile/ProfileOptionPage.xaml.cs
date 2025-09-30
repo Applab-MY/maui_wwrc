@@ -1,3 +1,4 @@
+using CommunityToolkit.Mvvm.Messaging;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using wwrc_maui.Content.Model;
@@ -5,7 +6,9 @@ using wwrc_maui.Content.Viewmodels.Dashboard;
 using wwrc_maui.Content.Views.Auth;
 using wwrc_maui.Content.Views.Profile.ChangePassword;
 using wwrc_maui.Content.Views.Profile.Details;
-using static wwrc_maui.Content.Model.ProfileModel;
+using static wwrc_maui.Content.Helper.ReferenceMessenger;
+using static wwrc_maui.Content.Model.Auth.LoginModel;
+using OptionPageModel = wwrc_maui.Content.Model.ProfileModel.OptionPageModel;
 
 namespace wwrc_maui.Content.Views.Profile;
 
@@ -73,6 +76,9 @@ public partial class ProfileOptionPage : ContentView, INotifyPropertyChanged
         InitializeComponent();
         ParentPage = parent;
         BindingContext = this;
+
+        WeakReferenceMessenger.Default.Register<StringNotify>(this, (receiver, message) =>
+        { if (message.Value.Equals("RefreshProfilePicture")) { SetupData(); } });
     }
 
     void SetMenuList(bool isOffice)
@@ -81,6 +87,25 @@ public partial class ProfileOptionPage : ContentView, INotifyPropertyChanged
         if (!isOffice)
             Items.Add(new() { Index = 1, Name = "Change Password", Desc = "Update password here", Image = "menu_reset_password" });
         listview.ItemsSource = Items;
+    }
+
+    async void SetupData()
+    {
+        try
+        {
+            var _login = AppDatabase.Instance.SqlConnection.Query<LoginMainModel>
+                ("Select * from LoginMainModel").FirstOrDefault();
+            if (_login != null && _login.UserData != null)
+            {
+                Picture = string.IsNullOrEmpty(_login.UserData.ProfileImage) ?
+                    "ic_user_empty" : _login.UserData.ProfileImage;
+            }
+        }
+        catch (Exception ex)
+        {
+            var error = ex.Message;
+            await App.DisplayAlert("Exception", error, null, "Okay");
+        }
     }
 
     private async void ListView_ItemTapped(object sender, ItemTappedEventArgs e)

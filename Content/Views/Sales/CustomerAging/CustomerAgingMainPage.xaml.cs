@@ -39,6 +39,7 @@ public partial class CustomerAgingMainPage : ContentPage
 
         void closeAction(bool okay)
         {
+            salesView.Reset();
             if (okay)
             {
                 if (salesView.Selected != null)

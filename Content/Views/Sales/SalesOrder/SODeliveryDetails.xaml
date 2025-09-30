@@ -94,37 +94,38 @@
                 </Grid>
                 <!--row 2 : DO list items-->
                 <ScrollView HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1">
-                    <VerticalStackLayout HorizontalOptions="Fill" Spacing="10" VerticalOptions="Fill">
-                        <Grid HorizontalOptions="Fill" ColumnDefinitions="*" RowDefinitions="Auto" Padding="15,0">
-                            <Border HorizontalOptions="Fill" Padding="0" StrokeShape="RoundRectangle 10"
-                                    IsVisible="{Binding NoDeliveryItem, Converter={StaticResource InverseBool}}"
-                                    Stroke="LightGray" VerticalOptions="Start">
-                                <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" VerticalOptions="Fill">
-                                    <Grid HorizontalOptions="Fill" ColumnDefinitions="0.7*,0.3*" RowDefinitions="Auto"
-                                          ColumnSpacing="10" BackgroundColor="LightGray" Padding="15,8">
-                                        <Label Text="ITEM LIST" FontAttributes="Bold" HorizontalOptions="Start" TextColor="Black"
-                                               HorizontalTextAlignment="Start" VerticalOptions="Center"
-                                               VerticalTextAlignment="Center"/>
-                                        <Label Text="DELIVERY QTY" FontAttributes="Bold" HorizontalOptions="End" TextColor="Black"
-                                               HorizontalTextAlignment="End" VerticalOptions="Center"
-                                               VerticalTextAlignment="Center" Grid.Column="1"/>
-                                    </Grid>
-                                    <ListView HorizontalOptions="Fill" ItemsSource="{Binding DoItems}" SeparatorVisibility="None"
-                                              HasUnevenRows="True" VerticalOptions="Fill" ItemTapped="DoItemlist_ItemTapped" Grid.Row="1">
-                                        <ListView.ItemTemplate>
-                                            <DataTemplate>
-                                                <cell:SODeliveryDetailsCell/>
-                                            </DataTemplate>
-                                        </ListView.ItemTemplate>
-                                    </ListView>
-                                </VerticalStackLayout>
-                            </Border>
-                            <!--no data-->
-                            <Label Text="Delivery Items" HorizontalOptions="Center" VerticalOptions="Center" Style="{StaticResource AlertTitle}"
-                                   IsVisible="{Binding NoDeliveryItem}" HorizontalTextAlignment="Center" Margin="0,15,0,0"/>
-                            <controls:CustomNoData HorizontalOptions="Center" VerticalOptions="Center" Margin="0,90,0,0"
-                                                   IsVisible="{Binding NoDeliveryItem}"/>
-                        </Grid>
+                    <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" VerticalOptions="Fill" Padding="15,0">
+                        <Border HorizontalOptions="Fill" Padding="0" StrokeShape="RoundRectangle 10"
+                                IsVisible="{Binding NoDeliveryItem, Converter={StaticResource InverseBool}}"
+                                Stroke="LightGray" VerticalOptions="Start">
+                            <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" VerticalOptions="Fill">
+                                <!--title-->
+                                <Grid HorizontalOptions="Fill" ColumnDefinitions="0.7*,0.3*" RowDefinitions="Auto"
+                                      ColumnSpacing="10" BackgroundColor="LightGray" Padding="15,8">
+                                    <Label Text="ITEM LIST" FontAttributes="Bold" HorizontalOptions="Start" TextColor="Black"
+                                           HorizontalTextAlignment="Start" VerticalOptions="Center"
+                                           VerticalTextAlignment="Center"/>
+                                    <Label Text="DELIVERY QTY" FontAttributes="Bold" HorizontalOptions="End" TextColor="Black"
+                                           HorizontalTextAlignment="End" VerticalOptions="Center"
+                                           VerticalTextAlignment="Center" Grid.Column="1"/>
+                                </Grid>
+                                <!--DO items-->
+                                <ListView HorizontalOptions="Fill" ItemsSource="{Binding DoItems}" SeparatorVisibility="None"
+                                          HasUnevenRows="True" VerticalOptions="Fill" ItemTapped="DoItemlist_ItemTapped" Grid.Row="1">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <cell:SODeliveryDetailsCell/>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </VerticalStackLayout>
+                        </Border>
+                        <!--no data-->
+                        <BoxView HeightRequest="1" HorizontalOptions="Fill" Margin="0,15,0,5" IsVisible="{Binding NoDeliveryItem}"/>
+                        <Label Text="Delivery Items" HorizontalOptions="Center" VerticalOptions="Center" Style="{StaticResource AlertTitle}"
+                               IsVisible="{Binding NoDeliveryItem}" HorizontalTextAlignment="Center"/>
+                        <controls:CustomNoData HorizontalOptions="Center" VerticalOptions="Center" Margin="0,15,0,0"
+                                               IsVisible="{Binding NoDeliveryItem}"/>
                     </VerticalStackLayout>
                 </ScrollView>
             </Grid>

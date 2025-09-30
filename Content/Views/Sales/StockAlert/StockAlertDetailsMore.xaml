@@ -58,7 +58,8 @@
                         </VerticalStackLayout>
                     </Border>
                     <!--no data-->
-                    <Label Text="Stock Committed" HorizontalOptions="Center" HorizontalTextAlignment="Center" Margin="0,15,0,0"
+                    <BoxView HeightRequest="1" HorizontalOptions="Fill" Margin="0,15,0,5" IsVisible="{Binding NoDataCommited}"/>
+                    <Label Text="Stock Committed" HorizontalOptions="Center" HorizontalTextAlignment="Center"
                            IsVisible="{Binding NoDataCommited}" Style="{StaticResource AlertTitle}"/>
                     <controls:CustomNoData HorizontalOptions="Center" VerticalOptions="Center" Margin="0,15,0,0"
                                            IsVisible="{Binding NoDataCommited}"/>

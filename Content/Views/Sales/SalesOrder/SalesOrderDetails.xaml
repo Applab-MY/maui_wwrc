@@ -18,11 +18,11 @@
         <Grid HorizontalOptions="Fill" VerticalOptions="Fill" AbsoluteLayout.LayoutFlags="All"
               AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*,Auto" ColumnDefinitions="*"
               RowSpacing="0" x:DataType="vm:SalesOrderDetailsVm">
-            <!--nav bar-->
+            <!--row 1 : nav bar-->
             <controls:CustomNavigationBar IconLeft="ic_back" x:Name="navbar" Title="Sales Order Details"/>
             <BoxView HorizontalOptions="Fill" Margin="0" Style="{StaticResource BoxviewNavbar}"
                      VerticalOptions="End"/>
-            <!--content-->
+            <!--row 2 : content-->
             <Grid HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1" ColumnDefinitions="*"
                   RowDefinitions="Auto,*,Auto" RowSpacing="0">
                 <!--row 1 : header-->
@@ -82,11 +82,12 @@
                 <ScrollView HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1">
                     <VerticalStackLayout HorizontalOptions="Fill" Spacing="10" VerticalOptions="Fill">
                         <!--so items-->
-                        <Grid HorizontalOptions="Fill" ColumnDefinitions="*" RowDefinitions="Auto" Padding="15,0">
+                        <VerticalStackLayout HorizontalOptions="Fill" Padding="15,0" Spacing="0">
                             <Border HorizontalOptions="Fill" Padding="0" StrokeShape="RoundRectangle 10"
                                     IsVisible="{Binding NoItems, Converter={StaticResource InverseBool}}"
                                     Stroke="LightGray" VerticalOptions="Start">
-                                <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" VerticalOptions="Fill">
+                                <VerticalStackLayout HorizontalOptions="Start" Spacing="0" VerticalOptions="Start">
+                                    <!--title-->
                                     <Grid HorizontalOptions="Fill" ColumnDefinitions="0.35*,0.25*,0.2*,0.2*" RowDefinitions="Auto"
                                           ColumnSpacing="8" BackgroundColor="LightGray" Padding="15,8">
                                         <Label Text="Item Name" FontAttributes="Bold" HorizontalOptions="Start" TextColor="Black"
@@ -102,8 +103,9 @@
                                                HorizontalTextAlignment="End" VerticalOptions="Center"
                                                VerticalTextAlignment="Center" Grid.Column="3"/>
                                     </Grid>
+                                    <!--SO items-->
                                     <ListView HorizontalOptions="Fill" ItemsSource="{Binding SoItems}" SeparatorVisibility="None"
-                                              HasUnevenRows="True" VerticalOptions="Fill" ItemTapped="SOlist_ItemTapped" Grid.Row="1">
+                                              HasUnevenRows="True" VerticalOptions="Start" ItemTapped="SOlist_ItemTapped" Grid.Row="1">
                                         <ListView.ItemTemplate>
                                             <DataTemplate>
                                                 <cell:SalesOrderDetailsCellSo/>
@@ -113,18 +115,19 @@
                                 </VerticalStackLayout>
                             </Border>
                             <!--no data-->
+                            <BoxView HeightRequest="1" HorizontalOptions="Fill" Margin="0,15,0,5" IsVisible="{Binding NoItems}"/>
                             <Label Text="SO items" HorizontalOptions="Center" VerticalOptions="Center" Style="{StaticResource AlertTitle}"
-                                   IsVisible="{Binding NoItems}" HorizontalTextAlignment="Center" Margin="0,15,0,0"/>
-                            <controls:CustomNoData HorizontalOptions="Center" VerticalOptions="Center" Margin="0,90,0,30"
+                                   IsVisible="{Binding NoItems}" HorizontalTextAlignment="Center"/>
+                            <controls:CustomNoData HorizontalOptions="Center" VerticalOptions="Center" Margin="0,15"
                                                    IsVisible="{Binding NoItems}"/>
-                        </Grid>
+                        </VerticalStackLayout>
                         <!--DO list-->
-                        <Grid HorizontalOptions="Fill" ColumnDefinitions="*" RowDefinitions="Auto" Grid.Row="1"
-                              Padding="15,0,15,15">
+                        <VerticalStackLayout HorizontalOptions="Fill" Grid.Row="1" Padding="15" Spacing="0">
                             <Border HorizontalOptions="Fill" Padding="0" StrokeShape="RoundRectangle 10"
                                     IsVisible="{Binding NoDelivery, Converter={StaticResource InverseBool}}"
                                     Stroke="LightGray" VerticalOptions="Start">
-                                <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" VerticalOptions="Fill">
+                                <VerticalStackLayout HorizontalOptions="Start" Spacing="0" VerticalOptions="Fill">
+                                    <!--title-->
                                     <Grid HorizontalOptions="Fill" ColumnDefinitions="0.4*,0.6*,30" RowDefinitions="Auto"
                                           ColumnSpacing="10" BackgroundColor="LightGray" Padding="15,8">
                                         <Label Text="DO No." FontAttributes="Bold" HorizontalOptions="Start" TextColor="Black"
@@ -134,8 +137,9 @@
                                                HorizontalTextAlignment="End" VerticalOptions="Center"
                                                VerticalTextAlignment="Center" Grid.Column="1"/>
                                     </Grid>
+                                    <!--DO items-->
                                     <ListView HorizontalOptions="Fill" ItemsSource="{Binding DoList}" SeparatorVisibility="None"
-                                              HasUnevenRows="True" VerticalOptions="Fill" ItemTapped="DOlist_ItemTapped" Grid.Row="1">
+                                              HasUnevenRows="True" VerticalOptions="Start" ItemTapped="DOlist_ItemTapped" Grid.Row="1">
                                         <ListView.ItemTemplate>
                                             <DataTemplate>
                                                 <cell:SalesOrderDetailsCellDo/>
@@ -145,42 +149,39 @@
                                 </VerticalStackLayout>
                             </Border>
                             <!--no data-->
+                            <BoxView HeightRequest="1" HorizontalOptions="Fill" Margin="0,15,0,5" IsVisible="{Binding NoDelivery}"/>
                             <Label Text="Delivery Order" HorizontalOptions="Center" VerticalOptions="Center" Style="{StaticResource AlertTitle}"
-                                   IsVisible="{Binding NoDelivery}" HorizontalTextAlignment="Center" Margin="0,15,0,0"/>
-                            <controls:CustomNoData HorizontalOptions="Center" VerticalOptions="Center" Margin="0,90,0,0"
+                                   IsVisible="{Binding NoDelivery}" HorizontalTextAlignment="Center"/>
+                            <controls:CustomNoData HorizontalOptions="Center" VerticalOptions="Center" Margin="0,15,0,0"
                                                    IsVisible="{Binding NoDelivery}"/>
-                        </Grid>
+                        </VerticalStackLayout>
                     </VerticalStackLayout>
                 </ScrollView>
             </Grid>
             <!--row 3 : color status-->
             <BoxView HeightRequest="1" HorizontalOptions="Fill" VerticalOptions="Start" Grid.Row="2"/>
             <Grid HorizontalOptions="Fill" VerticalOptions="End" Margin="15,10" Grid.Row="2"
-                  ColumnDefinitions="*" RowDefinitions="Auto">
-                <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="End">
-                    <HorizontalStackLayout HorizontalOptions="Start" Spacing="5" WidthRequest="{Binding BtomIconSize}">
-                        <Image Source="ic_status_yellow" HeightRequest="15" VerticalOptions="Center"
-                               HorizontalOptions="Start"/>
-                        <Label Text="Waiting Delivery" VerticalOptions="Center" HorizontalOptions="Start"
-                               LineBreakMode="TailTruncation" FontSize="12" MaxLines="2"
-                               HorizontalTextAlignment="Start"/>
-                    </HorizontalStackLayout>
-                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="5" WidthRequest="{Binding BtomIconSize}"
-                                           Grid.Column="1">
-                        <Image Source="ic_status_blue" HeightRequest="15" VerticalOptions="Center"
-                               HorizontalOptions="Center"/>
-                        <Label Text="Return" VerticalOptions="Center" HorizontalOptions="Center"
-                               LineBreakMode="TailTruncation" FontSize="12" MaxLines="2"
-                               HorizontalTextAlignment="Center"/>
-                    </HorizontalStackLayout>
-                    <HorizontalStackLayout HorizontalOptions="End" Spacing="5" WidthRequest="{Binding BtomIconSize}"
-                                           Grid.Column="2">
-                        <Image Source="ic_status_lightgreen" HeightRequest="15" VerticalOptions="Center"
-                               HorizontalOptions="End"/>
-                        <Label Text="Out from Warehouse" VerticalOptions="Center" HorizontalOptions="End"
-                               LineBreakMode="TailTruncation" FontSize="12" MaxLines="2"
-                               HorizontalTextAlignment="End"/>
-                    </HorizontalStackLayout>
+                  ColumnDefinitions="*,*,*" RowDefinitions="Auto" ColumnSpacing="5">
+                <HorizontalStackLayout HorizontalOptions="Start" Spacing="5">
+                    <Image Source="ic_status_yellow" WidthRequest="15" VerticalOptions="Center"
+                           HorizontalOptions="Start" Aspect="AspectFit"/>
+                    <Label Text="Waiting Delivery" VerticalOptions="Center" HorizontalOptions="Start"
+                           LineBreakMode="CharacterWrap" FontSize="12" MaxLines="2"
+                           HorizontalTextAlignment="Start" WidthRequest="{Binding BtomIconSize}"/>
+                </HorizontalStackLayout>
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="5" Grid.Column="1">
+                    <Image Source="ic_status_blue" WidthRequest="15" VerticalOptions="Center"
+                           HorizontalOptions="Start" Aspect="AspectFit"/>
+                    <Label Text="Return" VerticalOptions="Center" HorizontalOptions="Start"
+                           LineBreakMode="CharacterWrap" FontSize="12" MaxLines="2"
+                           HorizontalTextAlignment="Start" WidthRequest="{Binding BtomIconSize}"/>
+                </HorizontalStackLayout>
+                <HorizontalStackLayout HorizontalOptions="End" Spacing="5" Grid.Column="2">
+                    <Image Source="ic_status_lightgreen" WidthRequest="15" VerticalOptions="Center"
+                           HorizontalOptions="Start" Aspect="AspectFit"/>
+                    <Label Text="Out from Warehouse" VerticalOptions="Center" HorizontalOptions="Start"
+                           LineBreakMode="CharacterWrap" FontSize="12" MaxLines="2"
+                           HorizontalTextAlignment="Start" WidthRequest="{Binding BtomIconSize}"/>
                 </HorizontalStackLayout>
             </Grid>
         </Grid>

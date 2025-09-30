@@ -73,7 +73,8 @@
                         </VerticalStackLayout>
                     </Border>
                     <!--no data-->
-                    <Label Text="Warehouse Stock" HorizontalOptions="Center" HorizontalTextAlignment="Center" Margin="0,15,0,0"
+                    <BoxView HeightRequest="1" HorizontalOptions="Fill" Margin="0,15,0,5" IsVisible="{Binding NoData}"/>
+                    <Label Text="Warehouse Stock" HorizontalOptions="Center" HorizontalTextAlignment="Center"
                            IsVisible="{Binding NoData}" Style="{StaticResource AlertTitle}"/>
                     <controls:CustomNoData HorizontalOptions="Center" VerticalOptions="Center" Margin="0,15,0,0"
                                            IsVisible="{Binding NoData}"/>

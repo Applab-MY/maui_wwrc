@@ -3,17 +3,25 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="wwrc_maui.Content.Views.Sales.CustomerAging.FilterSalesPersonView"
              xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
-             xmlns:base="clr-namespace:wwrc_maui.Content.CustomControls.Base">
+             xmlns:base="clr-namespace:wwrc_maui.Content.CustomControls.Base"
+             xmlns:helper="clr-namespace:wwrc_maui.Content.Helper">
     
     <Grid HorizontalOptions="Fill" RowDefinitions="Auto,*" ColumnDefinitions="*"
           RowSpacing="10" VerticalOptions="Fill">
+        <Grid.Resources>
+            <ResourceDictionary>
+                <helper:InverseBoolConverter x:Key="InverseBool"/>
+            </ResourceDictionary>
+        </Grid.Resources>
         <Border StrokeShape="RoundRectangle 20" HorizontalOptions="Fill" Padding="15,0">
             <base:BorderlessEntry x:Name="entry_" HorizontalOptions="Fill" VerticalOptions="Center"
                     Placeholder="search sales person..." TextChanged="OnEntry_TextChanged"/>
         </Border>
         <ListView HorizontalOptions="Fill" VerticalOptions="Start" HasUnevenRows="True" Grid.Row="1"
-                  SeparatorVisibility="None" ItemsSource="{Binding Itemsource}"
-                  x:Name="listview" ItemTapped="listview_ItemTapped">
+                  SeparatorVisibility="None" ItemsSource="{Binding MainSource}"
+                  IsVisible="{Binding NoData, Converter={StaticResource InverseBool}}"
+                  x:Name="listview" ItemTapped="listview_ItemTapped"
+                  ItemAppearing="listview_ItemAppearing">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
@@ -43,6 +51,8 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        <controls:CustomNoData Grid.Row="1" Margin="0,15" HorizontalOptions="Center"
+                       VerticalOptions="Center" IsVisible="{Binding NoData}"/>
     </Grid>
     
 </ContentView>

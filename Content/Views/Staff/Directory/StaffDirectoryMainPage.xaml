@@ -25,7 +25,7 @@
                      VerticalOptions="End"/>
             <!--row 1 : content-->
             <Grid HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1" ColumnDefinitions="*"
-                  RowDefinitions="Auto,Auto,*">
+                  RowDefinitions="Auto,Auto,*,Auto" RowSpacing="5">
                 <!--row 1 : search bar-->
                 <controls:CustomEntry HorizontalOptions="Fill" VerticalOptions="Start"
                         x:Name="entry_search" Margin="20,10" SetText="SearchTxt"
@@ -65,6 +65,17 @@
                 <!--no data-->
                 <controls:CustomNoData HorizontalOptions="Center" VerticalOptions="Center" Margin="0,30"
                                        IsVisible="{Binding NoData}" Grid.Row="2"/>
+                <Grid HorizontalOptions="Fill" ColumnDefinitions="*" RowDefinitions="Auto" Grid.Row="3"
+                      VerticalOptions="End" Margin="15,0,15,10">
+                    <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="End" Spacing="10">
+                        <Button Text="Select" BackgroundColor="{StaticResource Key=Primary}" HorizontalOptions="Center"
+                                x:Name="btn_select" VerticalOptions="End" Clicked="OnSelect_Clicked" Padding="15,0"
+                                IsVisible="{Binding IsSelectable}" />
+                        <Button Text="{Binding SelectableCount, StringFormat='\Clear ({0})'}" HorizontalOptions="Center"
+                                Style="{StaticResource Key=BtnTertiary}" x:Name="btn_clear" VerticalOptions="End"
+                                Clicked="OnClear_Clicked" Padding="15,0" IsVisible="{Binding ShowClearSelectable}" />
+                    </HorizontalStackLayout>
+                </Grid>
             </Grid>
         </Grid>
         <!--loading overlay-->

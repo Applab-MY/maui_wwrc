@@ -1,16 +1,19 @@
+using CommunityToolkit.Mvvm.Messaging;
 using wwrc_maui.Content.Viewmodels.Staff;
+using static wwrc_maui.Content.Helper.ReferenceMessenger;
 using static wwrc_maui.Content.Model.StaffModel;
 
 namespace wwrc_maui.Content.Views.Staff.Directory;
 
 public partial class OthersTabDetailsPage : ContentPage
 {
-    StaffDetailsVm viewmodel = new();
+    public StaffDetailsVm viewmodel = new();
     CountryListCell countryView = new();
 
-    public OthersTabDetailsPage(string countryCode)
+    public OthersTabDetailsPage(string countryCode, bool isSelectable = false)
     {
         InitializeComponent();
+        viewmodel.IsSelectable = isSelectable;
         viewmodel.countryCode = countryCode;
         navbar.OnLeftIconTapped += async () => { await Navigation.PopAsync(); };
         navbar.OnRightIconTapped += () =>
@@ -29,6 +32,7 @@ public partial class OthersTabDetailsPage : ContentPage
         await Task.Delay(300);
         viewmodel.GetCountries();
         viewmodel.GetStaffList();
+        if (viewmodel.IsSelectable) { viewmodel.CheckForSelected(); }
     }
 
     private async void OnPickCountry_Tapped(object sender, EventArgs e)
@@ -58,5 +62,28 @@ public partial class OthersTabDetailsPage : ContentPage
         lv.SelectedItem = null;
         var data = (StaffMainModel)e.Item;
         await Navigation.PushAsync(new StaffDetailsPage(data.Id));
+    }
+
+    private async void OnSelect_Clicked(object sender, EventArgs e)
+    {
+        if (sender is not Button view) return;
+        if (viewmodel.selectedStaff.Count > 0)
+        {
+            var _res = await viewmodel.SaveSelectedStaffToDb();
+            if (_res)
+            {
+                await Navigation.PopAsync();
+                WeakReferenceMessenger.Default.Send(new StringNotify("CustomerVisitSelectAttendees"));
+            }
+        }
+        else await App.DisplayAlert("Empty", "No staff selected as attendee", null, "Okay");
+    }
+
+    private async void OnClear_Clicked(object sender, EventArgs e)
+    {
+        if (sender is not Button view) return;
+        viewmodel.ClearSelectedStaffDb();
+        await Navigation.PopAsync();
+        WeakReferenceMessenger.Default.Send(new StringNotify("CustomerVisitSelectAttendees"));
     }
 }

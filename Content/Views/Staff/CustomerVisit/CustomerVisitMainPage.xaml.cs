@@ -11,6 +11,7 @@ public partial class CustomerVisitMainPage : ContentPage
     {
         InitializeComponent();
         navbar.OnLeftIconTapped += async () => { await Navigation.PopAsync(); };
+        navbar.OnRightIconTapped += async () => { await Navigation.PushAsync(new CreateCustomerVisit()); };
         BindingContext = viewmodel;
         Initialize();
     }

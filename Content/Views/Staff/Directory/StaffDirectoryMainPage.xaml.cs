@@ -1,16 +1,16 @@
 using CommunityToolkit.Mvvm.Messaging;
 using wwrc_maui.Content.Viewmodels.Staff;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using static wwrc_maui.Content.Helper.ReferenceMessenger;
 using static wwrc_maui.Content.Model.CountryModel;
-using static wwrc_maui.Content.Model.StaffModel;
 
 namespace wwrc_maui.Content.Views.Staff.Directory;
 
 public partial class StaffDirectoryMainPage : ContentPage
 {
-    StaffDirectoryVm viewmodel = new();
+    public StaffDirectoryVm viewmodel = new();
 
-    public StaffDirectoryMainPage()
+    public StaffDirectoryMainPage(bool isSelectable = false)
     {
         InitializeComponent();
         navbar.OnLeftIconTapped += async () => { await Navigation.PopAsync(); };
@@ -20,14 +20,22 @@ public partial class StaffDirectoryMainPage : ContentPage
             viewmodel.SearchTxt = ""; viewmodel.DoSearch();
         };
         entry_search.OnTextCleared += () => { viewmodel.SearchTxt = ""; viewmodel.DoSearch(); };
+        viewmodel.IsSelectable = isSelectable;
         BindingContext = viewmodel;
         Initialize();
 
+        #region messenger
         WeakReferenceMessenger.Default.Register<KeyValueNotify>(this, (receiver, message) =>
         {
             if (message.Value.Key.Equals("StaffTabSelected"))
             { SetTabContent(Convert.ToInt32(message.Value.Value)); }
         });
+        WeakReferenceMessenger.Default.Register<StringNotify>(this, async (receiver, message) =>
+        {
+            if (message.Value != null && message.Value.Equals("CustomerVisitSelectAttendees"))
+            { await Navigation.PopAsync(); }
+        });
+        #endregion
     }
 
     public void Initialize()
@@ -36,6 +44,7 @@ public partial class StaffDirectoryMainPage : ContentPage
         tabbar.ColumnDefinitions.Clear();
         if (viewmodel.tabList.Count > 0)
         {
+            viewmodel.selectedStaff = [];
             int index = 1; bool selected = false;
             foreach (var item in viewmodel.tabList)
             {
@@ -48,6 +57,7 @@ public partial class StaffDirectoryMainPage : ContentPage
                 index++;
             }
             SetTabContent(1);
+            if (viewmodel.IsSelectable) { viewmodel.CheckForSelected(); }
         }
     }
 
@@ -60,6 +70,8 @@ public partial class StaffDirectoryMainPage : ContentPage
             content_tab2.IsVisible = false;
             entry_search.Placeholder = "search staff...";
             if (!viewmodel.isOfficeLoad) viewmodel.GetOfficeStaffList();
+            btn_select.IsVisible = viewmodel.IsSelectable;
+            btn_clear.IsVisible = viewmodel.IsSelectable;
         }
         else if (tabId == 2)
         {
@@ -67,15 +79,17 @@ public partial class StaffDirectoryMainPage : ContentPage
             content_tab2.IsVisible = true;
             entry_search.Placeholder = "search country...";
             if (!viewmodel.isOtherLoad) viewmodel.GetCountryList();
+            btn_select.IsVisible = false;
+            btn_clear.IsVisible = false;
         }
     }
 
-    private async void OfficeList_ItemTapped(object sender, ItemTappedEventArgs e)
+    private void OfficeList_ItemTapped(object sender, ItemTappedEventArgs e)
     {
         if (sender is not ListView lv) return;
         lv.SelectedItem = null;
-        var data = (StaffMainModel)e.Item;
-        await Navigation.PushAsync(new StaffDetailsPage(data.Id));
+        //var data = (StaffMainModel)e.Item;
+        //navigation move to viewcell level
     }
 
     private void OfficeList_ItemAppearing(object sender, ItemVisibilityEventArgs e)
@@ -93,6 +107,29 @@ public partial class StaffDirectoryMainPage : ContentPage
         if (sender is not ListView lv) return;
         lv.SelectedItem = null; //OthersTabDetailsPage
         var data = (CountryMainModel)e.Item;
-        await Navigation.PushAsync(new OthersTabDetailsPage(data.CountryCode));
+        await Navigation.PushAsync(new OthersTabDetailsPage(data.CountryCode, viewmodel.IsSelectable));
+    }
+
+    private async void OnSelect_Clicked(object sender, EventArgs e)
+    {
+        if (sender is not Button view) return;
+        if (viewmodel.selectedStaff.Count > 0)
+        {
+            var _res = await viewmodel.SaveSelectedStaffToDb();
+            if (_res)
+            {
+                await Navigation.PopAsync();
+                WeakReferenceMessenger.Default.Send(new StringNotify("CustomerVisitSelectAttendees"));
+            }
+        }
+        else await App.DisplayAlert("Empty", "No staff selected as attendee", null, "Okay");
+    }
+
+    private async void OnClear_Clicked(object sender, EventArgs e)
+    {
+        if (sender is not Button view) return;
+        viewmodel.ClearSelectedStaffDb();
+        await Navigation.PopAsync();
+        WeakReferenceMessenger.Default.Send(new StringNotify("CustomerVisitSelectAttendees"));
     }
 }

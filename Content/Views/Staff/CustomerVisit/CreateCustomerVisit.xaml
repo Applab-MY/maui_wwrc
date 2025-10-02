@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="wwrc_maui.Content.Views.Staff.CustomerVisit.CustomerVisitDetailsPage"
+             x:Class="wwrc_maui.Content.Views.Staff.CustomerVisit.CreateCustomerVisit"
+             xmlns:base="clr-namespace:wwrc_maui.Content.CustomControls.Base"
              xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
              xmlns:vm="clr-namespace:wwrc_maui.Content.Viewmodels.Staff"
              xmlns:helper="clr-namespace:wwrc_maui.Content.Helper"
@@ -18,7 +19,7 @@
               AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*" ColumnDefinitions="*"
               RowSpacing="0" x:DataType="vm:CustomerVisitDetailsVm">
             <!--row 1 : nav bar-->
-            <controls:CustomNavigationBar IconLeft="ic_back" x:Name="navbar" Title="Customer Visit Details"/>
+            <controls:CustomNavigationBar IconLeft="ic_back" x:Name="navbar" Title="Create Customer Visit"/>
             <BoxView HorizontalOptions="Fill" Margin="0" Style="{StaticResource BoxviewNavbar}"
                      VerticalOptions="End"/>
             <!--row 2 : content-->
@@ -34,24 +35,36 @@
                             <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" Grid.Column="1">
                                 <Label HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="TailTruncation"
                                        Text="Customer" Style="{StaticResource AlertTitle}"/>
-                                <Label HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="WordWrap"
-                                       IsVisible="{Binding IsEditable, Converter={StaticResource InverseBool}}"
-                                       Text="{Binding Customer, Converter={StaticResource StringNull}}"/>
-                                <controls:CustomEntry SetText="Customer" IsVisible="{Binding IsEditable}" VerticalOptions="Start"
-                                                      Placeholder="Insert Customer" SetWidth="{Binding EntryWidth}"/>
+                                <controls:CustomEntry SetText="Customer" VerticalOptions="Start" Placeholder="Insert Customer"
+                                                      SetWidth="{Binding EntryWidth}"/>
                             </VerticalStackLayout>
                         </Grid>
                         <!--visit date time-->
-                        <Grid HorizontalOptions="Fill" ColumnSpacing="10" ColumnDefinitions="Auto,*" RowDefinitions="Auto"
-                              Margin="0,15,0,0" VerticalOptions="Start">
+                        <Grid HorizontalOptions="Fill" ColumnSpacing="10" ColumnDefinitions="Auto,*,Auto,*,Auto"
+                              RowDefinitions="Auto" Margin="0,15,0,0" VerticalOptions="Start">
                             <Image Source="ic_date_time" WidthRequest="30" Aspect="AspectFit" HorizontalOptions="Start"
                                    VerticalOptions="Center"/>
-                            <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" Grid.Column="1">
+                            <!--datepicker-->
+                            <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" VerticalOptions="Center" Grid.Column="1">
                                 <Label HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="TailTruncation"
-                                       Text="Visit Date Time" Style="{StaticResource AlertTitle}"/>
-                                <Label HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="WordWrap"
-                                       Text="{Binding VisitDateTime, Converter={StaticResource StringNull}}"/>
+                                       Text="Visit Date" Style="{StaticResource AlertTitle}"/>
+                                <base:BorderlessDatePicker x:Name="dt_" HorizontalOptions="Fill" Format="dd MMM yyyy"
+                                            Date="{Binding VisitDt}" Style="{StaticResource DatepickerPrimary}"
+                                            DateSelected="OnDate_DateSelected" Margin="0,-13,0,-8" FontSize="14"/>
                             </VerticalStackLayout>
+                            <Image Source="{AppThemeBinding Light=ic_dropdown, Dark=ic_dropdown_light}" WidthRequest="30"
+                                   Aspect="AspectFit" HorizontalOptions="Start" VerticalOptions="Center"
+                                   Margin="0,0,15,0" Grid.Column="2"/>
+                            <!--timepicker-->
+                            <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" VerticalOptions="Center" Grid.Column="3">
+                                <Label HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="TailTruncation"
+                                       Text="Visit Time" Style="{StaticResource AlertTitle}"/>
+                                <base:BorderlessTimePicker x:Name="tm_" HorizontalOptions="Fill" Format="HH:mm tt"
+                                            Time="{Binding VisitTime}" Style="{StaticResource TimepickerPrimary}"
+                                            FontSize="14" Margin="0,-13,0,-8"/>
+                            </VerticalStackLayout>
+                            <Image Source="{AppThemeBinding Light=ic_dropdown, Dark=ic_dropdown_light}" WidthRequest="30"
+                                   Aspect="AspectFit" HorizontalOptions="Start" VerticalOptions="Center" Grid.Column="4"/>
                         </Grid>
                         <!--location-->
                         <Grid HorizontalOptions="Fill" ColumnSpacing="10" ColumnDefinitions="Auto,*" RowDefinitions="Auto"
@@ -61,11 +74,8 @@
                             <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" Grid.Column="1">
                                 <Label HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="TailTruncation"
                                        Text="Location" Style="{StaticResource AlertTitle}"/>
-                                <Label HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="WordWrap"
-                                       IsVisible="{Binding IsEditable, Converter={StaticResource InverseBool}}"
-                                       Text="{Binding Location, Converter={StaticResource StringNull}}"/>
-                                <controls:CustomEntry SetText="Location" IsVisible="{Binding IsEditable}" VerticalOptions="Start"
-                                                      Placeholder="Insert Location" SetWidth="{Binding EntryWidth}"/>
+                                <controls:CustomEntry SetText="Location" VerticalOptions="Start" Placeholder="Insert Location"
+                                                      SetWidth="{Binding EntryWidth}"/>
                             </VerticalStackLayout>
                         </Grid>
                         <!--sales person-->
@@ -81,7 +91,7 @@
                             </VerticalStackLayout>
                         </Grid>
                         <!--attendees-->
-                        <Grid HorizontalOptions="Fill" ColumnSpacing="10" ColumnDefinitions="Auto,*" RowDefinitions="Auto"
+                        <Grid HorizontalOptions="Fill" ColumnSpacing="10" ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto"
                               Margin="0,15,0,0" VerticalOptions="Start">
                             <Image Source="ic_attendees" WidthRequest="30" Aspect="AspectFit" HorizontalOptions="Start"
                                    VerticalOptions="Center"/>
@@ -89,8 +99,14 @@
                                 <Label HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="TailTruncation"
                                        Text="{Binding AttdCount, StringFormat='\Attendees ({0})'}" Style="{StaticResource AlertTitle}"/>
                                 <Label HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="WordWrap"
-                                       Text="{Binding Attendees, Converter={StaticResource StringNull}}"/>
+                                       Text="{Binding Attendees, Converter={StaticResource StringNull}}"
+                                       Style="{StaticResource PopupPromptButton}"/>
                             </VerticalStackLayout>
+                            <Image Source="{AppThemeBinding Light=ic_more, Dark=ic_more_light}" VerticalOptions="Center" 
+                                   HorizontalOptions="End" Aspect="AspectFit" HeightRequest="30" Grid.Column="2"/>
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnAttendees_Tapped" NumberOfTapsRequired="1"/>
+                            </Grid.GestureRecognizers>
                         </Grid>
                         <!--remarks-->
                         <Grid HorizontalOptions="Fill" ColumnSpacing="10" ColumnDefinitions="Auto,*" RowDefinitions="Auto"
@@ -100,16 +116,13 @@
                             <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" Grid.Column="1">
                                 <Label HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="TailTruncation"
                                        Text="Remarks" Style="{StaticResource AlertTitle}"/>
-                                <Label HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="WordWrap"
-                                       IsVisible="{Binding IsEditable, Converter={StaticResource InverseBool}}"
-                                       Text="{Binding Remarks, Converter={StaticResource StringNull}}"/>
-                                <controls:CustomEntry SetText="Remarks" IsVisible="{Binding IsEditable}" VerticalOptions="Start"
-                                                      Placeholder="Insert Your Remarks" SetWidth="{Binding EntryWidth}"/>
+                                <controls:CustomEntry SetText="Remarks" VerticalOptions="Start" Placeholder="Insert Your Remarks"
+                                                      SetWidth="{Binding EntryWidth}"/>
                             </VerticalStackLayout>
                         </Grid>
                         <!--btn : save-->
-                        <Button Text="Update" BackgroundColor="{StaticResource Key=Primary}" Clicked="OnUpdate_Clicked"
-                                VerticalOptions="Start" Margin="0,30,0,0" IsVisible="{Binding IsEditable}"/>
+                        <Button Text="Save" BackgroundColor="{StaticResource Key=Primary}" Clicked="OnSave_Clicked"
+                                VerticalOptions="Start" Margin="0,30,0,0"/>
                     </VerticalStackLayout>
                 </ScrollView>
             </Grid>

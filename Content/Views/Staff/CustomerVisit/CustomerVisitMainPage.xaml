@@ -20,8 +20,8 @@
               AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*" ColumnDefinitions="*"
               RowSpacing="0" x:DataType="vm:CustomerVisitVm">
             <!--nav bar-->
-            <!--IconRight="ic_add"-->
-            <controls:CustomNavigationBar IconLeft="ic_back" x:Name="navbar" Title="Customer Visit"/>
+            <controls:CustomNavigationBar IconLeft="ic_back" x:Name="navbar" Title="Customer Visit"
+                                          IconRight="ic_add"/>
             <BoxView HorizontalOptions="Fill" Margin="0" Style="{StaticResource BoxviewNavbar}"
                      VerticalOptions="End"/>
             <!--content-->
@@ -58,7 +58,7 @@
                                    Text="{Binding SelectedDate, StringFormat='\{0:dd MMM yyyy}'}"
                                    LineBreakMode="TailTruncation" HorizontalTextAlignment="Start" FontSize="14"/>-->
                         </VerticalStackLayout>
-                        <base:BorderlessDatePicker x:Name="dt_from" HorizontalOptions="Fill" FontSize="14" Format="dd MMM yyyy"
+                        <base:BorderlessDatePicker x:Name="dt_from" HorizontalOptions="Fill" Format="dd MMM yyyy"
                                     Date="{Binding SelectedDate}" Style="{StaticResource DatepickerPrimary}"
                                     DateSelected="OnDateFrom_DateSelected" Margin="0,3,0,-10"/>
                         <!--img : arrow-->

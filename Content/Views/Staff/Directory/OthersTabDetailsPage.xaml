@@ -41,12 +41,12 @@
                      VerticalOptions="End"/>
             <!--row 1 : content-->
             <Grid HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1" ColumnDefinitions="*"
-                  RowDefinitions="Auto,*">
+                  RowDefinitions="Auto,*,Auto" RowSpacing="5">
                 <!--row 1 : search bar-->
                 <controls:CustomEntry HorizontalOptions="Fill" Placeholder="search staff..."
                         VerticalOptions="Start" x:Name="entry_search" Margin="20,10" SetText="SearchTxt"
                         SetWidth="{Binding EntryWidth}" IsVisible="{Binding IsSearchVisible}"/>
-                <!--row 3 : tab content-->
+                <!--row 2 : tab content-->
                 <ListView HorizontalOptions="Fill" ItemsSource="{Binding StaffListMain}" HasUnevenRows="True"
                           IsPullToRefreshEnabled="True" IsRefreshing="{Binding IsRefreshing}" Grid.Row="1"
                           RefreshCommand="{Binding RefreshCommand}" IsGroupingEnabled="False"
@@ -65,6 +65,18 @@
                 <!--no data-->
                 <controls:CustomNoData Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center"
                                        IsVisible="{Binding NoData}"/>
+                <!--row 3 : btn select-->
+                <Grid HorizontalOptions="Fill" ColumnDefinitions="*" RowDefinitions="Auto" Grid.Row="2"
+                      VerticalOptions="End" Margin="15,0,15,10">
+                    <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="End" Spacing="10">
+                        <Button Text="Select" BackgroundColor="{StaticResource Key=Primary}" HorizontalOptions="Center"
+                                x:Name="btn_select" VerticalOptions="End" Clicked="OnSelect_Clicked" Padding="15,0"
+                                IsVisible="{Binding IsSelectable}" />
+                        <Button Text="{Binding SelectableCount, StringFormat='\Clear ({0})'}" HorizontalOptions="Center"
+                                Style="{StaticResource Key=BtnTertiary}" x:Name="btn_clear" VerticalOptions="End"
+                                Clicked="OnClear_Clicked" Padding="15,0" IsVisible="{Binding ShowClearSelectable}" />
+                    </HorizontalStackLayout>
+                </Grid>
             </Grid>
         </Grid>
         <!--loading overlay-->

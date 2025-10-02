@@ -18,6 +18,17 @@ public partial class CustomerVisitDetailsPage : ContentPage
 	public async void Initialize()
 	{
 		await Task.Delay(300);
-		viewmodel.SetupData();
+		viewmodel.GetVisitDetails();
 	}
+
+    private async void OnUpdate_Clicked(object sender, EventArgs e)
+    {
+		if (sender is not Button view) return;
+		var _res = await viewmodel.UpdateVisitDetails();
+		if (_res)
+		{
+			await App.DisplayAlert("Success", "Customer visit details updated.", null, "Okay");
+			await Navigation.PopAsync();
+		}
+    }
 }

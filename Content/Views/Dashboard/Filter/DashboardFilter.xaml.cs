@@ -294,8 +294,10 @@ public partial class DashboardFilter : ContentPage
                 else
                 {
                     // for reset all checked item
-                    foreach (var item in salesView.Itemsource)
-                    { item.Checked = false; }
+                    if (salesView.Itemsource.Count > 0)
+                        foreach (var item in salesView.Itemsource) { item.Checked = false; }
+                    if (salesView.MainSource.Count > 0)
+                        foreach (var item in salesView.MainSource) { item.Checked = false; }
                 }
             }
             await App.DisplayAlert("Sales Person", null, salesView, "Okay", "Cancel", closeAction);

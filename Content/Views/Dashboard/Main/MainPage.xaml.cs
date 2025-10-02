@@ -1,8 +1,8 @@
 using CommunityToolkit.Mvvm.Messaging;
-using System.Threading.Tasks;
 using wwrc_maui.Content.Model;
 using wwrc_maui.Content.Viewmodels.Dashboard;
 using wwrc_maui.Content.Views.Auth;
+using wwrc_maui.Content.Views.Dashboard.Main;
 using wwrc_maui.Content.Views.Media;
 using wwrc_maui.Content.Views.Media.EmpHandbook;
 using wwrc_maui.Content.Views.Media.Gallery;
@@ -51,6 +51,7 @@ public partial class MainPage : ContentPage
         #endregion
     }
 
+    #region toolbar events
     private async void OnFilter_Tapped()
     { await Navigation.PushAsync(new DashboardFilter(viewmodel.DashboardData, viewmodel.FilterData)); }
 
@@ -69,7 +70,9 @@ public partial class MainPage : ContentPage
         { await App.DisplayAlert("Error", ex.Message, null, "Okay"); }
         viewmodel.IsBusy = false;
     }
+    #endregion
 
+    #region currency & graph events
     private async void OnDateCurrency_Tapped(object sender, TappedEventArgs e)
     {
         if (sender is not Grid view) return;
@@ -77,6 +80,14 @@ public partial class MainPage : ContentPage
         view.Opacity = 1;
         await Navigation.PushAsync(new CurrencyExchangeRate());
     }
+
+    private async void OnGraph_Tapped(object sender, TappedEventArgs e)
+    {
+        await grid_graph.FadeTo(0.3, 200);
+        grid_graph.Opacity = 1;
+        await Navigation.PushAsync(new GraphDetails());
+    }
+    #endregion
 
     private async void OnCellMenu_Tapped(DashboardCarouselTemplate data)
     {

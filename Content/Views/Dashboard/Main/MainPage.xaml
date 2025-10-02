@@ -61,21 +61,30 @@
                         <BoxView HeightRequest="1" HorizontalOptions="Fill" Margin="15,0"/>
                         <!--graph & percentage-->
                         <Grid HorizontalOptions="Fill" ColumnSpacing="10" VerticalOptions="Start" Margin="15,20"
-                              RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,*" RowSpacing="5">
+                              x:Name="grid_graph" RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,*" RowSpacing="5">
                             <!--#region sales : ytd-->
                             <progressBar:ProgressRing Progress="{Binding YtdProgress}" VerticalOptions="Center"
                                     HorizontalOptions="Center" WidthRequest="100" HeightRequest="100" Smooth="True"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Black}}"
-                                    Color="{StaticResource Secondary}" Thickness="5"/>
+                                    Color="{StaticResource Secondary}" Thickness="5">
+                                <progressBar:ProgressRing.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnGraph_Tapped" NumberOfTapsRequired="1"/>
+                                </progressBar:ProgressRing.GestureRecognizers>
+                            </progressBar:ProgressRing>
                             <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
                                 <Label Text="{Binding CenterPercentYtd}" Style="{StaticResource PopupPromptButton}"/>
                                 <Label Text=" %" Style="{StaticResource PopupPromptButton}"/>
+                                <HorizontalStackLayout.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnGraph_Tapped" NumberOfTapsRequired="1"/>
+                                </HorizontalStackLayout.GestureRecognizers>
                             </HorizontalStackLayout>
-                            
                             <VerticalStackLayout HorizontalOptions="Fill" Grid.Row="1">
                                 <Label Text="YTD Sales" HorizontalOptions="Center" Style="{StaticResource AlertTitle}"/>
                                 <Label Text="{Binding YtdSales}" HorizontalOptions="Center" Style="{StaticResource PopupPromptButton}"
                                        TextColor="{AppThemeBinding Light={StaticResource SecondaryDarkText}, Dark={StaticResource Secondary}}"/>
+                                <VerticalStackLayout.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnGraph_Tapped" NumberOfTapsRequired="1"/>
+                                </VerticalStackLayout.GestureRecognizers>
                             </VerticalStackLayout>
                             <Border HorizontalOptions="Center" StrokeShape="RoundRectangle 10" Grid.Row="2" Padding="10,5"
                                     Style="{StaticResource BorderSecondary}">
@@ -86,21 +95,34 @@
                                            TextColor="{AppThemeBinding Light={StaticResource SecondaryDarkText}, Dark={StaticResource Secondary}}"
                                            LineBreakMode="TailTruncation"/>
                                 </HorizontalStackLayout>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnGraph_Tapped" NumberOfTapsRequired="1"/>
+                                </Border.GestureRecognizers>
                             </Border>
                             <!--#endregion-->
                             <!--#region sales : mtd-->
                             <progressBar:ProgressRing Progress="{Binding MtdProgress}" VerticalOptions="Center"
                                     HorizontalOptions="Center" WidthRequest="100" HeightRequest="100" Smooth="True"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Black}}"
-                                    Color="{StaticResource Primary}" Thickness="5" Grid.Column="1"/>
+                                    Color="{StaticResource Primary}" Thickness="5" Grid.Column="1">
+                                <progressBar:ProgressRing.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnGraph_Tapped" NumberOfTapsRequired="1"/>
+                                </progressBar:ProgressRing.GestureRecognizers>
+                            </progressBar:ProgressRing>
                             <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Grid.Column="1">
                                 <Label Text="{Binding CenterPercentMtd}" Style="{StaticResource PopupPromptButton}"/>
                                 <Label Text=" %" Style="{StaticResource PopupPromptButton}"/>
+                                <HorizontalStackLayout.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnGraph_Tapped" NumberOfTapsRequired="1"/>
+                                </HorizontalStackLayout.GestureRecognizers>
                             </HorizontalStackLayout>
                             <VerticalStackLayout HorizontalOptions="Fill" Grid.Column="1" Grid.Row="1">
                                 <Label Text="MTD Sales" HorizontalOptions="Center" Style="{StaticResource AlertTitle}"/>
                                 <Label Text="{Binding MtdSales}" HorizontalOptions="Center" Style="{StaticResource PopupPromptButton}"
                                        TextColor="{AppThemeBinding Light={StaticResource PrimaryDark}, Dark={StaticResource Primary}}"/>
+                                <VerticalStackLayout.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnGraph_Tapped" NumberOfTapsRequired="1"/>
+                                </VerticalStackLayout.GestureRecognizers>
                             </VerticalStackLayout>
                             <Border HorizontalOptions="Center" StrokeShape="RoundRectangle 10" Grid.Column="1" Grid.Row="2"
                                     Style="{StaticResource BorderSecondary}" Padding="10,5">
@@ -111,6 +133,9 @@
                                            TextColor="{AppThemeBinding Light={StaticResource PrimaryDark}, Dark={StaticResource Primary}}"
                                            LineBreakMode="TailTruncation"/>
                                 </HorizontalStackLayout>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnGraph_Tapped" NumberOfTapsRequired="1"/>
+                                </Border.GestureRecognizers>
                             </Border>
                             <!--#endregion-->
                         </Grid>

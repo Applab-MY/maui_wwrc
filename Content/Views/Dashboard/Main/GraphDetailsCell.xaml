@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ViewCell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+          xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+          x:Class="wwrc_maui.Content.Views.Dashboard.Main.GraphDetailsCell"
+          xmlns:helper="clr-namespace:wwrc_maui.Content.Helper">
+
+    <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="Fill" Spacing="0">
+        <VerticalStackLayout.Resources>
+            <ResourceDictionary>
+                <helper:InverseBoolConverter x:Key="InverseBool"/>
+                <helper:StringNullConverter x:Key="StringNull"/>
+            </ResourceDictionary>
+        </VerticalStackLayout.Resources>
+        <Grid HorizontalOptions="Fill" VerticalOptions="Fill" ColumnSpacing="10" RowSpacing="0"
+              RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*" Margin="15">
+            <!--title-->
+            <Label Text="{Binding CARDCODE, Converter={StaticResource StringNull}}" HorizontalOptions="Fill"
+                   HorizontalTextAlignment="Start" VerticalOptions="Start" Style="{StaticResource AlertTitle}"
+                   LineBreakMode="WordWrap" Margin="0,0,0,8" Grid.ColumnSpan="2"/>
+            <!--row 2-->
+            <Label Text="{Binding CARDNAME, Converter={StaticResource StringNull}}" Grid.Row="1" Grid.Column="0"
+                   HorizontalOptions="Start" MaxLines="1" LineBreakMode="TailTruncation" Margin="8,0"
+                   VerticalOptions="Center"/>
+            <!--row 3-->
+            <HorizontalStackLayout HorizontalOptions="Fill" Spacing="5" Grid.Row="2" Grid.Column="0"
+                                   VerticalOptions="Center" Margin="8,0">
+                <Label Text="Invoice Total Amount :" VerticalOptions="Center" VerticalTextAlignment="Center"/>
+                <Label Text="{Binding DocTotal, StringFormat='{0:N2}'}" VerticalOptions="Center"
+                       VerticalTextAlignment="Center" FontAttributes="Bold"/>
+            </HorizontalStackLayout>
+        </Grid>
+        <BoxView HeightRequest="1" HorizontalOptions="Fill"/>
+    </VerticalStackLayout>
+
+</ViewCell>

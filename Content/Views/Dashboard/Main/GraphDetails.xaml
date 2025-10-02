@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="wwrc_maui.Content.Views.Dashboard.Main.GraphDetails"
+             xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
+             xmlns:helper="clr-namespace:wwrc_maui.Content.Helper"
+             xmlns:vm="clr-namespace:wwrc_maui.Content.Viewmodels.Dashboard"
+             xmlns:cell="clr-namespace:wwrc_maui.Content.Views.Dashboard.Main"
+             NavigationPage.HasNavigationBar="False">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <helper:InverseBoolConverter x:Key="InverseBool"/>
+            <helper:StringNullConverter x:Key="StringNull"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <AbsoluteLayout HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
+        <Grid HorizontalOptions="Fill" VerticalOptions="Fill" AbsoluteLayout.LayoutFlags="All"
+              AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*" ColumnDefinitions="*"
+              RowSpacing="0" x:DataType="vm:GraphDetailsVm">
+            <!--nav bar-->
+            <controls:CustomNavigationBar IconLeft="ic_back" IconRight="ic_search" x:Name="navbar"
+                                          Title="Sales Results"/>
+            <BoxView HorizontalOptions="Fill" Margin="0" Style="{StaticResource BoxviewNavbar}"
+                     VerticalOptions="End"/>
+            <!--content-->
+            <Grid HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1" ColumnDefinitions="*"
+                  RowDefinitions="Auto,Auto,Auto,*">
+                <!--row 1 : search bar-->
+                <controls:CustomEntry HorizontalOptions="Fill" Placeholder="search customer..." VerticalOptions="Start"
+                                      x:Name="entry_search" Margin="20,10" SetWidth="{Binding EntryWidth}"
+                                      IsVisible="{Binding IsSearchVisible}" SetText="SearchTxt"/>
+                <!--row 2 : filter bar-->
+                <Grid ColumnSpacing="10" HorizontalOptions="Fill" VerticalOptions="Start" Margin="10,8"
+                      RowDefinitions="Auto" Grid.Row="1" ColumnDefinitions="Auto,2,0.45*,2,0.55*,Auto">
+                    <!--country-->
+                    <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="0">
+                        <Label Text="Country" HorizontalOptions="Start" Style="{StaticResource AlertTitle}"
+                               FontSize="12"/>
+                        <Label Text="{Binding Country, Converter={StaticResource StringNull}}" HorizontalOptions="Start"
+                               MaxLines="1" LineBreakMode="TailTruncation" FontSize="12"/>
+                    </VerticalStackLayout>
+                    <BoxView WidthRequest="2" VerticalOptions="Fill" Grid.Column="1" Margin="0,5"
+                             BackgroundColor="{StaticResource Primary}"/>
+                    <!--subsidiary-->
+                    <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="0" Grid.Column="2">
+                        <Label Text="Subsidiary" HorizontalOptions="Start" Style="{StaticResource AlertTitle}"
+                               FontSize="12"/>
+                        <Label Text="{Binding Subsidiary, Converter={StaticResource StringNull}}" HorizontalOptions="Start"
+                               MaxLines="1" LineBreakMode="TailTruncation" FontSize="12"/>
+                    </VerticalStackLayout>
+                    <BoxView WidthRequest="2" VerticalOptions="Fill" Grid.Column="3" Margin="0,5"
+                             BackgroundColor="{StaticResource Primary}"/>
+                    <!--sales person-->
+                    <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="0" Grid.Column="4">
+                        <Label Text="Sales Person" HorizontalOptions="Start" Style="{StaticResource AlertTitle}"
+                               FontSize="12"/>
+                        <Label Text="{Binding SalesPerson, Converter={StaticResource StringNull}}" HorizontalOptions="Start"
+                               MaxLines="1" LineBreakMode="TailTruncation" Style="{StaticResource PopupPromptButton}"
+                               FontSize="12"/>
+                        <VerticalStackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnSales_Tapped" NumberOfTapsRequired="1"/>
+                        </VerticalStackLayout.GestureRecognizers>
+                    </VerticalStackLayout>
+                    <Image Source="{AppThemeBinding Light=ic_dropdown, Dark=ic_dropdown_light}" HeightRequest="20"
+                           Aspect="AspectFit" HorizontalOptions="End" VerticalOptions="Center" Grid.Column="5"/>
+                </Grid>
+                <!--row 3 : ytd mtd bar-->
+                <Border HorizontalOptions="Fill" VerticalOptions="Start" Grid.Row="2" StrokeShape="RoundRectangle 10"
+                        Padding="15,8" Margin="15,0" Style="{StaticResource BorderSecondary}">
+                    <Grid HorizontalOptions="Fill" ColumnSpacing="0" VerticalOptions="Center" RowDefinitions="Auto"
+                          ColumnDefinitions="*,Auto,*" Margin="0,0,0,5">
+                        <!--grid : YTD-->
+                        <Grid HorizontalOptions="Fill" RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto"
+                              ColumnSpacing="5" RowSpacing="0">
+                            <!--header-->
+                            <Label Text="YTD" HorizontalOptions="Start" Style="{StaticResource AlertTitle}"/>
+                            <Label Text="{Binding DashboardData.YTDP, StringFormat='{0}%'}" HorizontalOptions="End"
+                                   HorizontalTextAlignment="End" Grid.Column="1" Style="{StaticResource AlertTitle}"/>
+                            <!--details-->
+                            <Label Text="{Binding DashboardData.YTD}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource SecondaryDarkText}, Dark={StaticResource Secondary}}"
+                                   HorizontalTextAlignment="Center" Margin="0,5,0,0"/>
+                            <Label Text="{Binding DashboardData.YTDTarget}" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalOptions="Center"
+                                   HorizontalTextAlignment="Center" FontAttributes="Bold"/>
+                            <Border Padding="10,5" HorizontalOptions="Center" StrokeShape="RoundRectangle 5" BackgroundColor="Transparent"
+                                    Stroke="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource Gray300}}"
+                                    Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,5,0,0">
+                                <HorizontalStackLayout HorizontalOptions="Center" Spacing="5">
+                                    <Label Text="YTD GP" FontAttributes="Bold"/>
+                                    <Label Text="{Binding DashboardData.GPPYTD, StringFormat='{0}%'}" TextColor="{AppThemeBinding Light=
+                                        {StaticResource SecondaryDarkText}, Dark={StaticResource Secondary}}" FontAttributes="Bold"/>
+                                </HorizontalStackLayout>
+                            </Border>
+                        </Grid>
+                        <!--line separator-->
+                        <BoxView WidthRequest="2" VerticalOptions="Fill" Grid.Column="1" Margin="10,5"
+                                 BackgroundColor="{StaticResource Primary}"/>
+                        <!--grid : MTD-->
+                        <Grid HorizontalOptions="Fill" RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto"
+                              ColumnSpacing="5" RowSpacing="0" Grid.Column="2">
+                            <!--header-->
+                            <Label Text="MTD" HorizontalOptions="Start" Style="{StaticResource AlertTitle}"/>
+                            <Label Text="{Binding DashboardData.MTDP, StringFormat='{0}%'}" HorizontalOptions="End" HorizontalTextAlignment="End"
+                                   Grid.Column="1" Style="{StaticResource AlertTitle}"/>
+                            <!--details-->
+                            <Label Text="{Binding DashboardData.MTD}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource PrimaryDark}, Dark={StaticResource Primary}}"
+                                   HorizontalTextAlignment="Center" Margin="0,5,0,0"/>
+                            <Label Text="{Binding DashboardData.MTDTarget}" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalOptions="Center"
+                                   HorizontalTextAlignment="Center" FontAttributes="Bold"/>
+                            <Border Padding="10,5" HorizontalOptions="Center" StrokeShape="RoundRectangle 5" BackgroundColor="Transparent"
+                                    Stroke="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource Gray300}}"
+                                    Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,5,0,0">
+                                <HorizontalStackLayout HorizontalOptions="Center" Spacing="5">
+                                    <Label Text="MTD GP" FontAttributes="Bold"/>
+                                    <Label Text="{Binding DashboardData.GPPMTD, StringFormat='{0}%'}" TextColor="{AppThemeBinding Light=
+                                        {StaticResource PrimaryDark}, Dark={StaticResource Primary}}" FontAttributes="Bold"/>
+                                </HorizontalStackLayout>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </Border>
+                <!--row 4 : listview-->
+                <ListView HorizontalOptions="Fill" ItemsSource="{Binding SalesList}" SeparatorVisibility="None"
+                          HasUnevenRows="True" VerticalOptions="Fill" ItemTapped="ListView_ItemTapped" Grid.Row="3"
+                          Margin="0,15,0,5" IsVisible="{Binding NoData, Converter={StaticResource InverseBool}}"
+                          IsPullToRefreshEnabled="true" RefreshCommand="{Binding RefreshCommand}"
+                          IsRefreshing="{Binding IsRefreshing}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <cell:GraphDetailsCell/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <!--no data-->
+                <controls:CustomNoData Grid.Row="3" HorizontalOptions="Center" VerticalOptions="Center"
+                                       IsVisible="{Binding NoData}"/>
+            </Grid>
+        </Grid>
+        <!--loading overlay-->
+        <controls:CustomLoading AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                x:Name="UiLoad" IsVisible="{Binding IsBusy}" IsAnimate="{Binding IsBusy}"/>
+    </AbsoluteLayout>
+
+</ContentPage>

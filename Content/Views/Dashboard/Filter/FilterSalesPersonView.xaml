@@ -42,6 +42,9 @@
                                         <DataTrigger TargetType="Image" Binding="{Binding Checked}" Value="true">
                                             <Setter Property="Source" Value="ic_checked"/>
                                         </DataTrigger>
+                                        <DataTrigger TargetType="Image" Binding="{Binding Checked}" Value="false">
+                                            <Setter Property="Source" Value="null"/>
+                                        </DataTrigger>
                                     </Image.Triggers>
                                 </Image>
                             </Grid>

@@ -1,4 +1,4 @@
-﻿namespace wwrc_maui.Content.Views.Dashboard
+﻿namespace wwrc_maui.Content.Views.Dashboard.Main
 {
     public class DashBoardDataTemplate : DataTemplateSelector
     {

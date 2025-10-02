@@ -51,6 +51,18 @@ namespace wwrc_maui
 #endif
                 }
             });
+            TimePickerHandler.Mapper.AppendToMapping(nameof(BorderlessTimePicker), (handler, view) =>
+            {
+                if (view is BorderlessTimePicker)
+                {
+#if __ANDROID__
+                    handler.PlatformView.SetBackgroundColor(Android.Graphics.Color.Transparent);
+#elif __IOS__
+                    handler.PlatformView.BackgroundColor = UIKit.UIColor.Clear;
+                    //handler.PlatformView.BorderStyle = UIKit.UITextBorderStyle.None;
+#endif
+                }
+            });
             #endregion
 
             AppPage = CreateWindow(null);

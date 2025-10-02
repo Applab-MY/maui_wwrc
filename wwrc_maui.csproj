@@ -43,6 +43,14 @@
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android|AnyCPU'">
 	  <AndroidPackageFormat>apk</AndroidPackageFormat>
+	  <AndroidUseAapt2>True</AndroidUseAapt2>
+	  <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-android|AnyCPU'">
+	  <AndroidUseAapt2>True</AndroidUseAapt2>
+	  <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
+	  <AndroidPackageFormat>apk</AndroidPackageFormat>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -100,7 +108,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Content\Views\Dashboard\CurrencyExchangeDateList.xaml.cs">
+	  <Compile Update="Content\Views\Dashboard\Currency\CurrencyExchangeDateList.xaml.cs">
 	    <DependentUpon>CurrencyExchangeDateList.xaml</DependentUpon>
 	  </Compile>
 	  <Compile Update="Content\Views\Media\Gallery\GalleryPhotoTab.xaml.cs">
@@ -133,6 +141,12 @@
 	  <MauiXaml Update="Content\CustomControls\ShowAlert.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Dashboard\Main\GraphDetails.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Dashboard\Main\GraphDetailsCell.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Sales\StockAlert\StockAlertDetailsMoreCell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -148,25 +162,25 @@
 	  <MauiXaml Update="Content\Views\Auth\Walkthrough.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Content\Views\Dashboard\CarouselCell.xaml">
+	  <MauiXaml Update="Content\Views\Dashboard\Main\CarouselCell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Content\Views\Dashboard\CurrencyExchangeRate.xaml">
+	  <MauiXaml Update="Content\Views\Dashboard\Currency\CurrencyExchangeRate.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Content\Views\Dashboard\CurrencyExchangeRateCell.xaml">
+	  <MauiXaml Update="Content\Views\Dashboard\Currency\CurrencyExchangeRateCell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Content\Views\Dashboard\CurrencyExchangeDateList.xaml">
+	  <MauiXaml Update="Content\Views\Dashboard\Currency\CurrencyExchangeDateList.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Content\Views\Dashboard\DashboardFilter.xaml">
+	  <MauiXaml Update="Content\Views\Dashboard\Filter\DashboardFilter.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Content\Views\Dashboard\FilterSalesPersonView.xaml">
+	  <MauiXaml Update="Content\Views\Dashboard\Filter\FilterSalesPersonView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Content\Views\Dashboard\MainPage.xaml">
+	  <MauiXaml Update="Content\Views\Dashboard\Main\MainPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Dashboard\TabCell.xaml">
@@ -314,6 +328,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Sales\StockAlert\StockAlertMainPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Staff\CustomerVisit\CreateCustomerVisit.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Staff\CustomerVisit\CustomerVisitDetailsPage.xaml">

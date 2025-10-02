@@ -3,6 +3,7 @@ using wwrc_maui.Content.Model;
 using wwrc_maui.Content.Viewmodels.Common;
 using wwrc_maui.Content.Views.Auth;
 using wwrc_maui.Content.Views.Dashboard;
+using wwrc_maui.Content.Views.Dashboard.Main;
 using static wwrc_maui.Content.Model.Auth.LoginModel;
 using static wwrc_maui.Content.Model.CurrencyModel;
 using static wwrc_maui.Content.Model.DashboardModel;

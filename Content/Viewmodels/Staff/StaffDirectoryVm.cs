@@ -13,6 +13,9 @@ namespace wwrc_maui.Content.Viewmodels.Staff
         #region bindable properties
         #region beans
         bool _isSearch = false;
+        bool _isSelectable = false;
+        bool _showClear = false;
+        int _selectedCount = 0;
         ObservableCollection<StaffMainModel> _stafflist = [];
         List<ObservableGroupCollection<string, StaffMainModel>> _groupstaffs = [];
         ObservableCollection<CountryMainModel> _countries = [];
@@ -25,6 +28,21 @@ namespace wwrc_maui.Content.Viewmodels.Staff
         {
             get { return _isSearch; }
             set { SetProperty(ref _isSearch, value); }
+        }
+        public bool IsSelectable
+        {
+            get { return _isSelectable; }
+            set { SetProperty(ref _isSelectable, value); }
+        }
+        public bool ShowClearSelectable
+        {
+            get { return _showClear; }
+            set { SetProperty(ref _showClear, value); }
+        }
+        public int SelectableCount
+        {
+            get { return _selectedCount; }
+            set { SetProperty(ref _selectedCount, value); }
         }
         public ObservableCollection<StaffMainModel> StaffList
         {
@@ -77,6 +95,7 @@ namespace wwrc_maui.Content.Viewmodels.Staff
         public List<string> tabList = [];
         public IList<StaffMainModel> allStaffCache = [];
         public ObservableCollection<StaffMainModel> lastState = []; //for pagination
+        public List<string> selectedStaff = [];
         public List<CountryMainModel> allCountryCache = [];
         public string selectedTab = "";
         public bool isOfficeLoad = false;
@@ -100,6 +119,7 @@ namespace wwrc_maui.Content.Viewmodels.Staff
             else if (selectedTab.Equals("Others")) GetCountryList();
         }
 
+        #region get from API
         public async void GetOfficeStaffList()
         {
             isOfficeLoad = false;
@@ -269,6 +289,54 @@ namespace wwrc_maui.Content.Viewmodels.Staff
             else await App.DisplayAlert("No Internet", "Please check your internet connection.", null, "Okay");
             IsBusy = false; IsRefreshing = false;
         }
+        #endregion
+
+        #region select staff
+        public void CheckForSelected()
+        {
+            var query = "Select * From ChooseStaff";
+            var _list = AppDatabase.Instance.SqlConnection.Query<ChooseStaff>(query).ToList();
+            SelectableCount = _list.Count;
+            ShowClearSelectable = _list.Count > 0;
+        }
+
+        public async Task<bool> SaveSelectedStaffToDb()
+        {
+            if (selectedStaff.Count > 0 && allStaffCache.Count > 0)
+            {
+                try
+                {
+                    var _list = new List<ChooseStaff>();
+                    foreach (var item in selectedStaff)
+                    {
+                        var found = allStaffCache.Where(x => x.Id.Equals(item)).FirstOrDefault();
+                        if (found != null)
+                        {
+                            var model = new ChooseStaff { Id = item, Name = found.Name };
+                            _list.Add(model);
+                        }
+                    }
+
+                    foreach (var item in _list)
+                    {
+                        var query = "Select * From ChooseStaff Where Id='" + item.Id + "'";
+                        var _res = AppDatabase.Instance.SqlConnection.Query<ChooseStaff>(query).FirstOrDefault();
+                        if (_res == null) AppDatabase.Instance.SqlConnection.Insert(item);
+                    }
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    var error = ex.Message;
+                    await App.DisplayAlert("Exception", error, null, "Okay");
+                    return false;
+                }
+            }
+            else return false;
+        }
+
+        public void ClearSelectedStaffDb() { AppDatabase.Instance.SqlConnection.DeleteAll<ChooseStaff>(); }
+        #endregion
 
         #region search
         public void DoSearch()

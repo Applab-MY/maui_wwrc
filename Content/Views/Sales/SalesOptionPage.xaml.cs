@@ -10,13 +10,17 @@ namespace wwrc_maui.Content.Views.Sales;
 
 public partial class SalesOptionPage : ContentView
 {
-    public int StockAlertCount { get; set; } = 0;
+    public int StockAlertCount = 0;
     List<OptionPageModel> Items = [];
 
     public SalesOptionPage()
     {
         InitializeComponent();
         BindingContext = this;
+    }
+
+    public void Initialize()
+    {
         var _login = AppDatabase.Instance.SqlConnection.Query<LoginMainModel>
                 ("Select * from LoginMainModel").FirstOrDefault();
         if (_login != null && _login.UserData != null)

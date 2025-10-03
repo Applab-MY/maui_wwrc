@@ -10,16 +10,20 @@ namespace wwrc_maui.Content.Views.Media;
 
 public partial class MediaOptionPage : ContentView
 {
-    public int NewsCount { get; set; } = 0;
-    public int MediaCount { get; set; } = 0;
-    public int EmpHandbookCount { get; set; } = 0;
-    public int ProductCount { get; set; } = 0;
+    public int NewsCount = 0;
+    public int MediaCount = 0;
+    public int EmpHandbookCount = 0;
+    public int ProductCount = 0;
     List<OptionPageModel> Items = [];
 
     public MediaOptionPage()
 	{
 		InitializeComponent();
         BindingContext = this;
+    }
+
+    public void Initialize()
+    {
         var _login = AppDatabase.Instance.SqlConnection.Query<LoginMainModel>
                 ("Select * from LoginMainModel").FirstOrDefault();
         if (_login != null && _login.UserData != null)

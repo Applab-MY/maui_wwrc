@@ -129,9 +129,10 @@ public partial class MainPage : ContentPage
         {
             navbar.Title = "Sales"; navbar.BarImage = "";
             navbar.IconRight = ""; navbar.IconLeft = "";
-            //var view = new SalesOptionPage
-            //{ StockAlertCount = Convert.ToInt32(viewmodel.DashboardData?.StockAlertCount) };
-            var view = new SalesOptionPage { StockAlertCount = 5 }; //for demo
+            var view = new SalesOptionPage
+            { StockAlertCount = Convert.ToInt32(viewmodel.DashboardData?.StockAlertCount) };
+            //var view = new SalesOptionPage { StockAlertCount = 5 }; //for demo
+            view.Initialize();
             grid_tabcontent.Children.Add(view);
             grid_tabcontent.IsVisible = true;
         }
@@ -139,15 +140,16 @@ public partial class MainPage : ContentPage
         {
             navbar.Title = "Media"; navbar.BarImage = "";
             navbar.IconRight = ""; navbar.IconLeft = "";
-            //var view = new MediaOptionPage
-            //{
-            //    NewsCount = Convert.ToInt32(viewmodel.DashboardData?.NewsCount),
-            //    MediaCount = Convert.ToInt32(viewmodel.DashboardData?.TotalMediaCount),
-            //    EmpHandbookCount = Convert.ToInt32(viewmodel.DashboardData?.HandbookCount),
-            //    ProductCount = Convert.ToInt32(viewmodel.DashboardData?.CatalogCount)
-            //};
             var view = new MediaOptionPage
-            { NewsCount = 5, MediaCount = 2, EmpHandbookCount = 3, ProductCount = 6 }; //for demo
+            {
+                NewsCount = Convert.ToInt32(viewmodel.DashboardData?.NewsCount),
+                MediaCount = Convert.ToInt32(viewmodel.DashboardData?.TotalMediaCount),
+                EmpHandbookCount = Convert.ToInt32(viewmodel.DashboardData?.HandbookCount),
+                ProductCount = Convert.ToInt32(viewmodel.DashboardData?.CatalogCount)
+            };
+            //var view = new MediaOptionPage
+            //{ NewsCount = 5, MediaCount = 2, EmpHandbookCount = 3, ProductCount = 6 }; //for demo
+            view.Initialize();
             grid_tabcontent.Children.Add(view);
             grid_tabcontent.IsVisible = true;
         }

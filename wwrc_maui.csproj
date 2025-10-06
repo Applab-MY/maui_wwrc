@@ -42,15 +42,16 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android|AnyCPU'">
-	  <AndroidPackageFormat>apk</AndroidPackageFormat>
+	  <AndroidPackageFormat>aab</AndroidPackageFormat>
 	  <AndroidUseAapt2>True</AndroidUseAapt2>
 	  <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
+	  <AndroidLinkTool>r8</AndroidLinkTool>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-android|AnyCPU'">
 	  <AndroidUseAapt2>True</AndroidUseAapt2>
 	  <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
-	  <AndroidPackageFormat>apk</AndroidPackageFormat>
+	  <AndroidPackageFormat>aab</AndroidPackageFormat>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -65,7 +66,11 @@
 		<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
 
 		<!-- Custom Fonts -->
-		<MauiFont Include="Resources\Fonts\*" />
+		<!-- <MauiFont Include="Resources\Fonts\*" /> -->
+		<MauiFont Include="Resources/Fonts/OpenSans-Regular.ttf" Alias="OpenSansRegular" />
+		<MauiFont Include="Resources/Fonts/OpenSans-Semibold.ttf" Alias="OpenSansSemibold" />
+		<MauiFont Include="Resources/Fonts/Quicksand-Light.ttf" Alias="QuickSandLight" />
+		<MauiFont Include="Resources/Fonts/Ubuntu-Bold.ttf" Alias="UbuntuBold" />
 
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
@@ -147,6 +152,12 @@
 	  <MauiXaml Update="Content\Views\Dashboard\Main\GraphDetailsCell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Media\MediaOptionCell.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Sales\SalesOptionCell.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Sales\StockAlert\StockAlertDetailsMoreCell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -175,9 +186,6 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Dashboard\Filter\DashboardFilter.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Content\Views\Dashboard\Filter\FilterSalesPersonView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Dashboard\Main\MainPage.xaml">

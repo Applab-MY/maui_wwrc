@@ -39,11 +39,12 @@
                     <!--item group-->
                     <Label Text="{Binding ItemGroup, Converter={StaticResource StringNull}}" HorizontalOptions="Start"
                            HorizontalTextAlignment="Start" Style="{StaticResource AlertTitle}" FontSize="14"/>
-                    <!--stock details-->
+                    <!--table : stock details-->
                     <Border HorizontalOptions="Fill" Padding="0" StrokeShape="RoundRectangle 10" Margin="0,15,0,0"
                             IsVisible="{Binding NoData, Converter={StaticResource InverseBool}}"
                             Stroke="LightGray" VerticalOptions="Start">
                         <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" VerticalOptions="Fill">
+                            <!--title-->
                             <Grid HorizontalOptions="Fill" ColumnDefinitions="0.2*,0.2*,0.2*,0.2*,0.2*" RowDefinitions="Auto"
                                   ColumnSpacing="8" BackgroundColor="LightGray" Padding="8">
                                 <Label Text="Whouse" FontAttributes="Bold" HorizontalOptions="Start" TextColor="Black"
@@ -62,14 +63,34 @@
                                        HorizontalTextAlignment="End" VerticalOptions="Center" FontSize="12"
                                        VerticalTextAlignment="Center" Grid.Column="4"/>
                             </Grid>
+                            <!--list-->
                             <ListView HorizontalOptions="Fill" ItemsSource="{Binding ListDetails}" SeparatorVisibility="None"
-                                      HasUnevenRows="True" VerticalOptions="Fill" ItemTapped="ListView_ItemTapped">
+                                      HasUnevenRows="True" VerticalOptions="Start" ItemTapped="ListView_ItemTapped">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <cell:StockDetailsCell/>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>
+                            <!--footer : total-->
+                            <Grid HorizontalOptions="Fill" ColumnDefinitions="0.2*,0.2*,0.2*,0.2*,0.2*" RowDefinitions="Auto"
+                                  VerticalOptions="Start" ColumnSpacing="8" Padding="8">
+                                <Label Text="Total" FontAttributes="Bold" HorizontalOptions="Start" TextColor="Black"
+                                       HorizontalTextAlignment="Start" VerticalOptions="Center" FontSize="12"
+                                       VerticalTextAlignment="Center"/>
+                                <Label Text="{Binding TotalOnhand, Converter={StaticResource StringNull}}" FontAttributes="Bold"
+                                       HorizontalOptions="Center" TextColor="Black" HorizontalTextAlignment="Start"
+                                       VerticalOptions="Center" FontSize="12" VerticalTextAlignment="Center" Grid.Column="1"/>
+                                <Label Text="{Binding TotalCommitted, Converter={StaticResource StringNull}}}" FontAttributes="Bold"
+                                       HorizontalOptions="Center" TextColor="Black" HorizontalTextAlignment="Center"
+                                       VerticalOptions="Center" FontSize="12" VerticalTextAlignment="Center" Grid.Column="2"/>
+                                <Label Text="{Binding TotalOrder, Converter={StaticResource StringNull}}}" FontAttributes="Bold"
+                                       HorizontalOptions="Center" TextColor="Black" HorizontalTextAlignment="Center"
+                                       VerticalOptions="Center" FontSize="12" VerticalTextAlignment="Center" Grid.Column="3"/>
+                                <Label Text="{Binding TotalAvailable, Converter={StaticResource StringNull}}}" FontAttributes="Bold"
+                                       HorizontalOptions="End" TextColor="Black" HorizontalTextAlignment="End"
+                                       VerticalOptions="Center" FontSize="12" VerticalTextAlignment="Center" Grid.Column="4"/>
+                            </Grid>
                         </VerticalStackLayout>
                     </Border>
                     <!--no data-->

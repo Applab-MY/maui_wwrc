@@ -13,6 +13,10 @@ namespace wwrc_maui.Content.Viewmodels.Sales.StockAlert
         string _whsname = "";
         string _manufacture = "";
         string _itemGroup = "";
+        string _totalOnhand = "";
+        string _totalCommitted = "";
+        string _totalOrder = "";
+        string _totalAvailable = "";
         string _minLevel = "";
         string _lastPrhsPrice = "";
         string _lastPrhsCurrency = "";
@@ -51,6 +55,26 @@ namespace wwrc_maui.Content.Viewmodels.Sales.StockAlert
         {
             get { return _itemGroup; }
             set { SetProperty(ref _itemGroup, value); }
+        }
+        public string TotalOnhand
+        {
+            get { return _totalOnhand; }
+            set { SetProperty(ref _totalOnhand, value); }
+        }
+        public string TotalCommitted
+        {
+            get { return _totalCommitted; }
+            set { SetProperty(ref _totalCommitted, value); }
+        }
+        public string TotalOrder
+        {
+            get { return _totalOrder; }
+            set { SetProperty(ref _totalOrder, value); }
+        }
+        public string TotalAvailable
+        {
+            get { return _totalAvailable; }
+            set { SetProperty(ref _totalAvailable, value); }
         }
         public string MinLevel
         {
@@ -142,12 +166,14 @@ namespace wwrc_maui.Content.Viewmodels.Sales.StockAlert
                     ItemName = data[0].ItemName;
                     Manufacture = data[0].Manufacturer;
                     ItemGroup = data[0].ItmsGrpName;
-
-                    //MinLevel = data[0].OnHand.ToString();
-                    //LastPrhsPrice = data[0].IsCommited.ToString();
-                    //LastPrhsCurrency = data[0].OnOrder.ToString();
-                    //LastPrhsDate = data[0].Available.ToString();
-
+                    TotalOnhand = data[0].OnHand.ToString();
+                    TotalCommitted = data[0].IsCommited.ToString();
+                    TotalOrder = data[0].OnOrder.ToString();
+                    TotalAvailable = data[0].Available.ToString();
+                    MinLevel = data[0].OnHand.ToString();
+                    LastPrhsPrice = data[0].IsCommited.ToString();
+                    LastPrhsCurrency = data[0].OnOrder.ToString();
+                    LastPrhsDate = data[0].Available.ToString();
                     MinLevel = data[0].MinLevel.ToString();
                     LastPrhsPrice = data[0].LastPurchPrice;
                     LastPrhsCurrency = data[0].LastPurchCurr;

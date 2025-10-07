@@ -116,10 +116,10 @@
 	  <Compile Update="Content\Views\Dashboard\Currency\CurrencyExchangeDateList.xaml.cs">
 	    <DependentUpon>CurrencyExchangeDateList.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="Content\Views\Media\Gallery\GalleryPhotoTab.xaml.cs">
+	  <Compile Update="Content\Views\Media\Gallery\Photos\GalleryPhotoTab.xaml.cs">
 	    <DependentUpon>GalleryPhotoTab.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="Content\Views\Media\Gallery\GalleryVideoTab.xaml.cs">
+	  <Compile Update="Content\Views\Media\Gallery\Videos\GalleryVideoTab.xaml.cs">
 	    <DependentUpon>GalleryVideoTab.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
@@ -150,6 +150,12 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Dashboard\Main\GraphDetailsCell.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Media\Gallery\Photos\InfoCell.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Media\Gallery\Photos\PhotoDetailsCell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Media\MediaOptionCell.xaml">
@@ -206,22 +212,22 @@
 	  <MauiXaml Update="Content\Views\Media\Gallery\GalleryMainPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Content\Views\Media\Gallery\PhotoDetailsPage.xaml">
+	  <MauiXaml Update="Content\Views\Media\Gallery\Photos\PhotoDetailsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Content\Views\Media\Gallery\PhotoListPage.xaml">
+	  <MauiXaml Update="Content\Views\Media\Gallery\Photos\PhotoListPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Content\Views\Media\Gallery\GalleryPhotoTab.xaml">
+	  <MauiXaml Update="Content\Views\Media\Gallery\Photos\GalleryPhotoTab.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Media\Gallery\TabCell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Content\Views\Media\Gallery\GalleryVideoTab.xaml">
+	  <MauiXaml Update="Content\Views\Media\Gallery\Videos\GalleryVideoTab.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Content\Views\Media\Gallery\VideoDetailsPage.xaml">
+	  <MauiXaml Update="Content\Views\Media\Gallery\Videos\VideoDetailsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Media\MediaOptionPage.xaml">

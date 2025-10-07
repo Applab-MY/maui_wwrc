@@ -9,7 +9,7 @@ public partial class VideoDetailsPage : ContentPage
     public VideoDetailsPage(string id)
     {
         InitializeComponent();
-        viewmodel.albumId = id;
+        viewmodel.mediaId = id;
         navbar.OnLeftIconTapped += async () => { await Navigation.PopAsync(); };
         viewmodel.OnFinishLoad += viewmodel.SetVideoReadStatus;
         BindingContext = viewmodel;

@@ -12,7 +12,11 @@ public partial class GalleryMainPage : ContentPage
     {
         InitializeComponent();
         navbar.OnLeftIconTapped += async () => { await Navigation.PopAsync(); };
+        viewmodel.isFinishLoad += (data) => { SetTabContent(1); };
         BindingContext = viewmodel;
+        tab_photos.SetParentBinding(viewmodel);
+        tab_videos.SetParentBinding(viewmodel);
+        Initialize();
 
         WeakReferenceMessenger.Default.Register<KeyValueNotify>(this, (receiver, message) =>
         {
@@ -21,9 +25,9 @@ public partial class GalleryMainPage : ContentPage
         });
     }
 
-    protected override void OnAppearing()
+    public async void Initialize()
     {
-        base.OnAppearing();
+        await Task.Delay(300);
         tabbar.Children.Clear();
         tabbar.ColumnDefinitions.Clear();
         viewmodel.GetAllAlbums();
@@ -40,14 +44,22 @@ public partial class GalleryMainPage : ContentPage
                 tabbar.Add(_view, index-1, 0);
                 index++;
             }
-            SetTabContent(1);
         }
     }
 
     void SetTabContent(int tabId)
     {
-        view_content.Content = null;
-        if (tabId == 1) view_content.Content = new GalleryPhotoTab(viewmodel);
-        else if (tabId == 2) view_content.Content = new GalleryVideoTab(viewmodel);
+        stack_tab1.IsVisible = false;
+        stack_tab2.IsVisible = false;
+        if (tabId == 1)
+        {
+            stack_tab1.IsVisible = true;
+            tab_photos.BuildView();
+        }
+        else if (tabId == 2)
+        {
+            stack_tab2.IsVisible = true;
+            tab_videos.BuildView();
+        }
     }
 }

@@ -3,18 +3,15 @@ using wwrc_maui.Content.Viewmodels.Media.Gallery;
 
 namespace wwrc_maui.Content.Views.Media.Gallery;
 
-public partial class GalleryVideoTab : StackLayout
+public partial class GalleryVideoTab : ScrollView
 {
     GalleryVm? viewmodel = null;
 
-    public GalleryVideoTab(GalleryVm viewmodel)
-    {
-        InitializeComponent();
-        this.viewmodel = viewmodel;
-        BuildView();
-    }
+    public GalleryVideoTab() { InitializeComponent(); }
 
-    void BuildView()
+    public void SetParentBinding(GalleryVm? viewmodel) { this.viewmodel = viewmodel; }
+
+    public void BuildView()
     {
         grid_content.Children.Clear();
         grid_content.RowDefinitions.Clear();

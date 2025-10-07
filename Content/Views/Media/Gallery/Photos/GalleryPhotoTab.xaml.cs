@@ -5,18 +5,15 @@ using static wwrc_maui.Content.Model.MediaModel;
 
 namespace wwrc_maui.Content.Views.Media.Gallery;
 
-public partial class GalleryPhotoTab : ContentView
+public partial class GalleryPhotoTab : ScrollView
 {
     GalleryVm? viewmodel = null;
 
-    public GalleryPhotoTab(GalleryVm viewmodel)
-    {
-        InitializeComponent();
-        this.viewmodel = viewmodel;
-        BuildView();
-    }
+    public GalleryPhotoTab() { InitializeComponent(); }
 
-    void BuildView()
+    public void SetParentBinding(GalleryVm? viewmodel) { this.viewmodel = viewmodel; }
+
+    public void BuildView()
     {
         grid_content.Children.Clear();
         grid_content.RowDefinitions.Clear();
@@ -27,19 +24,20 @@ public partial class GalleryPhotoTab : ContentView
             viewmodel.NoData = false;
             var _style = Application.Current?.Resources["BorderSecondary"] as Style;
             var _styleTxt = Application.Current?.Resources["PopupPromptButton"] as Style;
-            int col = 0; int row = 0;
+            var _theme = Application.Current?.RequestedTheme;
+            int col = 0; int row = 0; string _cover = "";
             grid_content.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             foreach (var item in viewmodel.AllAlbums)
             {
-                string _cover = "";
                 string _query = "SELECT * FROM ImageInfo WHERE PhotoGalleryId = '"
                         + item.Id.ToUpper() + "'";
                 var _photo = AppDatabase.Instance.SqlConnection.Query<ImageInfo>(_query).FirstOrDefault();
                 if (_photo != null)
                 {
                     _cover = string.IsNullOrEmpty(_photo.Image) || _photo.Image.Equals("false")
-                        ? "ic_upload_photo" : _photo.Image;
+                        ? (_theme == AppTheme.Light ? "ic_nophoto_light" : "ic_nophoto_dark") : _photo.Image;
                 }
+                else _cover = _theme == AppTheme.Light ? "ic_nophoto_light" : "ic_nophoto_dark";
 
                 var container = new Border
                 {

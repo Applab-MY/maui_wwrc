@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="wwrc_maui.Content.Views.Media.Gallery.Photos.PhotoDetailsCell">
+
+    <Grid HorizontalOptions="Fill" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*"
+          RowSpacing="10" ColumnSpacing="10" VerticalOptions="Fill">
+        <!--#region header-->
+        <Image WidthRequest="50" HeightRequest="50" Aspect="AspectFill" HorizontalOptions="Start"
+               VerticalOptions="Center" Grid.RowSpan="2" x:Name="img_file"/>
+        <!--row 1 : img name-->
+        <Label Text="-" FontAttributes="Bold" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+               VerticalOptions="Start" LineBreakMode="WordWrap" Grid.Row="0" Grid.Column="1"
+               x:Name="lbl_filename"/>
+        <!--row 2 : img size-->
+        <Label Text="-" FontAttributes="Bold" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+               VerticalOptions="Start" LineBreakMode="TailTruncation" Grid.Row="1" Grid.Column="1"
+               x:Name="lbl_filesize"/>
+        <!--#endregion-->
+        <!--#region details-->
+        <!--row 3 : file type-->
+        <Label Text="File Type" FontAttributes="Bold" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+               VerticalOptions="Start" LineBreakMode="TailTruncation" Grid.Row="2" Grid.Column="0"/>
+        <Label x:Name="lbl_type" Text="-" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+               VerticalOptions="Start" VerticalTextAlignment="Start" LineBreakMode="WordWrap"
+               Grid.Row="2" Grid.Column="1"/>
+        <!--row 4 : created on-->
+        <Label Text="Created On" FontAttributes="Bold" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+               VerticalOptions="Start" LineBreakMode="TailTruncation" Grid.Row="3" Grid.Column="0"/>
+        <Label x:Name="lbl_createOn" Text="-" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+               VerticalOptions="Start" VerticalTextAlignment="Start" LineBreakMode="WordWrap"
+               Grid.Row="3" Grid.Column="1"/>
+        <!--row 5 : created by-->
+        <Label Text="Created By" FontAttributes="Bold" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+               VerticalOptions="Start" LineBreakMode="TailTruncation" Grid.Row="4" Grid.Column="0"/>
+        <Label x:Name="lbl_createBy" Text="-" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+               VerticalOptions="Start" VerticalTextAlignment="Start" LineBreakMode="WordWrap"
+               Grid.Row="4" Grid.Column="1"/>
+        <!--#endregion-->
+        <!--row 6 : button-->
+        <Button Text="DOWNLOAD" VerticalOptions="Center" Margin="0,5,0,0" Clicked="Button_Clicked"
+                Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"/>
+    </Grid>
+
+</ContentView>

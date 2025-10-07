@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="wwrc_maui.Content.Views.Media.Gallery.PhotoDetailsPage"
+             xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
+             xmlns:helper="clr-namespace:wwrc_maui.Content.Helper"
+             xmlns:vm="clr-namespace:wwrc_maui.Content.Viewmodels.Media"
+             NavigationPage.HasNavigationBar="False">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <helper:InverseBoolConverter x:Key="InverseBool"/>
+            <helper:StringNullConverter x:Key="StringNullConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <AbsoluteLayout HorizontalOptions="Fill" VerticalOptions="Fill" x:DataType="vm:GalleryDetailsVm"
+                    BackgroundColor="Transparent">
+        <Grid HorizontalOptions="Fill" VerticalOptions="Fill" AbsoluteLayout.LayoutFlags="All"
+              AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*" ColumnDefinitions="*"
+              RowSpacing="0" BackgroundColor="Black">
+            <!--nav bar-->
+            <controls:CustomNavigationBar IconLeft="ic_back_light" x:Name="navbar" Title="Photo Details"
+                                          BarBackgroundColorHex="#000000" TitleTextColor="#ffffff"/>
+            <BoxView HorizontalOptions="Fill" Margin="0" Style="{StaticResource BoxviewNavbar}"
+                     VerticalOptions="End"/>
+            <!--content-->
+            <Grid HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1" ColumnDefinitions="*"
+                  RowDefinitions="*,Auto" RowSpacing="0">
+                <!--row 1 : photo-->
+                <Image Source="{Binding ImageUrl}" HorizontalOptions="Fill" VerticalOptions="Fill"/>
+                <!--row 2 : buttons-->
+                <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="End" Grid.Row="1">
+                    <!--btn : download-->
+                    <StackLayout Padding="15,10" HorizontalOptions="Center" VerticalOptions="End">
+                        <Image Source="ic_elipse_download_2" HeightRequest="40" Aspect="AspectFit"/>
+                        <StackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnDownload_Tapped" NumberOfTapsRequired="1"/>
+                        </StackLayout.GestureRecognizers>
+                    </StackLayout>
+                    <!--btn : info-->
+                    <StackLayout Padding="15,10" HorizontalOptions="Center" VerticalOptions="End">
+                        <Image Source="ic_elipse_info_2" HeightRequest="40" Aspect="AspectFit"/>
+                        <StackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnInfo_Tapped" NumberOfTapsRequired="1"/>
+                        </StackLayout.GestureRecognizers>
+                    </StackLayout>
+                </HorizontalStackLayout>
+            </Grid>
+        </Grid>
+        <!--loading overlay-->
+        <controls:CustomLoading AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                x:Name="UiLoad" IsVisible="{Binding IsBusy}" IsAnimate="{Binding IsBusy}"/>
+    </AbsoluteLayout>
+    
+</ContentPage>

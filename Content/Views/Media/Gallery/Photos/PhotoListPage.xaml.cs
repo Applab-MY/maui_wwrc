@@ -1,29 +1,35 @@
 using Microsoft.Maui.Controls.Shapes;
 using wwrc_maui.Content.Viewmodels.Media;
+using wwrc_maui.Content.Views.Media.Gallery.Photos;
 
 namespace wwrc_maui.Content.Views.Media.Gallery;
 
 public partial class PhotoListPage : ContentPage
 {
     GalleryDetailsVm viewmodel = new();
+    InfoCell infoCell = new();
 
     public PhotoListPage(string id)
     {
         InitializeComponent();
-        viewmodel.albumId = id;
+        viewmodel.mediaId = id;
         navbar.OnLeftIconTapped += async () => { await Navigation.PopAsync(); };
+        navbar.OnRightIconTapped += async () => { await App.DisplayAlert("Album Details", null, infoCell, "Close"); };
         viewmodel.OnFinishLoad += BuildView;
         BindingContext = viewmodel;
+        Initialize();
     }
 
-    protected override void OnAppearing()
+    async void Initialize()
     {
-        base.OnAppearing();
+        await Task.Delay(300);
         viewmodel.GetAlbumById();
     }
 
     void BuildView()
     {
+        infoCell.Album = viewmodel.Album;
+        infoCell.Initialize();
         grid_content.Children.Clear();
         grid_content.RowDefinitions.Clear();
         if (viewmodel != null && viewmodel.AllPhotos.Count > 0)
@@ -66,7 +72,7 @@ public partial class PhotoListPage : ContentPage
                 tap.NumberOfTapsRequired = 1;
                 container.GestureRecognizers.Add(tap);
 
-                if (col < 2)
+                if (col < 4)
                 { grid_content.Add(container, col, row); col++; }
                 else
                 {
@@ -75,12 +81,11 @@ public partial class PhotoListPage : ContentPage
                     grid_content.Add(container, col, row);
                     col++;
                 }
-                
             }
         }
     }
 
-    private async void OnCell_Tapped(object? sender, EventArgs e)
+    async void OnCell_Tapped(object? sender, EventArgs e)
     {
         if (sender is not Border view) return;
         await view.FadeTo(0.3, 200);
@@ -88,10 +93,10 @@ public partial class PhotoListPage : ContentPage
         var lblId = "";
         if (view.Content != null)
         {
-            var _grid = (Grid)view.Content;
-            var _id = (Label)_grid.Children[0];
+            var _stack = (VerticalStackLayout)view.Content;
+            var _id = (Label)_stack.Children[0];
             lblId = _id.Text;
-            await Navigation.PushAsync(new PhotoDetailsPage());
+            await Navigation.PushAsync(new PhotoDetailsPage(lblId.Substring(5)));
         }
     }
 }

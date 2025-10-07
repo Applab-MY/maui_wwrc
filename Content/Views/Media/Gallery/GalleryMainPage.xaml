@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="wwrc_maui.Content.Views.Media.Gallery.GalleryMainPage"
              xmlns:controls="clr-namespace:wwrc_maui.Content.CustomControls"
+             xmlns:tabs="clr-namespace:wwrc_maui.Content.Views.Media.Gallery"
              xmlns:vm="clr-namespace:wwrc_maui.Content.Viewmodels.Media.Gallery"
              xmlns:helper="clr-namespace:wwrc_maui.Content.Helper"
              NavigationPage.HasNavigationBar="False">
@@ -15,7 +16,7 @@
     <AbsoluteLayout HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
         <Grid HorizontalOptions="Fill" VerticalOptions="Fill" AbsoluteLayout.LayoutFlags="All"
               AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*" ColumnDefinitions="*"
-              RowSpacing="0" x:DataType="vm:GalleryVm" >
+              RowSpacing="0" x:DataType="vm:GalleryVm">
             <!--nav bar-->
             <controls:CustomNavigationBar IconLeft="ic_back" x:Name="navbar" Title="Media Gallery"/>
             <BoxView HorizontalOptions="Fill" Margin="0" Style="{StaticResource BoxviewNavbar}"
@@ -27,9 +28,16 @@
                 <Grid x:Name="tabbar" HorizontalOptions="Fill" ColumnSpacing="0" RowDefinitions="Auto"
                       Margin="15,0"/>
                 <!--row 2 : tab content-->
-                <ContentView x:Name="view_content" HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1" 
-                             IsVisible="{Binding NoData, Converter={StaticResource InverseBool}}"
-                             Margin="15,10"/>
+                <StackLayout x:Name="stack_tab1" HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1">
+                    <tabs:GalleryPhotoTab x:Name="tab_photos" HorizontalOptions="Fill" Margin="15,10"
+                            IsVisible="{Binding NoData, Converter={StaticResource InverseBool}}"
+                            VerticalOptions="Fill"/>
+                </StackLayout>
+                <StackLayout x:Name="stack_tab2" HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1">
+                    <tabs:GalleryVideoTab x:Name="tab_videos" HorizontalOptions="Fill" Margin="15,10"
+                            IsVisible="{Binding NoData, Converter={StaticResource InverseBool}}"
+                            VerticalOptions="Fill"/>
+                </StackLayout>
                 <!--no data-->
                 <controls:CustomNoData Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center"
                                        IsVisible="{Binding NoData}"/>

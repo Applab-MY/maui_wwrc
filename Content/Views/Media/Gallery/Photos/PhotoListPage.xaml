@@ -18,14 +18,15 @@
               AbsoluteLayout.LayoutBounds="0,0,1,1" RowDefinitions="Auto,*" ColumnDefinitions="*"
               RowSpacing="0" x:DataType="vm:GalleryDetailsVm">
             <!--nav bar-->
-            <controls:CustomNavigationBar IconLeft="ic_back" x:Name="navbar" Title="{Binding PageTitle}"/>
+            <controls:CustomNavigationBar IconLeft="ic_back" x:Name="navbar" Title="{Binding Album.Title}"
+                                          IconRight="{AppThemeBinding Dark=ic_elipse_info, Light=ic_info}"/>
             <BoxView HorizontalOptions="Fill" Margin="0" Style="{StaticResource BoxviewNavbar}"
                      VerticalOptions="End"/>
             <!--content-->
             <RefreshView HorizontalOptions="Fill" VerticalOptions="Fill" IsRefreshing="{Binding IsRefreshing}"
                          Command="{Binding RefreshCommand}" Grid.Row="1">
                 <ScrollView HorizontalOptions="Fill" VerticalOptions="Fill">
-                    <Grid HorizontalOptions="Fill" VerticalOptions="Fill"  ColumnDefinitions="*"
+                    <Grid HorizontalOptions="Fill" VerticalOptions="Fill" ColumnDefinitions="*"
                           RowDefinitions="*" RowSpacing="0">
                         <!--row 1 : photo list-->
                         <Grid x:Name="grid_content" HorizontalOptions="Fill" ColumnDefinitions="*,*,*,*"

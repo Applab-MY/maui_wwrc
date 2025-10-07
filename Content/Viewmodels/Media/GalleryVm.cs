@@ -18,17 +18,29 @@ namespace wwrc_maui.Content.Viewmodels.Media.Gallery
         public List<DB_Album> AllAlbums
         {
             get { return _albums; }
-            set { SetProperty(ref _albums, value); }
+            set
+            {
+                NoData = _albums.Count > 0;
+                SetProperty(ref _albums, value);
+            }
         }
         public List<VideoInfo> VideoAlbums
         {
             get { return _videos; }
-            set { SetProperty(ref _videos, value); }
+            set
+            {
+                NoData = _videos.Count > 0;
+                SetProperty(ref _videos, value);
+            }
         }
         public List<ImageInfo> PhotoAlbums
         {
             get { return _photos; }
-            set { SetProperty(ref _photos, value); }
+            set
+            {
+                NoData = _photos.Count > 0;
+                SetProperty(ref _photos, value);
+            }
         }
         public bool NoData
         {
@@ -39,6 +51,7 @@ namespace wwrc_maui.Content.Viewmodels.Media.Gallery
         #endregion
 
         public List<string> tabList = [];
+        public Action<bool>? isFinishLoad = null;
 
         public GalleryVm()
         {
@@ -113,6 +126,7 @@ namespace wwrc_maui.Content.Viewmodels.Media.Gallery
                             }
                         }
                         GetPhotoVideo();
+                        isFinishLoad?.Invoke(true);
                     }
                     else if (_res.SystemCode == 200 && _res.items != null && _res.items.Count == 0)
                     { } //bugfix :: sometimes api success but return null items
@@ -133,9 +147,32 @@ namespace wwrc_maui.Content.Viewmodels.Media.Gallery
             string _qMedia = "SELECT * FROM DB_Album";
             string _qPhoto = "SELECT * FROM ImageInfo";
             string _qVideo = "SELECT * FROM VideoInfo";
-            AllAlbums = AppDatabase.Instance.SqlConnection.Query<DB_Album>(_qMedia);
+            //AllAlbums = AppDatabase.Instance.SqlConnection.Query<DB_Album>(_qMedia);
+            AllAlbums = DummyAlbums(); //for demo
             PhotoAlbums = AppDatabase.Instance.SqlConnection.Query<ImageInfo>(_qPhoto);
             VideoAlbums = AppDatabase.Instance.SqlConnection.Query<VideoInfo>(_qVideo);
+        }
+
+        List<DB_Album> DummyAlbums()
+        {
+            var _list = new List<DB_Album>();
+            for (int i = 0; i<7; i++)
+            {
+                var _isOdd = (i % 2) > 0;
+                var _dt = DateTime.Now;
+                var model = new DB_Album
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Title = "Album" + i + "-" + Guid.NewGuid().ToString().Substring(0, 5),
+                    Description = i * 10 + "Mb",
+                    AlbumDate = _dt.AddDays(1 * -i),
+                    CreatedBy = Guid.NewGuid().ToString().Substring(0, 10),
+                    CreateDate = _dt.AddDays(1 * -i),
+                    IsRead = _isOdd ? "true" : "false",
+                };
+                _list.Add(model);
+            }
+            return _list;
         }
     }
 }

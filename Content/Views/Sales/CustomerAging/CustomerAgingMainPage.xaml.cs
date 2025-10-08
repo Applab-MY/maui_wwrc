@@ -53,8 +53,7 @@ public partial class CustomerAgingMainPage : ContentPage
             {
                 // for reset all checked item
                 viewmodel.isFilterSales = false;
-                foreach (var item in salesView.Itemsource)
-                { item.Checked = false; }
+                foreach (var item in salesView.Itemsource) { item.Checked = false; }
             }
         }
         await App.DisplayAlert("Sales Person", null, salesView, "Okay", "Cancel", closeAction);

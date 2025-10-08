@@ -54,6 +54,7 @@ public partial class FilterSalesPersonView : ContentView, INotifyPropertyChanged
     public FilterSalesPersonView()
     {
         InitializeComponent();
+        NoData = true;
         BindingContext = this;
     }
 

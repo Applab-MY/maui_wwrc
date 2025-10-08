@@ -25,18 +25,18 @@
                      VerticalOptions="End"/>
             <!--content-->
             <Grid HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1" ColumnDefinitions="*"
-                  RowDefinitions="*,Auto" RowSpacing="0">
+                  RowDefinitions="*" RowSpacing="0">
                 <!--row 1 : photo-->
-                <Image Source="{Binding ImageUrl}" HorizontalOptions="Fill" VerticalOptions="Fill"/>
+                <Image Source="{Binding ImageUrl.Image}" HorizontalOptions="Fill" VerticalOptions="Fill"/>
                 <!--row 2 : buttons-->
                 <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="End" Grid.Row="1">
                     <!--btn : download-->
-                    <StackLayout Padding="15,10" HorizontalOptions="Center" VerticalOptions="End">
+                    <!--<StackLayout Padding="15,10" HorizontalOptions="Center" VerticalOptions="End">
                         <Image Source="ic_elipse_download_2" HeightRequest="40" Aspect="AspectFit"/>
                         <StackLayout.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnDownload_Tapped" NumberOfTapsRequired="1"/>
                         </StackLayout.GestureRecognizers>
-                    </StackLayout>
+                    </StackLayout>-->
                     <!--btn : info-->
                     <StackLayout Padding="15,10" HorizontalOptions="Center" VerticalOptions="End">
                         <Image Source="ic_elipse_info_2" HeightRequest="40" Aspect="AspectFit"/>

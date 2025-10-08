@@ -9,15 +9,15 @@ public partial class VideoDetailsPage : ContentPage
     public VideoDetailsPage(string id)
     {
         InitializeComponent();
-        viewmodel.mediaId = id;
+        viewmodel.albumId = id;
         navbar.OnLeftIconTapped += async () => { await Navigation.PopAsync(); };
-        viewmodel.OnFinishLoad += viewmodel.SetVideoReadStatus;
         BindingContext = viewmodel;
     }
 
-    protected override void OnAppearing()
+    protected async override void OnAppearing()
     {
         base.OnAppearing();
-        viewmodel.GetVideoById();
+        await viewmodel.GetVideoById();
+        await viewmodel.SetVideoReadStatus();
     }
 }

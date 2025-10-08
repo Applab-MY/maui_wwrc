@@ -8,12 +8,12 @@ public partial class PhotoDetailsPage : ContentPage
     GalleryDetailsVm viewmodel = new();
     PhotoDetailsCell detailsCell = new();
 
-    public PhotoDetailsPage(string id)
+    public PhotoDetailsPage(string albumId, string photoId)
     {
         InitializeComponent();
-        viewmodel.mediaId = id;
+        viewmodel.albumId = albumId;
+        viewmodel.mediaId = photoId;
         navbar.OnLeftIconTapped += async () => { await Navigation.PopAsync(); };
-        viewmodel.OnFinishLoad += viewmodel.SetPhotoReadStatus;
         BindingContext = viewmodel;
         Initialize();
     }
@@ -21,7 +21,12 @@ public partial class PhotoDetailsPage : ContentPage
     async void Initialize()
     {
         await Task.Delay(300);
-        viewmodel.GetPhotoById();
+        await viewmodel.GetAlbumById();
+        await viewmodel.GetPhotoById();
+        detailsCell.Album = viewmodel.Album;
+        detailsCell.Photo = viewmodel.ImageUrl;
+        detailsCell.Initialize();
+        await viewmodel.SetPhotoReadStatus();
     }
 
     private async void OnDownload_Tapped(object sender, TappedEventArgs e)
@@ -36,5 +41,6 @@ public partial class PhotoDetailsPage : ContentPage
         if (sender is not StackLayout view) return;
         await view.FadeTo(0.3, 200);
         view.Opacity = 1;
+        await App.DisplayAlert("Photo Details", null, detailsCell, "Close");
     }
 }

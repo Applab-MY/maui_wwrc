@@ -12,10 +12,9 @@ public partial class PhotoListPage : ContentPage
     public PhotoListPage(string id)
     {
         InitializeComponent();
-        viewmodel.mediaId = id;
+        viewmodel.albumId = id;
         navbar.OnLeftIconTapped += async () => { await Navigation.PopAsync(); };
         navbar.OnRightIconTapped += async () => { await App.DisplayAlert("Album Details", null, infoCell, "Close"); };
-        viewmodel.OnFinishLoad += BuildView;
         BindingContext = viewmodel;
         Initialize();
     }
@@ -23,7 +22,9 @@ public partial class PhotoListPage : ContentPage
     async void Initialize()
     {
         await Task.Delay(300);
-        viewmodel.GetAlbumById();
+        await viewmodel.GetAlbumById();
+        await viewmodel.GetPhotosFromAlbum();
+        BuildView();
     }
 
     void BuildView()
@@ -96,7 +97,7 @@ public partial class PhotoListPage : ContentPage
             var _stack = (VerticalStackLayout)view.Content;
             var _id = (Label)_stack.Children[0];
             lblId = _id.Text;
-            await Navigation.PushAsync(new PhotoDetailsPage(lblId.Substring(5)));
+            await Navigation.PushAsync(new PhotoDetailsPage(viewmodel.albumId, lblId.Substring(5)));
         }
     }
 }

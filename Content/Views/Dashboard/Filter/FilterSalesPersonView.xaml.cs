@@ -54,6 +54,7 @@ public partial class FilterSalesPersonView : ContentView, INotifyPropertyChanged
     public FilterSalesPersonView()
     {
         InitializeComponent();
+        NoData = true;
         BindingContext = this;
     }
 
@@ -73,6 +74,7 @@ public partial class FilterSalesPersonView : ContentView, INotifyPropertyChanged
     {
         if (sender is not ListView lv) return;
         foreach (var data in Itemsource) { data.Checked = false; }
+        foreach (var data in MainSource) { data.Checked = false; }
         var item = e.Item as SalesPersonList;
         Selected = item;
         if (item != null) { item.Checked = !item.Checked; }

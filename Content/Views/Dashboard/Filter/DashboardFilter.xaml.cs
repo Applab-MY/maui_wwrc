@@ -295,7 +295,7 @@ public partial class DashboardFilter : ContentPage
                 {
                     // for reset all checked item
                     if (salesView.Itemsource.Count > 0)
-                        foreach (var item in salesView.Itemsource) { item.Checked = false; }
+                    foreach (var item in salesView.Itemsource) { item.Checked = false; }
                     if (salesView.MainSource.Count > 0)
                         foreach (var item in salesView.MainSource) { item.Checked = false; }
                 }

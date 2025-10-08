@@ -37,18 +37,10 @@ public partial class GraphDetails : ContentPage
                 {
                     viewmodel.SalesPerson = salesView.Selected.Id;
                     viewmodel.isFilterSales = true;
-                    viewmodel.Initialize();
+                    viewmodel.GetSalesResultData();
                 }
             }
-            else
-            {
-                // for reset all checked item
-                viewmodel.isFilterSales = false;
-                if (salesView.Itemsource.Count > 0)
-                    foreach (var item in salesView.Itemsource) { item.Checked = false; }
-                if (salesView.MainSource.Count > 0)
-                    foreach (var item in salesView.MainSource) { item.Checked = false; }
-            }
+            else { viewmodel.isFilterSales = false; }
         }
         await App.DisplayAlert("Sales Person", null, salesView, "Okay", "Cancel", closeAction);
     }

@@ -147,8 +147,8 @@ namespace wwrc_maui.Content.Viewmodels.Media.Gallery
             string _qMedia = "SELECT * FROM DB_Album";
             string _qPhoto = "SELECT * FROM ImageInfo";
             string _qVideo = "SELECT * FROM VideoInfo";
-            //AllAlbums = AppDatabase.Instance.SqlConnection.Query<DB_Album>(_qMedia);
-            AllAlbums = DummyAlbums(); //for demo
+            AllAlbums = AppDatabase.Instance.SqlConnection.Query<DB_Album>(_qMedia);
+            //AllAlbums = DummyAlbums(); //for demo
             PhotoAlbums = AppDatabase.Instance.SqlConnection.Query<ImageInfo>(_qPhoto);
             VideoAlbums = AppDatabase.Instance.SqlConnection.Query<VideoInfo>(_qVideo);
         }

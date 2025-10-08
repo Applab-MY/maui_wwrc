@@ -11,7 +11,7 @@ namespace wwrc_maui.Content.Viewmodels.Media
         DB_Album? _album = null;
         List<ImageInfo> _photos = [];
         string _vidUrl = "";
-        string _imgUrl = "";
+        ImageInfo? _imgUrl = null;
         bool _noData = false;
         #endregion
         #region props
@@ -34,7 +34,7 @@ namespace wwrc_maui.Content.Viewmodels.Media
             get { return _vidUrl; }
             set { SetProperty(ref _vidUrl, value); }
         }
-        public string ImageUrl
+        public ImageInfo? ImageUrl
         {
             get { return _imgUrl; }
             set { SetProperty(ref _imgUrl, value); }
@@ -48,26 +48,24 @@ namespace wwrc_maui.Content.Viewmodels.Media
         #endregion
 
         public Command? RefreshCommand { get; set; } = null;
+        public string albumId = "";
         public string mediaId = "";
-        public Action? OnFinishLoad = null;
 
-        public GalleryDetailsVm() { RefreshCommand = new Command(GetAlbumById); }
+        public GalleryDetailsVm() { RefreshCommand = new Command(GetAlbum); }
 
-        public async void GetAlbumById()
+        async void GetAlbum() { await GetAlbumById(); }
+
+        public async Task GetAlbumById()
         {
             IsBusy = true; IsRefreshing = true;
             await Task.Delay(300);
             try
             {
-                string _qAlbum = "SELECT * FROM DB_Album WHERE Id = '" + mediaId + "'";
-                string _qPhoto = "SELECT * FROM ImageInfo WHERE PhotoGalleryId = '" + mediaId.ToUpper() + "'";
-                //var _data = AppDatabase.Instance.SqlConnection.Query<DB_Album>(_qAlbum);
-                //AllPhotos = AppDatabase.Instance.SqlConnection.Query<ImageInfo>(_qPhoto);
-                var _data = DummyAlbum(); //for demo
-                AllPhotos = DummyPhotos(); //for demo
+                string _qAlbum = "SELECT * FROM DB_Album WHERE Id = '" + albumId + "'";
+                var _data = AppDatabase.Instance.SqlConnection.Query<DB_Album>(_qAlbum);
+                //var _data = DummyAlbum(); //for demo
                 if (_data.Count > 0) { Album = _data[0]; }
                 IsBusy = false; IsRefreshing = false;
-                OnFinishLoad?.Invoke();
             }
             catch (Exception ex)
             {
@@ -77,19 +75,16 @@ namespace wwrc_maui.Content.Viewmodels.Media
             }
         }
 
-        public async void GetPhotoById()
+        public async Task GetPhotosFromAlbum()
         {
             IsBusy = true; IsRefreshing = true;
             await Task.Delay(300);
             try
             {
-                ImageUrl = "";
-                string query = "SELECT * FROM ImageInfo WHERE Image = '" + mediaId + "'";
-                var items = AppDatabase.Instance.SqlConnection.Query<ImageInfo>(query);
-                if (items.Count > 0) { ImageUrl = items[0].Image; }
-                ImageUrl = "test_img1"; //for demo
+                string _qPhoto = "SELECT * FROM ImageInfo WHERE PhotoGalleryId = '" + albumId.ToUpper() + "'";
+                AllPhotos = AppDatabase.Instance.SqlConnection.Query<ImageInfo>(_qPhoto);
+                //AllPhotos = DummyPhotos(); //for demo
                 IsBusy = false; IsRefreshing = false;
-                OnFinishLoad?.Invoke();
             }
             catch (Exception ex)
             {
@@ -99,7 +94,27 @@ namespace wwrc_maui.Content.Viewmodels.Media
             }
         }
 
-        public async void GetVideoById()
+        public async Task GetPhotoById()
+        {
+            IsBusy = true; IsRefreshing = true;
+            await Task.Delay(300);
+            try
+            {
+                ImageUrl = null;
+                string query = "SELECT * FROM ImageInfo WHERE Image = '" + mediaId + "'";
+                ImageUrl = AppDatabase.Instance.SqlConnection.Query<ImageInfo>(query).FirstOrDefault();
+                //ImageUrl = DummyPhoto(); //for demo
+                IsBusy = false; IsRefreshing = false;
+            }
+            catch (Exception ex)
+            {
+                var error = ex.Message;
+                IsBusy = true; IsRefreshing = true;
+                await App.DisplayAlert("Exception", error, null, "Okay");
+            }
+        }
+
+        public async Task GetVideoById()
         {
             IsBusy = true; IsRefreshing = true;
             await Task.Delay(300);
@@ -114,7 +129,6 @@ namespace wwrc_maui.Content.Viewmodels.Media
                     VideoUrl = "https://www.youtube.com/embed/" + stringCutted + "";
                 }
                 IsBusy = false; IsRefreshing = false;
-                OnFinishLoad?.Invoke();
             }
             catch (Exception ex)
             {
@@ -155,14 +169,24 @@ namespace wwrc_maui.Content.Viewmodels.Media
             }
             return _list;
         }
+
+        ImageInfo DummyPhoto()
+        {
+            return new ImageInfo
+            {
+                PhotoGalleryId = Guid.NewGuid().ToString(),
+                Image = "http://i3.ytimg.com/vi/mBcfl7SUqjY/maxresdefault.jpg",
+                ImageSize = "15Mb",
+            };
+        }
         #endregion
 
-        public async void SetPhotoReadStatus()
+        public async Task SetPhotoReadStatus()
         {
             IsBusy = true; IsRefreshing = true;
             try
             {
-                var photoId = new StringContent(mediaId);
+                var photoId = new StringContent(albumId);
                 var content = new MultipartFormDataContent { { photoId, "Id" } };
                 if (App.AppClient != null) await App.AppClient.ReadPhoto(content);
             }
@@ -170,12 +194,12 @@ namespace wwrc_maui.Content.Viewmodels.Media
             IsBusy = false; IsRefreshing = false;
         }
 
-        public async void SetVideoReadStatus()
+        public async Task SetVideoReadStatus()
         {
             IsBusy = true; IsRefreshing = true;
             try
             {
-                var videoId = new StringContent(mediaId);
+                var videoId = new StringContent(albumId);
                 var content = new MultipartFormDataContent { { videoId, "Id" } };
                 if (App.AppClient != null) await App.AppClient.ReadVideo(content);
             }

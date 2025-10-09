@@ -128,6 +128,7 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
         public bool IsDisplayGraph = false;
         public bool IsDisplayCurrency = false;
         public Action<DashboardCarouselTemplate>? OnCellMenuTap = null;
+        public Action? OnFinishLoad = null;
 
         public MainPageVm()
         {
@@ -194,14 +195,8 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
                         UserId = Preferences.Default.Get("userId", "")
                     };
                     var _res = await App.AppClient.GetDashBoard(model);
-                    if (_res.SystemCode == 401)
-                    {
-                        AppDatabase.Instance.DeleteAllData();
-                        Preferences.Default.Clear();
-                        await App.DisplayAlert("Relogin", "Please login again", null, "Okay");
-                        Application.Current?.Dispatcher.Dispatch(() =>
-                        { Application.Current.Windows[0].Page = new Login(); });
-                    }
+                    //_res.SystemCode = 401; //for demo
+                    if (_res.SystemCode == 401) { OnFinishLoad?.Invoke(); } //bugfix : session expired, redirect crash
                     else if (_res.SystemCode == 200 && _res.items != null && _res.items.Count > 0)
                     {
                         var items = _res.items[0];

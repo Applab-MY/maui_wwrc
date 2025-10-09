@@ -35,6 +35,7 @@ public partial class MainPage : ContentPage
         navbar.OnLeftIconTapped += OnFilter_Tapped;
         navbar.OnRightIconTapped += OnLogout_Tapped;
         viewmodel.OnCellMenuTap += OnCellMenu_Tapped;
+        viewmodel.OnFinishLoad += ResetSession; //bugfix : session expired, redirect crash
         viewmodel.SetupData();
 
         #region reference messenger
@@ -51,6 +52,12 @@ public partial class MainPage : ContentPage
         #endregion
     }
 
+    async void ResetSession()
+    {
+        await App.DisplayAlert("Expired", "Session expired. Please login again", null, "Okay");
+        OnLogout_Tapped();
+    }
+
     #region toolbar events
     private async void OnFilter_Tapped()
     { await Navigation.PushAsync(new DashboardFilter(viewmodel.DashboardData, viewmodel.FilterData)); }
@@ -64,7 +71,7 @@ public partial class MainPage : ContentPage
             AppDatabase.Instance.DeleteAllData();
             Preferences.Default.Clear();
             Application.Current?.Dispatcher.Dispatch(() =>
-            { Application.Current.Windows[0].Page = new Login(); });
+            { Application.Current.Windows[0].Page = new NavigationPage(new Login()); });
         }
         catch (Exception ex)
         { await App.DisplayAlert("Error", ex.Message, null, "Okay"); }

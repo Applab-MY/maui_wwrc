@@ -32,7 +32,8 @@ public partial class PhotoDetailsCell : ContentView
         if (sender is not Button btn) return;
         try
         {
-            await SaveFile(_cts.Token);
+            if (Photo != null)
+                await Launcher.OpenAsync(new Uri(Photo.Image));
         }
         catch (OperationCanceledException ex)
         {
@@ -45,12 +46,19 @@ public partial class PhotoDetailsCell : ContentView
     {
         if (Photo != null)
         {
-            string fileName = Photo.Image.Split('/').Last();
-            var httpClient = new HttpClient();
-            var imageBytes = await httpClient.GetByteArrayAsync(Photo.Image);
-            var filePath = Path.Combine(Environment.GetFolderPath
-                (Environment.SpecialFolder.LocalApplicationData), fileName);
-            File.WriteAllBytes(filePath, imageBytes);
+            //string fileName = Photo.Image.Split('/').Last();
+            //var httpClient = new HttpClient();
+            ////var imageBytes = await httpClient.GetByteArrayAsync(Photo.Image);
+            //using var downloadStream = await httpClient.GetStreamAsync(Photo.Image);
+            //using var fileStream = new FileStream(fileName, FileMode.Create, FileAccess.Write);
+
+            //await downloadStream.CopyToAsync(fileStream);
+            //await fileStream.FlushAsync();
+            //fileStream.Close();
+
+            //var filePath = Path.Combine(Environment.GetFolderPath
+            //    (Environment.SpecialFolder.LocalApplicationData), fileName);
+            //File.WriteAllBytes(filePath, imageBytes);
 
             ////Xamarin.Essentials Share API
             //await Share.RequestAsync(new ShareFileRequest(filePath, "image/jpeg", "Downloaded Image"));

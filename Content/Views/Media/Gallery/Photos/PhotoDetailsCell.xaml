@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="wwrc_maui.Content.Views.Media.Gallery.Photos.PhotoDetailsCell">
 
-    <Grid HorizontalOptions="Fill" RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*"
+    <Grid HorizontalOptions="Fill" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*"
           RowSpacing="10" ColumnSpacing="10" VerticalOptions="Fill">
         <!--#region header-->
         <Image WidthRequest="50" HeightRequest="50" Aspect="AspectFill" HorizontalOptions="Start"
@@ -41,8 +41,8 @@
                Grid.Row="4" Grid.Column="1"/>
         <!--#endregion-->
         <!--row 6 : button-->
-        <!--<Button Text="DOWNLOAD" VerticalOptions="Center" Margin="0,5,0,0" Clicked="Button_Clicked"
-                Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"/>-->
+        <Button Text="DOWNLOAD" VerticalOptions="Center" Margin="0,5,0,0" Clicked="Button_Clicked"
+                Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"/>
     </Grid>
 
 </ContentView>

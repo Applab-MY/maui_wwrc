@@ -23,7 +23,7 @@
             <Grid HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1" ColumnDefinitions="*"
                   RowDefinitions="Auto,*" RowSpacing="0">
                 <!--row 1 : video player-->
-                <WebView Source="{Binding VideoUrl}" HorizontalOptions="Fill" VerticalOptions="Fill"/>
+                <WebView x:Name="webview" HorizontalOptions="Fill" VerticalOptions="Fill"/>
             </Grid>
         </Grid>
         <!--loading overlay-->

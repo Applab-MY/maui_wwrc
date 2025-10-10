@@ -34,6 +34,9 @@ public partial class PhotoDetailsPage : ContentPage
         if (sender is not StackLayout view) return;
         await view.FadeTo(0.3, 200);
         view.Opacity = 1;
+
+        if (viewmodel.ImageUrl != null)
+            await Launcher.OpenAsync(new Uri(viewmodel.ImageUrl.Image));
     }
 
     private async void OnInfo_Tapped(object sender, TappedEventArgs e)

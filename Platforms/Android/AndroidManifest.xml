@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-		  android:versionCode="20" android:versionName="2.3.5"
+		  android:versionCode="21" android:versionName="2.3.6"
 		  package="com.companyname.wwrc_mobile_app">
 	<application android:label="WWRC" android:allowBackup="true" android:icon="@drawable/launcher"
 				 android:supportsRtl="true">

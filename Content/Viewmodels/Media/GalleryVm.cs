@@ -126,12 +126,12 @@ namespace wwrc_maui.Content.Viewmodels.Media.Gallery
                             }
                         }
                         GetPhotoVideo();
-                        isFinishLoad?.Invoke(true);
                     }
                     else if (_res.SystemCode == 200 && _res.items != null && _res.items.Count == 0)
                     { } //bugfix :: sometimes api success but return null items
                     else await App.DisplayAlert("Error: " + _res.SystemCode.ToString(), _res.SystemDebugMessage
                         + ". " + _res.SystemMessage, null, "Okay");
+                    isFinishLoad?.Invoke(true);
                 }
                 catch (Exception ex)
                 {

@@ -17,8 +17,10 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
         string _country = "";
         string _subsidiary = "";
         string _salesperson = "";
+        ObservableCollection<SalesPersonList> _allSalesPerson = [];
         ObservableCollection<SalesMainModel> _salesList = [];
         bool _nodata = false;
+        bool _nosalesperson = false;
         string _searchTxt = "";
         private double _entryWidth = 0.0;
         #endregion
@@ -48,6 +50,15 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
             get { return _salesperson; }
             set { SetProperty(ref _salesperson, value); }
         }
+        public ObservableCollection<SalesPersonList> AllSalesPerson
+        {
+            get { return _allSalesPerson; }
+            set
+            {
+                NoSalesPerson = value.Count == 0;
+                SetProperty(ref _allSalesPerson, value);
+            }
+        }
         public ObservableCollection<SalesMainModel> SalesList
         {
             get { return _salesList; }
@@ -61,6 +72,11 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
         {
             get { return _nodata; }
             set { SetProperty(ref _nodata, value); }
+        }
+        public bool NoSalesPerson
+        {
+            get { return _nosalesperson; }
+            set { SetProperty(ref _nosalesperson, value); }
         }
         public string SearchTxt
         {
@@ -79,9 +95,12 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
         public Command? SearchCommand { get; set; } = null;
 
         List<SalesMainModel> salesCache = [];
-        public Action<bool>? OnFinishLoad = null;
         public List<SalesPersonList> filterPerson = [];
         public bool isFilterSales = false;
+        //for sales person list
+        public int MaxListSize = 15;
+        public int IndexAt = 0;
+        public bool IsFinish = false;
 
         public GraphDetailsVm()
         {
@@ -95,14 +114,15 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
 
         public async void Initialize()
         {
+            IsBusy = true; IsRefreshing = true;
             await Task.Delay(300);
             GetDashboardData();
             GetSalesResultData();
+            IsBusy = false; IsRefreshing = false;
         }
 
         public async void GetSalesResultData()
         {
-            IsBusy = true; IsRefreshing = true;
             NetworkAccess accessType = Connectivity.Current.NetworkAccess;
             if (accessType == NetworkAccess.Internet && App.AppClient != null)
             {
@@ -133,17 +153,14 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
                     { } //bugfix :: sometimes api success but return null items
                     else await App.DisplayAlert("Error: " + _res.SystemCode.ToString(), _res.SystemDebugMessage
                             + ". " + _res.SystemMessage, null, "Okay");
-                    IsBusy = false; IsRefreshing = false;
                 }
                 catch (Exception ex)
                 {
                     var error = ex.Message;
-                    IsBusy = false; IsRefreshing = false;
                     await App.DisplayAlert("Exception", error, null, "Okay");
                 }
             }
             else await App.DisplayAlert("No Internet", "Please check your internet connection.", null, "Okay");
-            IsBusy = false; IsRefreshing = false;
         }
 
         public void SearchSales()
@@ -160,7 +177,6 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
 
         public async void GetDashboardData()
         {
-            IsBusy = true; IsRefreshing = true;
             NetworkAccess accessType = Connectivity.Current.NetworkAccess;
             if (accessType == NetworkAccess.Internet && App.AppClient != null)
             {
@@ -171,7 +187,7 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
                     {
                         Country = Preferences.Default.Get("country", ""),
                         Company = Preferences.Default.Get("subsidiary", ""),
-                        UserId = Preferences.Default.Get("userId", "")
+                        UserId = isFilterSales ? SalesPerson : Preferences.Default.Get("userId", ""),
                     };
                     var _res = await App.AppClient.GetDashBoard(model);
                     if (_res.SystemCode == 401) { }
@@ -184,22 +200,19 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
                     { } //bugfix :: sometimes api success but return null items
                     else await App.DisplayAlert("Error", "API error : " + _res.SystemCode.ToString()
                         + ", " + _res.SystemMessage + "\r" + _res.SystemDebugMessage, null, "Okay");
-                    IsBusy = false; IsRefreshing = false;
                 }
                 catch (Exception ex)
                 {
                     var error = ex.Message;
-                    IsBusy = false; IsRefreshing = false;
                     await App.DisplayAlert("Exception", error, null, "Okay");
                 }
             }
             else await App.DisplayAlert("No Internet", "Please check your internet connection.", null, "Okay");
-            IsBusy = false; IsRefreshing = false;
         }
 
         public void SetupSalesList()
         {
-            filterPerson = [];
+            filterPerson = []; AllSalesPerson = [];
             if (DashboardData != null)
             {
                 var found = DashboardData.Filter.Where(x => x.Country.Equals(Country)).FirstOrDefault();
@@ -211,9 +224,18 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
                         if (_subs != null)
                         {
                             foreach (var sp in _subs.SalesPersonList)
-                            { if (sp.Id.Equals(SalesPerson)) { sp.Checked = true; } }
+                            {
+                                if (sp.Id.Equals(SalesPerson)) { sp.Checked = true; }
+                                else { sp.Checked = false; }
+                            }
                             filterPerson = [.. _subs.SalesPersonList];
-                            OnFinishLoad?.Invoke(true);
+
+                            if (filterPerson.Count > MaxListSize)
+                            {
+                                IndexAt = MaxListSize;
+                                AllSalesPerson = new ObservableCollection<SalesPersonList>(filterPerson.GetRange(0, MaxListSize));
+                            }
+                            else AllSalesPerson = new ObservableCollection<SalesPersonList>(filterPerson);
                         }
                     }
                 }

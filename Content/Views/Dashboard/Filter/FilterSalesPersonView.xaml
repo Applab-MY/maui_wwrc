@@ -37,6 +37,9 @@
                                     <Label Text="{Binding Position}" MaxLines="1" LineBreakMode="TailTruncation"/>
                                 </VerticalStackLayout>
                                 <Image HeightRequest="30" Aspect="AspectFit" VerticalOptions="Center"
+                                       Source="ic_checked" HorizontalOptions="End" Grid.Column="2"
+                                       IsVisible="{Binding Checked}"/>
+                                <!--<Image HeightRequest="30" Aspect="AspectFit" VerticalOptions="Center"
                                        HorizontalOptions="End" Grid.Column="2">
                                     <Image.Triggers>
                                         <DataTrigger TargetType="Image" Binding="{Binding Checked}" Value="true">
@@ -46,7 +49,7 @@
                                             <Setter Property="Source" Value="null"/>
                                         </DataTrigger>
                                     </Image.Triggers>
-                                </Image>
+                                </Image>-->
                             </Grid>
                             <BoxView HeightRequest="1" HorizontalOptions="Fill" Margin="10,0"/>
                         </VerticalStackLayout>

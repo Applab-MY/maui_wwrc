@@ -16,9 +16,9 @@ public partial class GraphDetails : ContentPage
             viewmodel.IsSearchVisible = !viewmodel.IsSearchVisible;
             viewmodel.SearchTxt = ""; viewmodel.SearchSales();
         };
-        viewmodel.OnFinishLoad += (data) => { salesView.Itemsource = viewmodel.filterPerson; };
         entry_search.OnTextCleared += () => { viewmodel.SearchTxt = ""; viewmodel.SearchSales(); };
         BindingContext = viewmodel;
+        salesView.SetParentBinding(viewmodel);
         viewmodel.Initialize();
     }
 
@@ -31,16 +31,7 @@ public partial class GraphDetails : ContentPage
         void closeAction(bool okay)
         {
             salesView.Reset();
-            if (okay)
-            {
-                if (salesView.Selected != null)
-                {
-                    viewmodel.SalesPerson = salesView.Selected.Id;
-                    viewmodel.isFilterSales = true;
-                    viewmodel.GetSalesResultData();
-                }
-            }
-            else { viewmodel.isFilterSales = false; }
+            if (okay) { viewmodel.Initialize(); }
         }
         await App.DisplayAlert("Sales Person", null, salesView, "Okay", "Cancel", closeAction);
     }

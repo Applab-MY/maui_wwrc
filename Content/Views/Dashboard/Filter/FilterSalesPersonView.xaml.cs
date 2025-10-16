@@ -76,8 +76,12 @@ public partial class FilterSalesPersonView : ContentView, INotifyPropertyChanged
         foreach (var data in Itemsource) { data.Checked = false; }
         foreach (var data in MainSource) { data.Checked = false; }
         var item = e.Item as SalesPersonList;
-        Selected = item;
-        if (item != null) { item.Checked = !item.Checked; }
+        if (item != null)
+        {
+            item.Checked = !item.Checked;
+            if (item.Checked) { Selected = item; }
+            else Selected = null;
+        }
         //if (item.Title == "all" || item.Title == "All") { UserId = "ALL"; }
         //else UserId = item.Id;
         //UserName = item.Title;

@@ -31,7 +31,9 @@ public partial class CarouselCell : StackLayout
                             var value = prop.GetValue(DashboardData, null);
                             if (value != null) data.CountType = value.ToString() ?? "0";
                         }
+                        else data.CountType = "0";
                     }
+                    else data.CountType = "0";
 
                     var content = BuildCellView(data);
                     var countNo = BuildCountView(data);

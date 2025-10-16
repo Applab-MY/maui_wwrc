@@ -1,11 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-		  android:versionCode="21" android:versionName="2.3.6"
-		  package="com.companyname.wwrc_mobile_app">
-	<application android:label="WWRC" android:allowBackup="true" android:icon="@drawable/launcher"
-				 android:supportsRtl="true">
-		<provider android:name="androidx.core.content.FileProvider" android:grantUriPermissions="true"
-				  android:authorities="com.companyname.wwrc_mobile_app.fileprovider" android:exported="false">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="22" android:versionName="2.3.7" package="com.companyname.wwrc_mobile_app">
+	<application android:label="WWRC" android:allowBackup="true" android:icon="@drawable/launcher" android:supportsRtl="true">
+		<provider android:name="androidx.core.content.FileProvider" android:grantUriPermissions="true" android:authorities="com.companyname.wwrc_mobile_app.fileprovider" android:exported="false">
 			<meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />
 		</provider>
 		<activity android:name="microsoft.identity.client.BrowserTabActivity" android:configChanges="orientation|screenSize" android:exported="true">

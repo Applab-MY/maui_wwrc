@@ -146,10 +146,16 @@
 	  <MauiXaml Update="Content\CustomControls\ShowAlert.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Content\Views\Dashboard\Main\GraphDetails.xaml">
+	  <MauiXaml Update="Content\Views\Dashboard\Main\CircleChart\FilterSalesPersonCell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Content\Views\Dashboard\Main\GraphDetailsCell.xaml">
+	  <MauiXaml Update="Content\Views\Dashboard\Main\CircleChart\FilterSalesPersonView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Dashboard\Main\CircleChart\GraphDetails.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Content\Views\Dashboard\Main\CircleChart\GraphDetailsCell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Content\Views\Media\Gallery\Photos\InfoCell.xaml">

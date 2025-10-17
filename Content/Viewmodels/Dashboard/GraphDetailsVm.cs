@@ -195,6 +195,7 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
                     {
                         DashboardData = _res.items[0];
                         SetupSalesList();
+                        //DummySalesPerson(); //for demo
                     }
                     else if (_res.SystemCode == 200 && _res.items != null && _res.items.Count == 0)
                     { } //bugfix :: sometimes api success but return null items
@@ -240,6 +241,30 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
                     }
                 }
             }
+        }
+
+        void DummySalesPerson()
+        {
+            filterPerson = []; AllSalesPerson = [];
+            for (int a = 0; a < 40; a++)
+            {
+                var model = new SalesPersonList
+                {
+                    Id = a.ToString(),
+                    Title = "Sales Person " + (a + 1).ToString(),
+                    Position = "Position " + (a + 1).ToString(),
+                    ProfileImage = "",
+                    Checked = false,
+                };
+                filterPerson.Add(model);
+            }
+
+            if (filterPerson.Count > MaxListSize)
+            {
+                IndexAt = MaxListSize;
+                AllSalesPerson = new ObservableCollection<SalesPersonList>(filterPerson.GetRange(0, MaxListSize));
+            }
+            else AllSalesPerson = new ObservableCollection<SalesPersonList>(filterPerson);
         }
     }
 }

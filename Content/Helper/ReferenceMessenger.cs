@@ -4,9 +4,9 @@ namespace wwrc_maui.Content.Helper
 {
     public class ReferenceMessenger
     {
-        public class ClassObjectNotify(KeyClassObject value) : ValueChangedMessage<KeyClassObject>(value) { }
         public class StringNotify(string value) : ValueChangedMessage<string>(value) { }
         public class KeyValueNotify(KeyValue value) : ValueChangedMessage<KeyValue>(value) { }
+        public class ClassObjectNotify(KeyClassObject value) : ValueChangedMessage<KeyClassObject>(value) { }
 
         public class KeyValue()
         {

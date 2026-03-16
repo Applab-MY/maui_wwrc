@@ -59,15 +59,21 @@ public partial class CustomLoading : Grid
         //mainAnim.Add(0, 0.3, circling2FadeIn);
         //mainAnim.Add(0.7, 1, circling2FadeOut);
 
-        IsVisible = true;
-        bgAnm.Commit(this, "BgAnimation", 16, 700, null, (v, c) => { }, () => false);
-        //mainAnim.Commit(this, "MainAnimation", 16, 1200, null, (v, c) => { }, () => true);
+        Application.Current?.Dispatcher.Dispatch(() =>
+        {
+            IsVisible = true;
+            bgAnm.Commit(this, "BgAnimation", 16, 700, null, (v, c) => { }, () => true);
+            //mainAnim.Commit(this, "MainAnimation", 16, 1200, null, (v, c) => { }, () => true);
+        });
     }
 
     public void StopAnimation()
     {
-        IsVisible = false;
-        this.AbortAnimation("BgAnimation");
-        //this.AbortAnimation("MainAnimation");
+        Application.Current?.Dispatcher.Dispatch(() =>
+        {
+            IsVisible = false;
+            this.AbortAnimation("BgAnimation");
+            //this.AbortAnimation("MainAnimation");
+        });
     }
 }

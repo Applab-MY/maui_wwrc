@@ -103,12 +103,11 @@ namespace wwrc_maui.Content.Viewmodels.Sales.CustomerAging
 
         public CustomerAgingVm()
         {
-            IsBusy = false;
             Country = Preferences.Default.Get("country", "");
             Subsidiary = Preferences.Default.Get("subsidiary", "");
             SalesPerson = Preferences.Default.Get("userId", "");
             EntryWidth = App.ScreenWidth - 40;
-            RefreshCommand = new Command(GetCustomerAgingData);
+            RefreshCommand = new Command(OnRefresh);
             SearchCommand = new Command(SearchCustomerAging);
         }
 
@@ -137,9 +136,15 @@ namespace wwrc_maui.Content.Viewmodels.Sales.CustomerAging
             overdays150s = string.Format("{0:MMM yyyy}", overdays150);
         }
 
-        public async void GetCustomerAgingData()
+        async void OnRefresh()
         {
             IsBusy = true; IsRefreshing = true;
+            await GetCustomerAgingData();
+            IsBusy = true; IsRefreshing = false;
+        }
+
+        public async Task GetCustomerAgingData()
+        {
             NetworkAccess accessType = Connectivity.Current.NetworkAccess;
             if (accessType == NetworkAccess.Internet && App.AppClient != null)
             {
@@ -223,17 +228,14 @@ namespace wwrc_maui.Content.Viewmodels.Sales.CustomerAging
                     { } //bugfix :: sometimes api success but return null items
                     else await App.DisplayAlert("Error: " + _res.SystemCode.ToString(), _res.SystemDebugMessage
                             + ". " + _res.SystemMessage, null, "Okay");
-                    IsBusy = false; IsRefreshing = false;
                 }
                 catch (Exception ex)
                 {
                     var error = ex.Message;
-                    IsBusy = false; IsRefreshing = false;
                     await App.DisplayAlert("Exception", error, null, "Okay");
                 }
             }
             else await App.DisplayAlert("No Internet", "Please check your internet connection.", null, "Okay");
-            IsBusy = false; IsRefreshing = false;
         }
 
         public void SearchCustomerAging()
@@ -249,9 +251,8 @@ namespace wwrc_maui.Content.Viewmodels.Sales.CustomerAging
             GetPastMonth();
         }
 
-        public async void GetDashboardData()
+        public async Task GetDashboardData()
         {
-            IsBusy = true; IsRefreshing = true;
             NetworkAccess accessType = Connectivity.Current.NetworkAccess;
             if (accessType == NetworkAccess.Internet && App.AppClient != null)
             {
@@ -275,17 +276,14 @@ namespace wwrc_maui.Content.Viewmodels.Sales.CustomerAging
                     { } //bugfix :: sometimes api success but return null items
                     else await App.DisplayAlert("Error", "API error : " + _res.SystemCode.ToString()
                         + ", " + _res.SystemMessage + "\r" + _res.SystemDebugMessage, null, "Okay");
-                    IsBusy = false; IsRefreshing = false;
                 }
                 catch (Exception ex)
                 {
                     var error = ex.Message;
-                    IsBusy = false; IsRefreshing = false;
                     await App.DisplayAlert("Exception", error, null, "Okay");
                 }
             }
             else await App.DisplayAlert("No Internet", "Please check your internet connection.", null, "Okay");
-            IsBusy = false; IsRefreshing = false;
         }
 
         public void SetupSalesList()

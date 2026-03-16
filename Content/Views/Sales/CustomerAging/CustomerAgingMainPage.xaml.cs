@@ -25,10 +25,12 @@ public partial class CustomerAgingMainPage : ContentPage
 
     public async void Initialize()
     {
+        viewmodel.IsBusy = true; viewmodel.IsRefreshing = true;
         await Task.Delay(300);
-        viewmodel.GetDashboardData();
+        await viewmodel.GetDashboardData();
         viewmodel.GetPastMonth();
-        viewmodel.GetCustomerAgingData();
+        await viewmodel.GetCustomerAgingData();
+        viewmodel.IsBusy = false; viewmodel.IsRefreshing = false;
     }
 
     private async void OnSales_Tapped(object sender, TappedEventArgs e)
@@ -37,16 +39,18 @@ public partial class CustomerAgingMainPage : ContentPage
         await view.FadeTo(0.3, 200);
         view.Opacity = 1;
 
-        void closeAction(bool okay)
+        async void closeAction(bool okay)
         {
             salesView.Reset();
             if (okay)
             {
                 if (salesView.Selected != null)
                 {
+                    viewmodel.IsBusy = true; viewmodel.IsRefreshing = true;
                     viewmodel.SalesPerson = salesView.Selected.Id;
                     viewmodel.isFilterSales = true;
-                    viewmodel.GetCustomerAgingData();
+                    await viewmodel.GetCustomerAgingData();
+                    viewmodel.IsBusy = false; viewmodel.IsRefreshing = false;
                 }
             }
             else

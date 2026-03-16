@@ -26,9 +26,11 @@ public partial class PurchaseOrderMainPage : ContentPage
 
     public async void Initialize()
     {
+        viewmodel.IsBusy = true; viewmodel.IsRefreshing = true;
         await Task.Delay(300);
-        viewmodel.GetDashboardData();
-        viewmodel.GetPurchaseOrderList();
+        await viewmodel.GetDashboardData();
+        await viewmodel.GetPurchaseOrderList();
+        viewmodel.IsBusy = false; viewmodel.IsRefreshing = false;
     }
 
     private async void OnSales_Tapped(object sender, TappedEventArgs e)
@@ -37,15 +39,17 @@ public partial class PurchaseOrderMainPage : ContentPage
         await view.FadeTo(0.3, 200);
         view.Opacity = 1;
 
-        void closeAction(bool okay)
+        async void closeAction(bool okay)
         {
             if (okay)
             {
                 if (salesView.Selected != null)
                 {
+                    viewmodel.IsBusy = true; viewmodel.IsRefreshing = true;
                     viewmodel.SalesPerson = salesView.Selected.Id;
                     viewmodel.isFilterSales = true;
-                    viewmodel.GetPurchaseOrderList();
+                    await viewmodel.GetPurchaseOrderList();
+                    viewmodel.IsBusy = false; viewmodel.IsRefreshing = false;
                 }
             }
             else

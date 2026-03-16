@@ -18,13 +18,15 @@ public partial class CustomerAgingDetailsMore : ContentPage
 
     public async void Initialize()
     {
+        viewmodel.IsBusy = true; viewmodel.IsRefreshing = true;
         await Task.Delay(300);
         if (viewmodel.selectedAging != null)
         {
             viewmodel.CardName = viewmodel.selectedAging.CardName;
             viewmodel.SelectedMonth = viewmodel.selectedAging.Month;
         }
-        viewmodel.GetAgingMonthDetail();
+        await viewmodel.GetAgingMonthDetail();
+        viewmodel.IsBusy = false; viewmodel.IsRefreshing = false;
     }
 
     private void ListView_ItemTapped(object sender, ItemTappedEventArgs e)

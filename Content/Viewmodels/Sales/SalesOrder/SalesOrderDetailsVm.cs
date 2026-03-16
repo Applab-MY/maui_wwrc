@@ -214,9 +214,8 @@ namespace wwrc_maui.Content.Viewmodels.Sales.SalesOrder
             }
         }
 
-        public async void GetSalesOrderById()
+        public async Task GetSalesOrderById()
         {
-            IsBusy = true; IsRefreshing = true;
             NetworkAccess accessType = Connectivity.Current.NetworkAccess;
             if (accessType == NetworkAccess.Internet && App.AppClient != null)
             {
@@ -289,17 +288,14 @@ namespace wwrc_maui.Content.Viewmodels.Sales.SalesOrder
                     { } //bugfix :: sometimes api success but return null items
                     else await App.DisplayAlert("Error: " + _res.SystemCode.ToString(), _res.SystemDebugMessage
                             + ". " + _res.SystemMessage, null, "Okay");
-                    IsBusy = false; IsRefreshing = false;
                 }
                 catch (Exception ex)
                 {
                     var error = ex.Message;
-                    IsBusy = false; IsRefreshing = false;
                     await App.DisplayAlert("Exception", error, null, "Okay");
                 }
             }
             else await App.DisplayAlert("No Internet", "Please check your internet connection.", null, "Okay");
-            IsBusy = false; IsRefreshing = false;
         }
     }
 }

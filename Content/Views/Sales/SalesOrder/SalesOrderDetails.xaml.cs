@@ -18,9 +18,11 @@ public partial class SalesOrderDetails : ContentPage
 
     public async void Initialize()
     {
+        viewmodel.IsBusy = true; viewmodel.IsRefreshing = true;
         await Task.Delay(300);
         viewmodel.SetSOData();
-        viewmodel.GetSalesOrderById();
+        await viewmodel.GetSalesOrderById();
+        viewmodel.IsBusy = false; viewmodel.IsRefreshing = false;
     }
 
     private void SOlist_ItemTapped(object sender, ItemTappedEventArgs e)

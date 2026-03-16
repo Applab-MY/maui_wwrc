@@ -88,13 +88,19 @@ namespace wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder
             Subsidiary = Preferences.Default.Get("subsidiary", "");
             SalesPerson = Preferences.Default.Get("userId", "");
             EntryWidth = App.ScreenWidth - 40;
-            RefreshCommand = new Command(GetPurchaseByMonth);
+            RefreshCommand = new Command(OnRefresh);
             SearchCommand = new Command(SearchPurchaseOrder);
         }
 
-        public async void GetPurchaseByMonth()
+        async void OnRefresh()
         {
             IsBusy = true; IsRefreshing = true;
+            await GetPurchaseByMonth();
+            IsBusy = false; IsRefreshing = false;
+        }
+
+        public async Task GetPurchaseByMonth()
+        {
             await Task.Delay(500);
             try
             {
@@ -106,12 +112,10 @@ namespace wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder
                 string _qPoMonth = "SELECT * FROM DB_PurchaseMonth WHERE Date = '" + selectedDate + "'";
                 var items = AppDatabase.Instance.SqlConnection.Query<DB_PurchaseMonth>(_qPoMonth);
                 if (items.Count > 0) PageTitle = items[0].Date;
-                IsBusy = false; IsRefreshing = false;
             }
             catch (Exception ex)
             {
                 var error = ex.Message;
-                IsBusy = false; IsRefreshing = false;
                 await App.DisplayAlert("Exception", error, null, "Okay");
             }
         }
@@ -127,9 +131,8 @@ namespace wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder
             }
         }
 
-        public async void GetDashboardData()
+        public async Task GetDashboardData()
         {
-            IsBusy = true; IsRefreshing = true;
             NetworkAccess accessType = Connectivity.Current.NetworkAccess;
             if (accessType == NetworkAccess.Internet && App.AppClient != null)
             {
@@ -153,17 +156,14 @@ namespace wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder
                     { } //bugfix :: sometimes api success but return null items
                     else await App.DisplayAlert("Error", "API error : " + _res.SystemCode.ToString()
                         + ", " + _res.SystemMessage + "\r" + _res.SystemDebugMessage, null, "Okay");
-                    IsBusy = false; IsRefreshing = false;
                 }
                 catch (Exception ex)
                 {
                     var error = ex.Message;
-                    IsBusy = false; IsRefreshing = false;
                     await App.DisplayAlert("Exception", error, null, "Okay");
                 }
             }
             else await App.DisplayAlert("No Internet", "Please check your internet connection.", null, "Okay");
-            IsBusy = false; IsRefreshing = false;
         }
 
         public void SetupSalesList()

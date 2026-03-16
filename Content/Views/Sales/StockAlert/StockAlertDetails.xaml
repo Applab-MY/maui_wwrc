@@ -65,7 +65,8 @@
                             </Grid>
                             <!--list-->
                             <ListView HorizontalOptions="Fill" ItemsSource="{Binding ListDetails}" SeparatorVisibility="None"
-                                      HasUnevenRows="True" VerticalOptions="Start" ItemTapped="ListView_ItemTapped">
+                                      HasUnevenRows="True" VerticalOptions="Start" ItemTapped="ListView_ItemTapped"
+                                      MaximumHeightRequest="220">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <cell:StockDetailsCell/>
@@ -75,21 +76,20 @@
                             <!--footer : total-->
                             <Grid HorizontalOptions="Fill" ColumnDefinitions="0.2*,0.2*,0.2*,0.2*,0.2*" RowDefinitions="Auto"
                                   VerticalOptions="Start" ColumnSpacing="8" Padding="8">
-                                <Label Text="Total" FontAttributes="Bold" HorizontalOptions="Start" TextColor="Black"
-                                       HorizontalTextAlignment="Start" VerticalOptions="Center" FontSize="12"
-                                       VerticalTextAlignment="Center"/>
+                                <Label Text="Total" FontAttributes="Bold" HorizontalOptions="Start" VerticalTextAlignment="Center"
+                                       HorizontalTextAlignment="Start" VerticalOptions="Center" FontSize="12"/>
                                 <Label Text="{Binding TotalOnhand, Converter={StaticResource StringNull}}" FontAttributes="Bold"
-                                       HorizontalOptions="Center" TextColor="Black" HorizontalTextAlignment="Start"
-                                       VerticalOptions="Center" FontSize="12" VerticalTextAlignment="Center" Grid.Column="1"/>
+                                       HorizontalOptions="Center" HorizontalTextAlignment="Start" VerticalOptions="Center" FontSize="12"
+                                       VerticalTextAlignment="Center" Grid.Column="1"/>
                                 <Label Text="{Binding TotalCommitted, Converter={StaticResource StringNull}}}" FontAttributes="Bold"
-                                       HorizontalOptions="Center" TextColor="Black" HorizontalTextAlignment="Center"
-                                       VerticalOptions="Center" FontSize="12" VerticalTextAlignment="Center" Grid.Column="2"/>
+                                       HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Center" FontSize="12"
+                                       VerticalTextAlignment="Center" Grid.Column="2"/>
                                 <Label Text="{Binding TotalOrder, Converter={StaticResource StringNull}}}" FontAttributes="Bold"
-                                       HorizontalOptions="Center" TextColor="Black" HorizontalTextAlignment="Center"
-                                       VerticalOptions="Center" FontSize="12" VerticalTextAlignment="Center" Grid.Column="3"/>
+                                       HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Center" FontSize="12"
+                                       VerticalTextAlignment="Center" Grid.Column="3"/>
                                 <Label Text="{Binding TotalAvailable, Converter={StaticResource StringNull}}}" FontAttributes="Bold"
-                                       HorizontalOptions="End" TextColor="Black" HorizontalTextAlignment="End"
-                                       VerticalOptions="Center" FontSize="12" VerticalTextAlignment="Center" Grid.Column="4"/>
+                                       HorizontalOptions="End" HorizontalTextAlignment="End" VerticalOptions="Center" FontSize="12"
+                                       VerticalTextAlignment="Center" Grid.Column="4"/>
                             </Grid>
                         </VerticalStackLayout>
                     </Border>

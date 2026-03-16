@@ -20,6 +20,7 @@ public partial class StockAlertDetailsMore : ContentPage
     {
         await Task.Delay(300);
         viewmodel.GetCommittedPw();
+        //viewmodel.DemoCommittedList(); //for demo
     }
 
     private void ListView_ItemTapped(object sender, ItemTappedEventArgs e)

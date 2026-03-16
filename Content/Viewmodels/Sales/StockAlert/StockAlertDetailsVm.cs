@@ -186,14 +186,11 @@ namespace wwrc_maui.Content.Viewmodels.Sales.StockAlert
                 ListDetails = [];
                 string query = "SELECT * FROM DB_WarehouseItem WHERE ItemCode = '" + itemCode + "'";
                 var items = AppDatabase.Instance.SqlConnection.Query<DB_WarehouseItem>(query);
+                //var items = DemoWarehouseItem(); //for demo
                 if (items.Count > 0)
                 {
                     var _list = new List<DB_WarehouseItem>();
-                    foreach (var _item in items)
-                    {
-                        _item.TotalCommited = double.Parse(_item.TotalCommited).ToString();
-                        _list.Add(_item);
-                    }
+                    foreach (var _item in items) { _list.Add(_item); }
                     ListDetails = _list;
                 }
                 IsBusy = false; IsRefreshing = false;
@@ -249,5 +246,45 @@ namespace wwrc_maui.Content.Viewmodels.Sales.StockAlert
             }
             IsBusy = false; IsRefreshing = false;
         }
+
+        #region dummy data
+        List<DB_WarehouseItem> DemoWarehouseItem()
+        {
+            var _list = new List<DB_WarehouseItem>();
+            for (int a = 0; a < 50; a++)
+            {
+                var data = new DB_WarehouseItem
+                {
+                    Warehouse = Faker.Name.FullName(),
+                    ItemCostPW = Faker.RandomNumber.Next(999) * (a+1),
+                    OnHandPW = Faker.RandomNumber.Next(999) * (a + 1),
+                    TotalCommited = Faker.Identification.MedicareBeneficiaryIdentifier(),
+                    OnOrderPW = Faker.RandomNumber.Next(999) * (a + 1),
+                    AvailablePW = Faker.RandomNumber.Next(999) * (a + 1),
+                };
+                _list.Add(data);
+            }
+            return _list;
+        }
+
+        public void DemoCommittedList()
+        {
+            WhsName = Faker.Identification.UkNationalInsuranceNumber();
+            Committed = Faker.RandomNumber.Next(9999).ToString();
+            var _list = new List<DB_IsCommitedPW_Customer>();
+            for (int a=0; a<50; a++)
+            {
+                var _no = Faker.RandomNumber.Next(999) * (a + 1);
+                var data = new DB_IsCommitedPW_Customer
+                {
+                    CardCode = Faker.Name.FullName(),
+                    CardName = Faker.Identification.MedicareBeneficiaryIdentifier(),
+                    Commited = _no.ToString(),
+                };
+                _list.Add(data);
+            }
+            ListCommitted = _list;
+        }
+        #endregion
     }
 }

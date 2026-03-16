@@ -48,7 +48,8 @@
                                        VerticalTextAlignment="Center" Grid.Column="1"/>
                             </Grid>
                             <ListView HorizontalOptions="Fill" ItemsSource="{Binding ListCommitted}" SeparatorVisibility="None"
-                                      HasUnevenRows="True" VerticalOptions="Fill" ItemTapped="ListView_ItemTapped">
+                                      HasUnevenRows="True" VerticalOptions="Fill" ItemTapped="ListView_ItemTapped"
+                                      MaximumHeightRequest="300">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <cell:StockAlertDetailsMoreCell/>

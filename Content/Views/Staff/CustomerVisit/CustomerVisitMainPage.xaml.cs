@@ -18,8 +18,10 @@ public partial class CustomerVisitMainPage : ContentPage
 
     public async void Initialize()
     {
+        viewmodel.IsBusy = true; viewmodel.IsRefreshing = true;
         await Task.Delay(300);
-        viewmodel.GetCustVisitList();
+        await viewmodel.GetCustVisitList();
+        viewmodel.IsBusy = false; viewmodel.IsRefreshing = false;
     }
 
     private async void OnSalesPerson_Tapped(object sender, EventArgs e)
@@ -30,10 +32,12 @@ public partial class CustomerVisitMainPage : ContentPage
 
         var cell = new SalesPersonList { Itemsource = viewmodel.personListCache };
         cell.Initialize();
-        cell.OnItemSelected = (data) =>
+        cell.OnItemSelected = async (data) =>
         {
+            viewmodel.IsBusy = true; viewmodel.IsRefreshing = true;
             viewmodel.SalesPerson = data;
-            viewmodel.GetSalesPersonVisits();
+            await viewmodel.GetSalesPersonVisits();
+            viewmodel.IsBusy = false; viewmodel.IsRefreshing = false;
         };
         await App.DisplayAlert("Select Sales Person", "", cell, "", "Cancel");
     }
@@ -46,11 +50,13 @@ public partial class CustomerVisitMainPage : ContentPage
         dt_from.Focus();
     }
 
-    private void OnDateFrom_DateSelected(object sender, DateChangedEventArgs e)
+    private async void OnDateFrom_DateSelected(object sender, DateChangedEventArgs e)
     {
         if (sender is not DatePicker view) return;
+        viewmodel.IsBusy = true; viewmodel.IsRefreshing = true;
         viewmodel.SelectedDate = view.Date;
-        viewmodel.GetCustVisitList();
+        await viewmodel.GetCustVisitList();
+        viewmodel.IsBusy = false; viewmodel.IsRefreshing = false;
     }
 
     private async void ListView_ItemTapped(object sender, ItemTappedEventArgs e)

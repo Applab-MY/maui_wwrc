@@ -23,8 +23,10 @@ public partial class NewsMainPage : ContentPage
 
     public async void Initialize()
     {
+        viewmodel.IsBusy = true; viewmodel.IsRefreshing = true;
         await Task.Delay(300);
-        viewmodel.GetNewsList();
+        await viewmodel.GetNewsList();
+        viewmodel.IsBusy = false; viewmodel.IsRefreshing = false;
     }
 
     private async void ListView_ItemTapped(object sender, ItemTappedEventArgs e)

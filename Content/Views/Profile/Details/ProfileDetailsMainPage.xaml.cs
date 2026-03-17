@@ -51,7 +51,12 @@ public partial class ProfileDetailsMainPage : ContentPage
             btn_edit.Text = "Edit"; btn_edit.Style = _style;
             Grid.SetColumnSpan(btn_edit, 2);
             var _res = await viewmodel.SaveProfile();
-            if (_res) await viewmodel.GetStaffDetails();
+            if (_res)
+            {
+                viewmodel.IsBusy = true; viewmodel.IsRefreshing = true;
+                await viewmodel.GetStaffDetails();
+                viewmodel.IsBusy = false; viewmodel.IsRefreshing = false;
+            }
         }
     }
 

@@ -36,13 +36,16 @@ public partial class MainPage : ContentPage
         navbar.OnRightIconTapped += OnLogout_Tapped;
         viewmodel.OnCellMenuTap += OnCellMenu_Tapped;
         viewmodel.OnFinishLoad += ResetSession; //bugfix : session expired, redirect crash
-        viewmodel.SetupData();
 
         #region reference messenger
-        WeakReferenceMessenger.Default.Register<StringNotify>(this, (receiver, message) =>
+        WeakReferenceMessenger.Default.Register<StringNotify>(this, async (receiver, message) =>
         {
             if (message.Value != null && message.Value.Equals("RefreshDashboardFilterModel"))
-            { viewmodel.SetupData(); }
+            {
+                viewmodel.IsBusy = true; viewmodel.IsRefreshing = true;
+                await viewmodel.SetupData();
+                viewmodel.IsBusy = false; viewmodel.IsRefreshing = false;
+            }
         });
         WeakReferenceMessenger.Default.Register<KeyValueNotify>(this, (receiver, message) =>
         {
@@ -50,6 +53,14 @@ public partial class MainPage : ContentPage
             { OnBottomTabSelected(Convert.ToInt32(message.Value.Value)); }
         });
         #endregion
+    }
+
+    protected async override void OnAppearing()
+    {
+        base.OnAppearing();
+        viewmodel.IsBusy = true; viewmodel.IsRefreshing = true;
+        await viewmodel.SetupData();
+        viewmodel.IsBusy = false; viewmodel.IsRefreshing = false;
     }
 
     async void ResetSession()

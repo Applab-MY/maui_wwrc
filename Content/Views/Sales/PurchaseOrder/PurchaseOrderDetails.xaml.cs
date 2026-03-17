@@ -17,8 +17,10 @@ public partial class PurchaseOrderDetails : ContentPage
 
     public async void Initialize()
     {
+        viewmodel.IsBusy = true; viewmodel.IsRefreshing = true;
         await Task.Delay(300);
-        viewmodel.GetPurchaseOrderDetails();
+        await viewmodel.GetPurchaseOrderDetails();
+        viewmodel.IsBusy = false; viewmodel.IsRefreshing = false;
     }
 
     private void ListView_ItemTapped(object sender, ItemTappedEventArgs e)

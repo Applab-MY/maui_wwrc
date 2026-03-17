@@ -25,8 +25,10 @@ public partial class CreateCustomerVisit : ContentPage
 
     async void Initialize()
     {
+        viewmodel.IsBusy = true; viewmodel.IsRefreshing = true;
         await Task.Delay(300);
-        viewmodel.InitializeCreate();
+        await viewmodel.InitializeCreate();
+        viewmodel.IsBusy = false; viewmodel.IsRefreshing = false;
     }
 
     async void OnAttendees_Tapped(object sender, TappedEventArgs e)

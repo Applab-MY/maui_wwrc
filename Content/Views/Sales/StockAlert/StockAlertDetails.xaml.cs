@@ -18,8 +18,10 @@ public partial class StockAlertDetails : ContentPage
 
     public async void Initialize()
     {
+        viewmodel.IsBusy = true; viewmodel.IsRefreshing = true;
         await Task.Delay(300);
-        viewmodel.GetStockDetails();
+        await viewmodel.GetStockDetails();
+        viewmodel.IsBusy = false; viewmodel.IsRefreshing = false;
     }
 
     private async void ListView_ItemTapped(object sender, ItemTappedEventArgs e)

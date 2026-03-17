@@ -15,11 +15,13 @@ public partial class NewsDetailsPage : ContentPage
         BindingContext = viewmodel;
     }
 
-    protected override void OnAppearing()
+    protected async override void OnAppearing()
     {
         base.OnAppearing();
-        viewmodel.GetNewsById(newsId);
-        viewmodel.UpdateNewsReadStatus(newsId);
+        viewmodel.IsBusy = true; viewmodel.IsRefreshing = true;
+        await viewmodel.GetNewsById(newsId);
+        await viewmodel.UpdateNewsReadStatus(newsId);
+        viewmodel.IsBusy = false; viewmodel.IsRefreshing = false;
     }
 
     private void OnDownload_Clicked(object sender, EventArgs e)

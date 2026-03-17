@@ -117,7 +117,6 @@ namespace wwrc_maui.Content.Viewmodels.Profile
 
         public async Task GetStaffDetails()
         {
-            IsBusy = true;
             await Task.Delay(300);
             NetworkAccess accessType = Connectivity.Current.NetworkAccess;
             if (accessType == NetworkAccess.Internet && App.AppClient != null)
@@ -151,7 +150,6 @@ namespace wwrc_maui.Content.Viewmodels.Profile
                     + ". " + _res.SystemMessage, null, "Okay");
             }
             else await App.DisplayAlert("No Internet", "Please check your internet connection.", null, "Okay");
-            IsBusy = false;
         }
 
         public async void TakePhoto()

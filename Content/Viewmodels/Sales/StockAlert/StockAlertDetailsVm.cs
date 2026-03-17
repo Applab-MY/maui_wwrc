@@ -152,10 +152,8 @@ namespace wwrc_maui.Content.Viewmodels.Sales.StockAlert
 
         public StockAlertDetailsVm() { }
 
-        public async void GetStockDetails()
+        public async Task GetStockDetails()
         {
-            IsBusy = true; IsRefreshing = true;
-            await Task.Delay(300);
             try
             {
                 string _qItem = "SELECT * FROM DB_StockAlert WHERE ItemCode = '" + itemCode + "'";
@@ -193,20 +191,16 @@ namespace wwrc_maui.Content.Viewmodels.Sales.StockAlert
                     foreach (var _item in items) { _list.Add(_item); }
                     ListDetails = _list;
                 }
-                IsBusy = false; IsRefreshing = false;
             }
             catch (Exception ex)
             {
                 var error = ex.Message;
-                IsBusy = false; IsRefreshing = false;
                 await App.DisplayAlert("Exception", error, null, "Okay");
             }
-            IsBusy = false; IsRefreshing = false;
         }
 
-        public async void GetCommittedPw()
+        public async Task GetCommittedPw()
         {
-            IsBusy = true; IsRefreshing = true;
             try
             {
                 string _cmtd = "SELECT * FROM DB_IsCommitedPW WHERE ItemCode = '" + itemCode
@@ -236,15 +230,12 @@ namespace wwrc_maui.Content.Viewmodels.Sales.StockAlert
                     }
                     ListCommitted = _list;
                 }
-                IsBusy = false; IsRefreshing = false;
             }
             catch (Exception ex)
             {
                 var error = ex.Message;
-                IsBusy = false; IsRefreshing = false;
                 await App.DisplayAlert("Exception", error, null, "Okay");
             }
-            IsBusy = false; IsRefreshing = false;
         }
 
         #region dummy data

@@ -58,15 +58,20 @@ namespace wwrc_maui.Content.Viewmodels.Sales.StockAlert
 
         public StockAlertVm()
         {
-            IsBusy = false;
             EntryWidth = App.ScreenWidth - 40;
-            RefreshCommand = new Command(GetStockAlertList);
+            RefreshCommand = new Command(OnRefresh);
             SearchCommand = new Command(SearchStockList);
         }
 
-        public async void GetStockAlertList()
+        async void OnRefresh()
         {
             IsBusy = true; IsRefreshing = true;
+            await GetStockAlertList();
+            IsBusy = false; IsRefreshing = false;
+        }
+
+        public async Task GetStockAlertList()
+        {
             NetworkAccess accessType = Connectivity.Current.NetworkAccess;
             if (accessType == NetworkAccess.Internet && App.AppClient != null)
             {
@@ -185,16 +190,13 @@ namespace wwrc_maui.Content.Viewmodels.Sales.StockAlert
                     { } //bugfix :: sometimes api success but return null items
                     else await App.DisplayAlert("Error: " + _res.SystemCode.ToString(), _res.SystemDebugMessage
                             + ". " + _res.SystemMessage, null, "Okay");
-                    IsBusy = false; IsRefreshing = false;
                 }
                 catch (Exception ex)
                 {
                     var error = ex.Message;
-                    IsBusy = false; IsRefreshing = false;
                     await App.DisplayAlert("Exception", error, null, "Okay");
                 }
             }
-            IsBusy = false; IsRefreshing = false;
         }
 
         public void SearchStockList()

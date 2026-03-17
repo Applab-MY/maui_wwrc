@@ -50,14 +50,17 @@ namespace wwrc_maui.Content.Viewmodels.Staff
         public List<string> personListCache = [];
 
         public CustomerVisitVm()
-        {
-            IsBusy = false;
-            RefreshCommand = new Command(GetCustVisitList);
-        }
+        { RefreshCommand = new Command(OnRefresh); }
 
-        public async void GetCustVisitList()
+        async void OnRefresh()
         {
             IsBusy = true; IsRefreshing = true;
+            await GetCustVisitList();
+            IsBusy = false; IsRefreshing = false;
+        }
+
+        public async Task GetCustVisitList()
+        {
             NetworkAccess accessType = Connectivity.Current.NetworkAccess;
             if (accessType == NetworkAccess.Internet && App.AppClient != null)
             {
@@ -139,22 +142,18 @@ namespace wwrc_maui.Content.Viewmodels.Staff
                     { } //bugfix :: sometimes api success but return null items
                     else await App.DisplayAlert("Error: " + _res.SystemCode.ToString(), _res.SystemDebugMessage
                             + ". " + _res.SystemMessage, null, "Okay");
-                    IsBusy = false; IsRefreshing = false;
                 }
                 catch (Exception ex)
                 {
                     var error = ex.Message;
-                    IsBusy = false; IsRefreshing = false;
                     await App.DisplayAlert("Exception", error, null, "Okay");
                 }
             }
             else await App.DisplayAlert("No Internet", "Please check your internet connection.", null, "Okay");
-            IsBusy = false; IsRefreshing = false;
         }
 
-        public async void GetSalesPersonVisits()
+        public async Task GetSalesPersonVisits()
         {
-            IsBusy = true; IsRefreshing = true;
             string query = "SELECT * FROM Userinfo";
             var user = AppDatabase.Instance.SqlConnection.Query<Userinfo>(query);
 
@@ -180,15 +179,12 @@ namespace wwrc_maui.Content.Viewmodels.Staff
                     }
                     MainVisitList = _list;
                 }
-                IsBusy = false; IsRefreshing = false;
             }
             catch (Exception ex)
             {
                 var error = ex.Message;
-                IsBusy = false; IsRefreshing = false;
                 await App.DisplayAlert("Exception", error, null, "Okay");
             }
-            IsBusy = false; IsRefreshing = false;
         }
     }
 }

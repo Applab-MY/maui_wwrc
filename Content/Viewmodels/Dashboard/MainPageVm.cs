@@ -136,12 +136,18 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
             Version += "Ver." + AppInfo.VersionString;
             ExchangeDate = DateTime.Now;
             UsdRate = "-";
-            RefreshCommand = new Command(SetupData);
+            RefreshCommand = new Command(OnRefresh);
         }
 
-        public async void SetupData()
+        async void OnRefresh()
         {
             IsBusy = true; IsRefreshing = true;
+            await SetupData();
+            IsBusy = false; IsRefreshing = false;
+        }
+
+        public async Task SetupData()
+        {
             FlagIcon = "ic_uncheck";
             LoginData = AppDatabase.Instance.SqlConnection.Query<LoginMainModel>
                 ("Select * from LoginMainModel").FirstOrDefault();
@@ -178,7 +184,6 @@ namespace wwrc_maui.Content.Viewmodels.Dashboard
                 UserId = _userid ?? "",
                 UserName = _userid ?? "",
             };
-            IsBusy = false; IsRefreshing = false;
         }
 
         private async Task GetDashboardData()

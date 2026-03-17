@@ -89,7 +89,7 @@ namespace wwrc_maui.Content.Viewmodels.Staff
 
         public CustomerVisitDetailsVm() { EntryWidth = App.ScreenWidth - 70; }
 
-        public async void GetVisitDetails()
+        public async Task GetVisitDetails()
         {
             try
             {
@@ -154,7 +154,7 @@ namespace wwrc_maui.Content.Viewmodels.Staff
             }
         }
 
-        public async void InitializeCreate()
+        public async Task InitializeCreate()
         {
             try
             {
@@ -210,7 +210,7 @@ namespace wwrc_maui.Content.Viewmodels.Staff
             if (accessType == NetworkAccess.Internet && App.AppClient != null)
             {
                 #region validation
-                if (string.IsNullOrEmpty(Customer)) 
+                if (string.IsNullOrEmpty(Customer))
                 {
                     await App.DisplayAlert("Empty", "Please insert customer", null, "Okay");
                     IsBusy = false; IsRefreshing = false;

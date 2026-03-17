@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
-using Microsoft.Identity.Client;
 using wwrc_maui.Content.Model;
 using wwrc_maui.Content.Viewmodels.Common;
 using wwrc_maui.Content.Views.Dashboard;
@@ -68,11 +67,13 @@ namespace wwrc_maui.Content.Viewmodels.Auth
         {
             IsBusy = true;
             await Task.Delay(300);
-            if (string.IsNullOrEmpty(Email)) {
+            if (string.IsNullOrEmpty(Email))
+            {
                 IsBusy = false;
                 await App.DisplayAlert("Empty", "Please insert your email", null, "Okay");
             }
-            else if (string.IsNullOrEmpty(Password)) {
+            else if (string.IsNullOrEmpty(Password))
+            {
                 IsBusy = false;
                 await App.DisplayAlert("Empty", "Please insert your password", null, "Okay");
             }
@@ -141,18 +142,21 @@ namespace wwrc_maui.Content.Viewmodels.Auth
                             Application.Current?.Dispatcher.Dispatch(() =>
                             { Application.Current.Windows[0].Page = new NavigationPage(new MainPage()); });
                         }
-                        else {
+                        else
+                        {
                             IsBusy = false;
                             await App.DisplayAlert("Error: " + _res.SystemCode.ToString(), _res.SystemDebugMessage
                                 + ". " + _res.SystemMessage, null, "Okay");
                         }
                     }
-                    catch (Exception ex) {
+                    catch (Exception ex)
+                    {
                         IsBusy = false;
                         await App.DisplayAlert("Error", ex.Message, null, "Okay");
                     }
                 }
-                else {
+                else
+                {
                     IsBusy = false;
                     await App.DisplayAlert("No Internet", "Please check your internet connection.", null, "Okay");
                 }
@@ -163,9 +167,10 @@ namespace wwrc_maui.Content.Viewmodels.Auth
         {
             IsBusy = true; IsRefreshing = true;
             NetworkAccess accessType = Connectivity.Current.NetworkAccess;
-            if (accessType == NetworkAccess.Internet &&App.MsalClient != null && App.AppClient != null)
+            if (accessType == NetworkAccess.Internet && App.MsalClient != null && App.AppClient != null)
             {
-                Application.Current?.Dispatcher.Dispatch(async () => {
+                Application.Current?.Dispatcher.Dispatch(async () =>
+                {
                     try
                     {
                         //wrap msal login in main thread

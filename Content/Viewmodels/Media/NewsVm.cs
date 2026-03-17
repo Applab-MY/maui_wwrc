@@ -85,13 +85,19 @@ namespace wwrc_maui.Content.Viewmodels.Media
         {
             IsSearchVisible = false;
             EntryWidth = App.ScreenWidth - 40;
-            RefreshCommand = new Command(GetNewsList);
+            RefreshCommand = new Command(OnRefresh);
             SearchCommand = new Command(SearchNews);
         }
 
-        public async void GetNewsList()
+        async void OnRefresh()
         {
             IsBusy = true; IsRefreshing = true;
+            await GetNewsList();
+            IsBusy = false; IsRefreshing = false;
+        }
+
+        public async Task GetNewsList()
+        {
             NetworkAccess accessType = Connectivity.Current.NetworkAccess;
             if (accessType == NetworkAccess.Internet && App.AppClient != null)
             {
@@ -143,26 +149,21 @@ namespace wwrc_maui.Content.Viewmodels.Media
                     { } //bugfix :: sometimes api success but return null items
                     else await App.DisplayAlert("Error: " + _res.SystemCode.ToString(), _res.SystemDebugMessage
                         + ". " + _res.SystemMessage, null, "Okay");
-                    IsBusy = false; IsRefreshing = false;
                 }
                 catch (Exception ex)
                 {
                     var error = ex.Message;
-                    IsBusy = false; IsRefreshing = false;
                     await App.DisplayAlert("Exception", error, null, "Okay");
                 }
-
             }
             else await App.DisplayAlert("No Internet", "Please check your internet connection.", null, "Okay");
-            IsBusy = false; IsRefreshing = false;
         }
 
-        public async void GetNewsById(string? id = null)
+        public async Task GetNewsById(string? id = null)
         {
             if (string.IsNullOrEmpty(id)) return;
             try
             {
-                IsBusy = true; IsRefreshing = true;
                 await Task.Delay(300);
                 string _qNewsDetail = "SELECT * FROM NewsTable WHERE Id = '" + id + "'";
                 string _qNews = "SELECT * FROM NewsInfoTable WHERE NewsId = '" + id.ToUpper() + "'";
@@ -195,22 +196,19 @@ namespace wwrc_maui.Content.Viewmodels.Media
                 var error = ex.Message;
                 await App.DisplayAlert("Exception", error, null, "Okay");
             }
-            IsBusy = false; IsRefreshing = false;
         }
 
-        public async void UpdateNewsReadStatus(string? newsId = null)
+        public async Task UpdateNewsReadStatus(string? newsId = null)
         {
             if (string.IsNullOrEmpty(newsId)) return;
             try
             {
-                IsBusy = true; IsRefreshing = true;
                 if (App.AppClient != null)
                 {
                     var news = new StringContent(newsId);
                     var content = new MultipartFormDataContent { { news, "Id" } };
                     await App.AppClient.UpdateNews(content); //update read status
                 }
-                IsBusy = false; IsRefreshing = false;
             }
             catch (Exception ex)
             {

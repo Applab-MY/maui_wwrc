@@ -76,10 +76,8 @@ namespace wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder
 
         public PurchaseOrderDetailVm() { }
 
-        public async void GetPurchaseOrderDetails()
+        public async Task GetPurchaseOrderDetails()
         {
-            IsBusy = true; IsRefreshing = true;
-            await Task.Delay(300);
             try
             {
                 string _qPurchase = "SELECT * FROM DB_Purchase WHERE PONO ='" + poNo + "'";
@@ -106,15 +104,12 @@ namespace wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder
                     PoItems = poItemsCache;
                     //PoItems = []; //for demo
                 }
-                IsBusy = false; IsRefreshing = false;
             }
             catch (Exception ex)
             {
                 var error = ex.Message;
-                IsBusy = false; IsRefreshing = false;
                 await App.DisplayAlert("Exception", error, null, "Okay");
             }
-            IsBusy = false; IsRefreshing = false;
         }
     }
 }

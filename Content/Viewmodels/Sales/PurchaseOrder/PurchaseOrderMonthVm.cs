@@ -101,7 +101,6 @@ namespace wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder
 
         public async Task GetPurchaseByMonth()
         {
-            await Task.Delay(500);
             try
             {
                 PoMainCache = []; PoMain = [];

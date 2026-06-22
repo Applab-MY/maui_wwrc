@@ -1,0 +1,11 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "MAUI Android (Debug)",
+            "type": "maui",
+            "request": "launch",
+            "project": "${workspaceFolder}/wwrc_maui.csproj"
+        }
+    ]
+}

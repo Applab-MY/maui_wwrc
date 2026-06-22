@@ -99,22 +99,22 @@ namespace wwrc_maui.Content.Viewmodels.Sales.PurchaseOrder
                 var purchasedetail = AppDatabase.Instance.SqlConnection.Query<POItem>(_qDetail);
                 if (purchasedetail.Count > 0)
                 {
-                    //foreach (var data in purchasedetail)
-                    //{ poItemsCache.Add(data); }
-                    for (int a=0; a<10; a++) //for demo
-                    {
-                        poItemsCache.Add(new POItem
-                        {
-                            ItemCode = Faker.Identification.BulgarianPin(),
-                            ItemName = Faker.Identification.UkNhsNumber(),
-                            UnitPrice = Faker.RandomNumber.Next(1000).ToString(),
-                            POOrder = Faker.RandomNumber.Next(1000).ToString(),
-                            Quantity = Faker.RandomNumber.Next(1000).ToString(),
-                            ETD = Faker.RandomNumber.Next(1000).ToString(),
-                            ETA = Faker.RandomNumber.Next(1000).ToString(),
-                            OpenQty = Faker.RandomNumber.Next(1000).ToString(),
-                        });
-                    }
+                    foreach (var data in purchasedetail)
+                    { poItemsCache.Add(data); }
+                    // for (int a=0; a<10; a++) //for demo
+                    // {
+                    //     poItemsCache.Add(new POItem
+                    //     {
+                    //         ItemCode = Faker.Identification.BulgarianPin(),
+                    //         ItemName = Faker.Identification.UkNhsNumber(),
+                    //         UnitPrice = Faker.RandomNumber.Next(1000).ToString(),
+                    //         POOrder = Faker.RandomNumber.Next(1000).ToString(),
+                    //         Quantity = Faker.RandomNumber.Next(1000).ToString(),
+                    //         ETD = Faker.RandomNumber.Next(1000).ToString(),
+                    //         ETA = Faker.RandomNumber.Next(1000).ToString(),
+                    //         OpenQty = Faker.RandomNumber.Next(1000).ToString(),
+                    //     });
+                    // }
 
                     //PoItems = []; //for demo
                     PoItems = poItemsCache;

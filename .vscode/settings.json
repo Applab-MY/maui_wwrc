@@ -1,3 +1,4 @@
 {
-    "dotnet.defaultSolution": "wwrc_maui.sln"
+    "dotnet.defaultSolution": "wwrc_maui.sln",
+    "editor.mouseWheelZoom": true
 }

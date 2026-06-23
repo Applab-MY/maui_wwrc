@@ -2,10 +2,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "MAUI Android (Debug)",
+            "name": ".NET MAUI",
             "type": "maui",
             "request": "launch",
-            "project": "${workspaceFolder}/wwrc_maui.csproj"
+            "preLaunchTask": "maui: Build"
         }
     ]
 }

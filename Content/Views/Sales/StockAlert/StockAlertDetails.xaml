@@ -81,13 +81,13 @@
                                 <Label Text="{Binding TotalOnhand, Converter={StaticResource StringNull}}" FontAttributes="Bold"
                                        HorizontalOptions="Center" HorizontalTextAlignment="Start" VerticalOptions="Center" FontSize="12"
                                        VerticalTextAlignment="Center" Grid.Column="1"/>
-                                <Label Text="{Binding TotalCommitted, Converter={StaticResource StringNull}}}" FontAttributes="Bold"
+                                <Label Text="{Binding TotalCommitted, Converter={StaticResource StringNull}}" FontAttributes="Bold"
                                        HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Center" FontSize="12"
                                        VerticalTextAlignment="Center" Grid.Column="2"/>
-                                <Label Text="{Binding TotalOrder, Converter={StaticResource StringNull}}}" FontAttributes="Bold"
+                                <Label Text="{Binding TotalOrder, Converter={StaticResource StringNull}}" FontAttributes="Bold"
                                        HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Center" FontSize="12"
                                        VerticalTextAlignment="Center" Grid.Column="3"/>
-                                <Label Text="{Binding TotalAvailable, Converter={StaticResource StringNull}}}" FontAttributes="Bold"
+                                <Label Text="{Binding TotalAvailable, Converter={StaticResource StringNull}}" FontAttributes="Bold"
                                        HorizontalOptions="End" HorizontalTextAlignment="End" VerticalOptions="Center" FontSize="12"
                                        VerticalTextAlignment="Center" Grid.Column="4"/>
                             </Grid>

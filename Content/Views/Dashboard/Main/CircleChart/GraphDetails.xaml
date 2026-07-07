@@ -26,11 +26,12 @@
             <!--content-->
             <Grid HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1" ColumnDefinitions="*"
                   RowDefinitions="Auto,Auto,Auto,*">
-                <!--row 1 : search bar-->
+                <!--#region row 1 : search bar-->
                 <controls:CustomEntry HorizontalOptions="Fill" Placeholder="search customer..." VerticalOptions="Start"
                                       x:Name="entry_search" Margin="20,10" SetWidth="{Binding EntryWidth}"
                                       IsVisible="{Binding IsSearchVisible}" SetText="SearchTxt"/>
-                <!--row 2 : filter bar-->
+                <!--#endregion-->
+                <!--#region row 2 : filter bar-->
                 <Grid ColumnSpacing="10" HorizontalOptions="Fill" VerticalOptions="Start" Margin="10,8"
                       RowDefinitions="Auto" Grid.Row="1" ColumnDefinitions="Auto,2,0.45*,2,0.55*,Auto">
                     <!--country-->
@@ -65,7 +66,8 @@
                     <Image Source="{AppThemeBinding Light=ic_dropdown, Dark=ic_dropdown_light}" HeightRequest="20"
                            Aspect="AspectFit" HorizontalOptions="End" VerticalOptions="Center" Grid.Column="5"/>
                 </Grid>
-                <!--row 3 : ytd mtd bar-->
+                <!--#endregion-->
+                <!--#region row 3 : ytd mtd bar-->
                 <Border HorizontalOptions="Fill" VerticalOptions="Start" Grid.Row="2" StrokeShape="RoundRectangle 10"
                         Padding="15,8" Margin="15,0" Style="{StaticResource BorderSecondary}">
                     <Grid HorizontalOptions="Fill" ColumnSpacing="0" VerticalOptions="Center" RowDefinitions="Auto"
@@ -121,7 +123,8 @@
                         </Grid>
                     </Grid>
                 </Border>
-                <!--row 4 : listview-->
+                <!--#endregion-->
+                <!--#region row 4 : listview-->
                 <ListView HorizontalOptions="Fill" ItemsSource="{Binding SalesList}" SeparatorVisibility="None"
                           HasUnevenRows="True" VerticalOptions="Fill" ItemTapped="ListView_ItemTapped" Grid.Row="3"
                           Margin="0,15,0,5" IsVisible="{Binding NoData, Converter={StaticResource InverseBool}}"
@@ -133,9 +136,11 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-                <!--no data-->
+                <!--#endregion-->
+                <!--#region no data-->
                 <controls:CustomNoData Grid.Row="3" HorizontalOptions="Center" VerticalOptions="Center"
                                        IsVisible="{Binding NoData}"/>
+                <!--#endregion-->
             </Grid>
         </Grid>
         <!--loading overlay-->

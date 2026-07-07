@@ -118,6 +118,7 @@ namespace wwrc_maui.Content.MsalClient
 
                 AuthResult = await PublicClientApplication.AcquireTokenInteractive(scopes)
                     .WithLoginHint(existingUser?.Username ?? string.Empty)
+                    .WithParentActivityOrWindow(PlatformConfig.Instance.ParentWindow)
                     .ExecuteAsync().ConfigureAwait(false);
             }
             catch (MsalException msalEx)
@@ -142,6 +143,7 @@ namespace wwrc_maui.Content.MsalClient
                 // CAE scenarios like an extra claims request
                 AuthResult = await PublicClientApplication.AcquireTokenInteractive(scopes)
                         .WithClaims(extraclaims)
+                        .WithParentActivityOrWindow(PlatformConfig.Instance.ParentWindow)
                         .ExecuteAsync()
                         .ConfigureAwait(false);
             }

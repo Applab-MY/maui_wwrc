@@ -33,7 +33,7 @@
                     </DataTrigger>
                 </Label.Triggers>
             </Label>
-            <Label Text="{Binding UtilizedLimit, StringFormat='{0:N2}'}" Grid.Row="1" Grid.Column="1"
+            <Label Text="{Binding TotalOverdue, StringFormat='{0:N2}'}" Grid.Row="1" Grid.Column="1"
                    FontAttributes="Bold" HorizontalOptions="End" MaxLines="1" LineBreakMode="TailTruncation"
                    HorizontalTextAlignment="End" VerticalOptions="Center" Style="{StaticResource PopupPromptButton}">
                 <Label.Triggers>

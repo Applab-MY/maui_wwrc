@@ -23,7 +23,7 @@
                     PlaceholderColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}"
                     TextChanged="OnEntry_TextChanged">
                 <controls:BorderlessEntry.Behaviors>
-                    <toolkit:UserStoppedTypingBehavior StoppedTypingTimeThreshold="1000" MinimumLengthThreshold="3"
+                    <toolkit:UserStoppedTypingBehavior StoppedTypingTimeThreshold="1000" MinimumLengthThreshold="2"
                             BindingContext="{Binding Path=BindingContext, Source={x:Reference entry_}, x:DataType=Entry}"
                             Command="{Binding SearchCommand}" ShouldDismissKeyboardAutomatically="True"/>
                 </controls:BorderlessEntry.Behaviors>

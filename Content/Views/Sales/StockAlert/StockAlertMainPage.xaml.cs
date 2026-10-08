@@ -18,8 +18,19 @@ public partial class StockAlertMainPage : ContentPage
             viewmodel.SearchTxt = ""; viewmodel.SearchStockList();
         };
         entry_search.OnTextCleared += () => { viewmodel.SearchTxt = ""; viewmodel.SearchStockList(); };
+        // bugfix :: filter live on every keystroke instead of only after the
+        // "user stopped typing" behaviour fires
+        entry_search.OnTextChanged += (text) => { viewmodel.SearchTxt = text; viewmodel.SearchStockList(); };
         BindingContext = viewmodel;
         Initialize();
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        // bugfix :: keep the filtered list when coming back from the details page
+        // so the same keyword does not have to be typed again
+        if (!string.IsNullOrWhiteSpace(viewmodel.SearchTxt)) viewmodel.SearchStockList();
     }
 
     public async void Initialize()

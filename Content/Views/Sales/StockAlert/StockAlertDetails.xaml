@@ -6,7 +6,7 @@
              xmlns:cell="clr-namespace:wwrc_maui.Content.Views.Sales.StockAlert"
              xmlns:helper="clr-namespace:wwrc_maui.Content.Helper"
              xmlns:vm="clr-namespace:wwrc_maui.Content.Viewmodels.Sales.StockAlert"
-             NavigationPage.HasNavigationBar="False">
+             x:Name="page" NavigationPage.HasNavigationBar="False">
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -22,9 +22,10 @@
             <controls:CustomNavigationBar IconLeft="ic_back" x:Name="navbar" Title="Stock Alert Details"/>
             <BoxView HorizontalOptions="Fill" Margin="0" Style="{StaticResource BoxviewNavbar}"
                      VerticalOptions="End"/>
-            <!--content-->
-            <Grid HorizontalOptions="Fill" VerticalOptions="Fill" ColumnDefinitions="*" Grid.Row="1"
-                  RowDefinitions="Auto,*" RowSpacing="0">
+            <!--content : scrollable so the lower details are always reachable-->
+            <ScrollView HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1"
+                        Orientation="Vertical">
+                <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" VerticalOptions="Start">
                 <!--row 1 : header-->
                 <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" VerticalOptions="Start" Padding="15,15,15,25">
                     <!--item code-->
@@ -63,16 +64,23 @@
                                        HorizontalTextAlignment="End" VerticalOptions="Center" FontSize="12"
                                        VerticalTextAlignment="Center" Grid.Column="4"/>
                             </Grid>
-                            <!--list-->
-                            <ListView HorizontalOptions="Fill" ItemsSource="{Binding ListDetails}" SeparatorVisibility="None"
-                                      HasUnevenRows="True" VerticalOptions="Start" ItemTapped="ListView_ItemTapped"
-                                      MaximumHeightRequest="220">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate>
-                                        <cell:StockDetailsCell/>
+                            <!--list : bindable layout so the page scrolls as one, a nested
+                                ListView would trap the scroll gesture and clip the rows-->
+                            <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" VerticalOptions="Start"
+                                                 BindableLayout.ItemsSource="{Binding ListDetails}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="{x:Null}">
+                                        <Grid HorizontalOptions="Fill" BackgroundColor="Transparent">
+                                            <cell:StockDetailsCell/>
+                                            <Grid.GestureRecognizers>
+                                                <TapGestureRecognizer NumberOfTapsRequired="1"
+                                                    Command="{Binding BindingContext.WarehouseTappedCommand, Source={x:Reference page}}"
+                                                    CommandParameter="{Binding .}"/>
+                                            </Grid.GestureRecognizers>
+                                        </Grid>
                                     </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
                             <!--footer : total-->
                             <Grid HorizontalOptions="Fill" ColumnDefinitions="0.2*,0.2*,0.2*,0.2*,0.2*" RowDefinitions="Auto"
                                   VerticalOptions="Start" ColumnSpacing="8" Padding="8">
@@ -100,10 +108,10 @@
                     <controls:CustomNoData HorizontalOptions="Center" VerticalOptions="Center" Margin="0,15,0,0"
                                            IsVisible="{Binding NoData}"/>
                 </VerticalStackLayout>
-                <BoxView HeightRequest="1" HorizontalOptions="Fill" Grid.Row="1" VerticalOptions="Start" Margin="15,0"/>
+                <BoxView HeightRequest="1" HorizontalOptions="Fill" VerticalOptions="Start" Margin="15,0"/>
                 <!--row 2 : details-->
-                <Grid HorizontalOptions="Fill" RowSpacing="5" ColumnSpacing="10" VerticalOptions="Fill" Margin="15"
-                      ColumnDefinitions="0.65*,0.35*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" Grid.Row="1">
+                <Grid HorizontalOptions="Fill" RowSpacing="5" ColumnSpacing="10" VerticalOptions="Start" Margin="15"
+                      ColumnDefinitions="0.65*,0.35*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
                     <!--#region column 1-->
                     <Label Text="Min Level" HorizontalOptions="Start" HorizontalTextAlignment="Start" VerticalOptions="Center"
                            LineBreakMode="WordWrap" Grid.Row="0" Grid.Column="0" FontAttributes="Bold"/>
@@ -137,7 +145,8 @@
                            LineBreakMode="WordWrap" Grid.Row="6" Grid.Column="1" />
                     <!--#endregion-->
                 </Grid>
-            </Grid>
+                </VerticalStackLayout>
+            </ScrollView>
         </Grid>
         <!--loading overlay-->
         <controls:CustomLoading AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1"

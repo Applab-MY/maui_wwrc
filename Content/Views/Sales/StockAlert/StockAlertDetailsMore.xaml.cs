@@ -24,10 +24,4 @@ public partial class StockAlertDetailsMore : ContentPage
         //viewmodel.DemoCommittedList(); //for demo
         viewmodel.IsBusy = false; viewmodel.IsRefreshing = false;
     }
-
-    private void ListView_ItemTapped(object sender, ItemTappedEventArgs e)
-    {
-        if (sender is not ListView lv) return;
-        lv.SelectedItem = null;
-    }
 }

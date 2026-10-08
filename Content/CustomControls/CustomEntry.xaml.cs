@@ -124,6 +124,11 @@ public partial class CustomEntry : Grid
     #endregion
 
     public Action? OnTextCleared = null;
+    /// <summary>
+    /// Raised on every keystroke with the current entry text. Subscribe when a page needs
+    /// to filter live instead of waiting for the "user stopped typing" behaviour.
+    /// </summary>
+    public Action<string>? OnTextChanged = null;
     bool _isPwdTapped = true;
 
     public CustomEntry() { InitializeComponent(); }
@@ -161,8 +166,9 @@ public partial class CustomEntry : Grid
     }
 
     private void OnEntry_TextChanged(object sender, TextChangedEventArgs e)
-    { 
+    {
         stack_clear.IsVisible = !string.IsNullOrEmpty(e.NewTextValue);
         SetEntrySize();
+        OnTextChanged?.Invoke(e.NewTextValue ?? "");
     }
 }

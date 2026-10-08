@@ -22,9 +22,9 @@
             <controls:CustomNavigationBar IconLeft="ic_back" x:Name="navbar" Title="Stock Alert Details"/>
             <BoxView HorizontalOptions="Fill" Margin="0" Style="{StaticResource BoxviewNavbar}"
                      VerticalOptions="End"/>
-            <!--content-->
-            <Grid HorizontalOptions="Fill" VerticalOptions="Fill" ColumnDefinitions="*" Grid.Row="1"
-                  RowDefinitions="Auto,*" RowSpacing="0">
+            <!--content : scrollable so the full committed list is reachable-->
+            <ScrollView HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="1"
+                        Orientation="Vertical">
                 <!--row 1 : header-->
                 <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" VerticalOptions="Start" Padding="15,15,15,25">
                     <!--whs name-->
@@ -47,15 +47,16 @@
                                        HorizontalTextAlignment="End" VerticalOptions="Center"
                                        VerticalTextAlignment="Center" Grid.Column="1"/>
                             </Grid>
-                            <ListView HorizontalOptions="Fill" ItemsSource="{Binding ListCommitted}" SeparatorVisibility="None"
-                                      HasUnevenRows="True" VerticalOptions="Fill" ItemTapped="ListView_ItemTapped"
-                                      MaximumHeightRequest="300">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate>
+                            <!--bindable layout so the page scrolls as one, a nested ListView
+                                would trap the scroll gesture and clip the rows-->
+                            <VerticalStackLayout HorizontalOptions="Fill" Spacing="0" VerticalOptions="Start"
+                                                 BindableLayout.ItemsSource="{Binding ListCommitted}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="{x:Null}">
                                         <cell:StockAlertDetailsMoreCell/>
                                     </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
                         </VerticalStackLayout>
                     </Border>
                     <!--no data-->
@@ -65,7 +66,7 @@
                     <controls:CustomNoData HorizontalOptions="Center" VerticalOptions="Center" Margin="0,15,0,0"
                                            IsVisible="{Binding NoDataCommited}"/>
                 </VerticalStackLayout>
-            </Grid>
+            </ScrollView>
         </Grid>
         <!--loading overlay-->
         <controls:CustomLoading AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1"

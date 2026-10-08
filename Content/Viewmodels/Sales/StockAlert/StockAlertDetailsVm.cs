@@ -150,6 +150,9 @@ namespace wwrc_maui.Content.Viewmodels.Sales.StockAlert
         public string itemCode = "";
         public string whsName = "";
 
+        /// <summary>Row tap for the warehouse table (BindableLayout has no ItemTapped event).</summary>
+        public Command<DB_WarehouseItem>? WarehouseTappedCommand { get; set; } = null;
+
         public StockAlertDetailsVm() { }
 
         public async Task GetStockDetails()

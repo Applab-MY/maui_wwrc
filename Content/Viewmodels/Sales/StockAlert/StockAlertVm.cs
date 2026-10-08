@@ -201,13 +201,17 @@ namespace wwrc_maui.Content.Viewmodels.Sales.StockAlert
 
         public void SearchStockList()
         {
-            if (string.IsNullOrEmpty(SearchTxt))
-            { StockList = stockListCache; }
+            // bugfix :: case-insensitive search. previously the keyword had to match the
+            // casing of the data, so a keyboard auto-capitalised word ("Abc") never matched
+            var keyword = (SearchTxt ?? "").Trim();
+            if (string.IsNullOrEmpty(keyword))
+            { StockList = [.. stockListCache.OrderByDescending(f => f.ALERT)]; }
             else
             {
-                StockList = stockListCache.FindAll(item => item.ItemCode.ToLower().Contains(SearchTxt) ||
-                    item.ItemCode.ToUpper().Contains(SearchTxt) || item.ItemName.ToLower().Contains(SearchTxt) ||
-                    item.ItemName.ToUpper().Contains(SearchTxt));
+                StockList = [.. stockListCache
+                    .FindAll(item => (item.ItemCode ?? "").Contains(keyword, StringComparison.OrdinalIgnoreCase)
+                        || (item.ItemName ?? "").Contains(keyword, StringComparison.OrdinalIgnoreCase))
+                    .OrderByDescending(f => f.ALERT)];
             }
         }
     }

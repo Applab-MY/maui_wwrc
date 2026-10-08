@@ -4,6 +4,7 @@ using Android.Content.PM;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
+using AndroidX.Core.View;
 using Microsoft.Identity.Client;
 using RGPopup.Maui.Droid;
 using wwrc_maui.Content.MsalClient;
@@ -28,6 +29,36 @@ namespace wwrc_maui
 
             PlatformConfig.Instance.RedirectUri = $"msal{PublicClientSingleton.Instance.MSALClientHelper?.AzureConfig?.ClientId}://auth";
             PlatformConfig.Instance.ParentWindow = this;
+
+            ApplySystemBarInsets();
+        }
+
+        /// <summary>
+        /// Android 15 (API 35) enforces edge-to-edge and Android 16 (API 36) removes the
+        /// opt-out, so window content draws under the status and navigation bars by default.
+        /// Pad the root content view by the system-bar + display-cutout insets so no UI
+        /// (top nav bar, bottom toolbars) is ever hidden behind them.
+        /// </summary>
+        void ApplySystemBarInsets()
+        {
+            var content = FindViewById(Android.Resource.Id.Content);
+            if (content == null) return;
+
+            ViewCompat.SetOnApplyWindowInsetsListener(content, new SystemBarInsetsListener());
+            ViewCompat.RequestApplyInsets(content);
+        }
+
+        sealed class SystemBarInsetsListener : Java.Lang.Object, IOnApplyWindowInsetsListener
+        {
+            public WindowInsetsCompat OnApplyWindowInsets(Android.Views.View? v, WindowInsetsCompat? insets)
+            {
+                if (v == null || insets == null) return insets ?? WindowInsetsCompat.Consumed;
+
+                var bars = insets.GetInsets(
+                    WindowInsetsCompat.Type.SystemBars() | WindowInsetsCompat.Type.DisplayCutout());
+                v.SetPadding(bars.Left, bars.Top, bars.Right, bars.Bottom);
+                return WindowInsetsCompat.Consumed;
+            }
         }
 
         public override void OnBackPressed()

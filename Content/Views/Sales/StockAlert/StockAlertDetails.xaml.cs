@@ -11,6 +11,7 @@ public partial class StockAlertDetails : ContentPage
     {
         InitializeComponent();
         viewmodel.itemCode = itemCode;
+        viewmodel.WarehouseTappedCommand = new Command<DB_WarehouseItem>(OnWarehouseTapped);
         BindingContext = viewmodel;
         navbar.OnLeftIconTapped += async () => { await Navigation.PopAsync(); };
         Initialize();
@@ -24,11 +25,9 @@ public partial class StockAlertDetails : ContentPage
         viewmodel.IsBusy = false; viewmodel.IsRefreshing = false;
     }
 
-    private async void ListView_ItemTapped(object sender, ItemTappedEventArgs e)
+    private async void OnWarehouseTapped(DB_WarehouseItem? data)
     {
-        if (sender is not ListView lv) return;
-        lv.SelectedItem = null;
-        var data = (DB_WarehouseItem)e.Item;
+        if (data == null) return;
         await Navigation.PushAsync(new StockAlertDetailsMore(data.ItemCode, data.Warehouse));
     }
 }

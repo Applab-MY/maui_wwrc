@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
-using Plugin.Media;
-using Plugin.Media.Abstractions;
+using Microsoft.Maui.Media;
+using Microsoft.Maui.Storage;
 using wwrc_maui.Content.Helper;
 using wwrc_maui.Content.Model;
 using wwrc_maui.Content.Viewmodels.Common;
@@ -155,49 +155,51 @@ namespace wwrc_maui.Content.Viewmodels.Profile
         public async void TakePhoto()
         {
             ImgSource = null;
-            if (!CrossMedia.Current.IsCameraAvailable || !CrossMedia.Current.IsTakePhotoSupported)
+            if (!MediaPicker.Default.IsCaptureSupported)
             {
                 await App.DisplayAlert("No Camera", "This device have no camera.", null, "Okay");
                 return;
             }
 
-            var file = await CrossMedia.Current.TakePhotoAsync(new StoreCameraMediaOptions
+            try
             {
-                SaveToAlbum = true,
-                DefaultCamera = CameraDevice.Front,
-                AllowCropping = true,
-                PhotoSize = PhotoSize.Custom,
-                CustomPhotoSize = 20
-            });
+                FileResult? file = await MediaPicker.Default.CapturePhotoAsync();
+                if (file == null) return;
 
-            if (file == null) return;
-            ImgSource = ImageSource.FromStream(() =>
+                var bytes = await ReadAllBytesAsync(file);
+                ImgSource = ImageSource.FromStream(() => new MemoryStream(bytes));
+                fileName = file.FileName;
+            }
+            catch (Exception ex)
             {
-                var stream = file.GetStream();
-                return stream;
-            });
-            fileName = file.AlbumPath.Split('/').Last();
+                await App.DisplayAlert("Camera Error", ex.Message, null, "Okay");
+            }
         }
 
         public async void PickGallery()
         {
             ImgSource = null;
-            if (!CrossMedia.Current.IsPickPhotoSupported)
+            try
             {
-                await App.DisplayAlert("Info", "Pick photo from gallery not supported.", null, "Okay");
-                return;
+                FileResult? file = await MediaPicker.Default.PickPhotoAsync();
+                if (file == null) return;
+
+                var bytes = await ReadAllBytesAsync(file);
+                ImgSource = ImageSource.FromStream(() => new MemoryStream(bytes));
+                fileName = file.FileName;
             }
-
-            var file = await CrossMedia.Current.PickPhotoAsync(new PickMediaOptions
-            { PhotoSize = PhotoSize.Custom, CustomPhotoSize = 20 });
-
-            if (file == null) return;
-            ImgSource = ImageSource.FromStream(() =>
+            catch (Exception ex)
             {
-                var stream = file.GetStream();
-                return stream;
-            });
-            fileName = file.Path.Split('/').Last();
+                await App.DisplayAlert("Gallery Error", ex.Message, null, "Okay");
+            }
+        }
+
+        static async Task<byte[]> ReadAllBytesAsync(FileResult file)
+        {
+            using var stream = await file.OpenReadAsync();
+            using var ms = new MemoryStream();
+            await stream.CopyToAsync(ms);
+            return ms.ToArray();
         }
 
         public async Task<bool> SaveProfile()
